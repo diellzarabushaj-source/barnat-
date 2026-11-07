@@ -402,3 +402,67 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
     await expect(grid).toHaveAttribute('data-view','list');
   });
 }
+
+for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,height:700}]) {
+  test(`MedLex chapter flashcards reveal the original card and retry missed terms on ${name}`, async ({page}) => {
+    await page.setViewportSize({width,height});
+    await page.goto('http://127.0.0.1:4173/medlex.html?category=01');
+    if (name === 'small-dark') await page.locator('html').evaluate(html => html.dataset.theme = 'dark');
+    await page.getByRole('button',{name:'Studio me flashcards'}).click();
+    const chapter = page.getByLabel('Kapitulli',{exact:true});
+    const topic = page.getByLabel('Nënkapitulli',{exact:true});
+    const study = page.locator('#medlexStudy');
+    const start = study.getByRole('button',{name:'Fillo seancën'});
+    const answer = page.locator('#medlexStudyAnswer');
+    const image = page.locator('#medlexStudyImage');
+    await expect(chapter.locator('option')).toHaveCount(19);
+    await expect(chapter).toHaveValue('01');
+    await chapter.selectOption('11');
+    await expect(start).toBeDisabled();
+    await chapter.selectOption('05');
+    await topic.selectOption('ritmi');
+    await expect(study.getByRole('status')).toHaveText('4 kartela të gatshme për studim.');
+    await expect(page).toHaveURL(/category=05&mode=flashcards$/);
+    await start.click();
+    const question = study.getByRole('heading',{name:'Si quhet kur zemra rreh më shpejt se normalisht?'});
+    const reveal = study.getByRole('button',{name:'Zbulo kartelën'});
+    await expect(question).toBeFocused();
+    await expect(answer).toBeHidden();
+    expect(await image.getAttribute('src')).toBeNull();
+    await expect(page.locator('#medlexStudyPosition')).toHaveText('Kartela 1 nga 4');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+    await page.screenshot({path:path.join(OUTPUT, `tailwind-clinical-medlex-study-front-${name}.png`)});
+
+    await reveal.press('Enter');
+    await expect(answer.getByRole('heading',{name:'Takikardi',exact:true})).toBeFocused();
+    await expect(question).toBeHidden();
+    await expect(image).toHaveAttribute('src',/\/assets\/medlex-chapters\/c05-001\.webp/);
+    await image.evaluate(node => node.decode());
+    await expect(image).toBeVisible();
+    await page.screenshot({path:path.join(OUTPUT, `tailwind-clinical-medlex-study-back-${name}.png`)});
+
+    await page.getByRole('button',{name:'Listë',exact:true}).click();
+    await expect(study).toBeHidden();
+    await expect(page.locator('#medlexGridItems')).toHaveAttribute('data-view','list');
+    await page.getByRole('button',{name:'Flashcards',exact:true}).click();
+    await expect(answer.getByRole('heading',{name:'Takikardi',exact:true})).toBeVisible();
+    await study.getByRole('button',{name:'Për përsëritje',exact:true}).click();
+    for (const position of [2,3,4]) {
+      await expect(page.locator('#medlexStudyPosition')).toHaveText(`Kartela ${position} nga 4`);
+      await reveal.click();
+      await study.getByRole('button',{name:'E dija',exact:true}).click();
+    }
+    await expect(page.locator('#medlexStudyResult')).toHaveText('I dije 3 nga 4 kartela. Për përsëritje: 1.');
+    await study.getByRole('button',{name:'Përsërit të vështirat'}).click();
+    await expect(page.locator('#medlexStudyPosition')).toHaveText('Kartela 1 nga 1');
+    await expect(question).toBeFocused();
+    await reveal.click();
+    await study.getByRole('button',{name:'E dija',exact:true}).click();
+    await expect(study.getByRole('button',{name:'Përsërit të vështirat'})).toBeHidden();
+
+    await page.goto('http://127.0.0.1:4173/medlex.html?category=02&mode=flashcards');
+    await expect(chapter).toHaveValue('02');
+    await expect(topic.locator('option')).toHaveCount(10);
+    await expect(start).toBeEnabled();
+  });
+}

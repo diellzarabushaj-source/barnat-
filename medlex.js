@@ -41,8 +41,21 @@
     20:['multifocal','multifocalis','shumë vatra']
   };
 
+  const STUDY_QUESTIONS = {
+    'c03-001':'Si quhet ndjesia e vështirësisë në frymëmarrje?',
+    'c03-003':'Si quhet frymëmarrja më e shpejtë se normalja?',
+    'c03-005':'Si quhet ndërprerja e përkohshme e frymëmarrjes?',
+    'c05-001':'Si quhet kur zemra rreh më shpejt se normalisht?',
+    'c05-002':'Si quhet kur zemra rreh më ngadalë se normalisht?',
+    'c05-004':'Si quhet ndjesia e rrahjeve të forta, të shpejta ose të çrregullta të zemrës?',
+    'c07-002':'Si quhet vështirësia në gëlltitje?',
+    'c08-001':'Si quhet prania e gjakut në urinë?',
+  };
+
   const $ = id => document.getElementById(id);
   const state = { terms:[], groups:[], categories:[], category:'01', searchFrom:null, topic:'all', query:'', view:'grid', selected:null, authenticated:false };
+
+  const study = { active:false, deck:[], index:0, review:[], scope:'' };
 
   function normalize(value) {
     return String(value || '').toLocaleLowerCase('sq')
@@ -95,10 +108,10 @@
     return /^\d{2}-[a-z-]+\.webp$/.test(name) ? IMAGE_BASE + name : '';
   }
 
-  function topicsForCategory() {
-    if (state.category === '02') return [{id:'all',label:'Të gjitha',ids:[]},...state.groups.map(group => ({id:group.id,label:group.label,ids:[]}))];
-    if (state.category === '01') return TOPICS;
-    return [{id:'all',label:'Të gjitha',ids:[]},...(state.categories.find(item => item.id === state.category)?.groups || [])];
+  function topicsForCategory(category = state.category) {
+    if (category === '02') return [{id:'all',label:'Të gjitha',ids:[]},...state.groups.map(group => ({id:group.id,label:group.label,ids:[]}))];
+    if (category === '01') return TOPICS;
+    return [{id:'all',label:'Të gjitha',ids:[]},...(state.categories.find(item => item.id === category)?.groups || [])];
   }
 
   function updateCategoryHeading() {
@@ -227,12 +240,17 @@
     return article;
   }
 
+  function matchesScope(term, category, topic) {
+    return (category === 'all' || term.category === category) &&
+      (topic.id === 'all' || (term.category === '01' ? topic.ids.includes(term.id) : term.group === topic.id));
+  }
+
   function render() {
+    if (study.active) return;
     const topic = topicsForCategory().find(item => item.id === state.topic) || {id:'all',ids:[]};
     const query = normalize(state.query);
     const matches = state.terms
-      .filter(term => (state.category === 'all' || term.category === state.category) &&
-        (topic.id === 'all' || (term.category === '01' ? topic.ids.includes(term.id) : term.group === topic.id)))
+      .filter(term => matchesScope(term, state.category, topic))
       .map(term => ({ term, score:rank(term, query) }))
       .filter(item => item.score > 0)
       .sort((a,b) => query ? b.score - a.score || String(a.term.id).localeCompare(String(b.term.id)) :
@@ -343,6 +361,167 @@
     }
   }
 
+  function studyQuestion(term) {
+    const custom = STUDY_QUESTIONS[term.id];
+    if (custom) return { question:custom, clue:'' };
+    const definition = ' ' + normalize(term.definition) + ' ';
+    const revealsAnswer = [term.term, term.latin, term.english].map(normalize)
+      .some(answer => answer && definition.includes(' ' + answer + (answer.length < 5 ? ' ' : '')));
+    return revealsAnswer
+      ? { question:`Çfarë do të thotë «${term.term}»?`, clue:'' }
+      : { question:'Cili term mjekësor i përgjigjet këtij përshkrimi?', clue:term.definition };
+  }
+
+  function studyTerms() {
+    const category = $('medlexStudyChapter').value;
+    const groups = topicsForCategory(category);
+    const topic = groups.find(group => group.id === $('medlexStudyTopic').value) || groups[0];
+    return state.terms.filter(term => term.status !== 'planned' && matchesScope(term, category, topic));
+  }
+
+  function updateStudyAvailability() {
+    const count = studyTerms().length;
+    $('medlexStudyAvailability').textContent = count
+      ? `${count} ${count === 1 ? 'kartelë e gatshme' : 'kartela të gatshme'} për studim.`
+      : 'Ky kapitull ose nënkapitull ende nuk ka kartela të plotësuara.';
+    $('medlexStudyStart').disabled = count === 0;
+  }
+
+  function updateStudyTopics(value = 'all') {
+    const category = $('medlexStudyChapter').value;
+    const groups = topicsForCategory(category);
+    const select = $('medlexStudyTopic');
+    select.replaceChildren(...groups.map(group => new Option(group.label, group.id)));
+    select.value = groups.some(group => group.id === value) ? value : 'all';
+    $('medlexStudyTopicField').hidden = groups.length <= 1;
+    updateStudyAvailability();
+  }
+
+  function syncWorkspaceUrl() {
+    const url = new URL(location.href);
+    url.searchParams.set('category', study.active ? $('medlexStudyChapter').value : state.searchFrom || state.category);
+    if (study.active) url.searchParams.set('mode', 'flashcards');
+    else url.searchParams.delete('mode');
+    try { history.replaceState(null, '', url); } catch {}
+  }
+
+  function setStudyMode(active, focus = true) {
+    if (active && !state.terms.length) return;
+    study.active = active;
+    $('medlexContent').dataset.mode = active ? 'flashcards' : 'browse';
+    $('medlexStudy').hidden = !active;
+    $('medlexCollection').setAttribute('aria-labelledby', active ? 'medlexStudyTitle' : 'medlexCollectionTitle');
+    $('medlexFlashcards').setAttribute('aria-pressed', String(active));
+    if (active) {
+      $('medlexGrid').setAttribute('aria-pressed', 'false');
+      $('medlexList').setAttribute('aria-pressed', 'false');
+      if (!study.deck.length) {
+        $('medlexStudyChapter').value = state.searchFrom || state.category;
+        updateStudyTopics(state.topic);
+      }
+      if (focus) $('medlexStudyTitle').focus();
+    }
+    syncWorkspaceUrl();
+  }
+
+  function resetStudy() {
+    study.deck = [];
+    study.index = 0;
+    study.review = [];
+    $('medlexStudyImage').removeAttribute('src');
+    $('medlexStudySession').hidden = true;
+    $('medlexStudySummary').hidden = true;
+    $('medlexStudySetup').hidden = false;
+    $('medlexStudyChapter').focus();
+  }
+
+  function drawStudyCard() {
+    const {question, clue} = studyQuestion(study.deck[study.index]);
+    $('medlexStudyPosition').textContent = `Kartela ${study.index + 1} nga ${study.deck.length}`;
+    $('medlexStudyProgress').max = study.deck.length;
+    $('medlexStudyProgress').value = study.index;
+    $('medlexStudyQuestion').textContent = question;
+    $('medlexStudyClue').textContent = clue;
+    $('medlexStudyClue').hidden = !clue;
+    $('medlexStudyAnswer').hidden = true;
+    $('medlexStudyImage').removeAttribute('src');
+    $('medlexStudyFront').hidden = false;
+    $('medlexStudyQuestion').closest('article').setAttribute('aria-labelledby', 'medlexStudyQuestion');
+    $('medlexStudyQuestion').focus();
+  }
+
+  function beginStudy(deck, scope) {
+    study.deck = deck;
+    study.index = 0;
+    study.review = [];
+    study.scope = scope;
+    $('medlexStudyScope').textContent = scope;
+    $('medlexStudySetup').hidden = true;
+    $('medlexStudySummary').hidden = true;
+    $('medlexStudySession').hidden = false;
+    drawStudyCard();
+  }
+
+  function revealStudyCard() {
+    const term = study.deck[study.index];
+    $('medlexStudyTerm').textContent = term.term;
+    $('medlexStudyDefinition').textContent = term.definition;
+    $('medlexStudyExample').textContent = term.example;
+    $('medlexStudyLatin').textContent = term.latin ? `Latinisht: ${term.latin}` : '';
+    const english = term.english || ALIASES[term.id]?.[0];
+    $('medlexStudyEnglish').textContent = english ? `Anglisht: ${english}` : '';
+    const image = $('medlexStudyImage');
+    image.alt = `Kartela MedLex për termin ${term.term}`;
+    image.src = imagePath(term);
+    $('medlexStudyFront').hidden = true;
+    $('medlexStudyAnswer').hidden = false;
+    $('medlexStudyTerm').closest('article').setAttribute('aria-labelledby', 'medlexStudyTerm');
+    $('medlexStudyTerm').focus();
+  }
+
+  function rateStudyCard(known) {
+    if ($('medlexStudyAnswer').hidden || study.index >= study.deck.length) return;
+    if (!known) study.review.push(study.deck[study.index]);
+    study.index++;
+    if (study.index < study.deck.length) { drawStudyCard(); return; }
+    const {length:total} = study.deck;
+    const remaining = study.review.length;
+    $('medlexStudySession').hidden = true;
+    $('medlexStudyResult').textContent = `I dije ${total - remaining} nga ${total} kartela. Për përsëritje: ${remaining}.`;
+    $('medlexStudyAgain').hidden = !remaining;
+    $('medlexStudySummary').hidden = false;
+    $('medlexStudySummaryTitle').focus();
+  }
+
+  function configureStudy() {
+    for (const id of ['medlexFlashcards','medlexStudyShortcut']) {
+      $(id).addEventListener('click', () => { if (!study.active) setStudyMode(true); });
+    }
+    $('medlexStudyChapter').addEventListener('change', () => { updateStudyTopics(); syncWorkspaceUrl(); });
+    $('medlexStudyTopic').addEventListener('change', updateStudyAvailability);
+    $('medlexStudySetup').addEventListener('submit', event => {
+      event.preventDefault();
+      const deck = studyTerms();
+      if (!deck.length) return;
+      if ($('medlexStudyOrder').value === 'shuffled') {
+        for (let index = deck.length - 1; index > 0; index--) {
+          const target = Math.floor(Math.random() * (index + 1));
+          [deck[index], deck[target]] = [deck[target], deck[index]];
+        }
+      }
+      const limit = Number($('medlexStudyLimit').value) || deck.length;
+      const chapter = $('medlexStudyChapter').selectedOptions[0].textContent;
+      const topic = $('medlexStudyTopic').value === 'all' ? '' : ' · ' + $('medlexStudyTopic').selectedOptions[0].textContent;
+      beginStudy(deck.slice(0, limit), chapter + topic);
+    });
+    $('medlexStudyReveal').addEventListener('click', revealStudyCard);
+    $('medlexStudyKnown').addEventListener('click', () => rateStudyCard(true));
+    $('medlexStudyReview').addEventListener('click', () => rateStudyCard(false));
+    $('medlexStudyAgain').addEventListener('click', () => beginStudy(study.review.slice(), study.scope));
+    $('medlexStudyChange').addEventListener('click', resetStudy);
+    $('medlexStudyNew').addEventListener('click', resetStudy);
+  }
+
   function configureActions() {
     const chapterPicker = $('medlexChapterPicker');
     const wideLayout = window.matchMedia('(min-width:1120px)');
@@ -380,7 +559,7 @@
         chapterPicker.open = false;
         chapterPicker.querySelector('summary').focus({preventScroll:true});
       }
-      try { history.replaceState(null,'',`/medlex.html?category=${state.category}`); } catch {}
+      syncWorkspaceUrl();
     });
     $('medlexSearch').addEventListener('input', event => setQuery(event.target.value));
     $('medlexSearch').addEventListener('keydown', event => {
@@ -392,6 +571,7 @@
     for (const view of ['grid','list']) {
       const button = $(view === 'grid' ? 'medlexGrid' : 'medlexList');
       button.addEventListener('click', () => {
+        if (study.active) setStudyMode(false);
         state.view = view;
         try { localStorage.setItem('drx_medlex_view_v1', view); } catch {}
         render();
@@ -412,9 +592,11 @@
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault();
         if ($('medlexDialog').open) $('medlexDialog').close();
+        if (study.active) { setStudyMode(false); render(); }
         $('medlexSearch').focus();
       }
     });
+    configureStudy();
     try { state.view = localStorage.getItem('drx_medlex_view_v1') === 'list' ? 'list' : 'grid'; }
     catch {}
   }
@@ -521,11 +703,17 @@
     state.categories = chapters.categories;
     state.terms = [...terms,...anatomyTerms,...plannedTerms];
     $('medlexHeroCount').textContent = String(state.terms.filter(term => term.status !== 'planned').length);
-    const selected = new URLSearchParams(location.search).get('category');
+    const params = new URLSearchParams(location.search);
+    const selected = params.get('category');
     state.category = selected === 'all' || state.categories.some(item => item.id === selected) ? selected : '01';
     state.searchFrom = null;
+    $('medlexStudyChapter').replaceChildren(new Option('Të gjithë kapitujt', 'all'),
+      ...state.categories.map(chapter => new Option(chapter.id + ' · ' + chapter.title, chapter.id)));
+    $('medlexFlashcards').disabled = false;
+    $('medlexStudyShortcut').disabled = false;
     drawCategories();
     drawTopics();
+    if (params.get('mode') === 'flashcards') setStudyMode(true, false);
     setQuery($('medlexSearch').value);
   }
 
