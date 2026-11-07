@@ -28,6 +28,8 @@ html[data-drx-app="medlex-v1"][data-theme="dark"] {
   --ml-shadow: none;
 }
 
+html[data-drx-app="medlex-v1"][data-theme="dark"] .main-shell { background: var(--ml-soft); }
+
 html[data-drx-app="medlex-v1"] .medlex-page {
   max-width: 1512px;
   margin-inline: auto;
@@ -470,7 +472,7 @@ html[data-drx-app="medlex-v1"] .medlex-page {
 }
 
 @media(max-width:660px) {
-  .medlex-hero { grid-template-columns: minmax(0, 1fr); gap: 13px; padding: 17px 14px; border-radius: 16px; }
+  .medlex-hero { grid-template-columns: minmax(0, 1fr); gap: 11px; padding: 15px 14px; border-radius: 16px; }
   .medlex-hero h1 { margin-top: 5px; }
   .medlex-hero-copy p { font-size: 13px; }
   .medlex-hero-stats { grid-row: 3; gap: 14px; }
@@ -478,8 +480,14 @@ html[data-drx-app="medlex-v1"] .medlex-page {
   .medlex-hero-stats dd { font-size: 15px; }
   .medlex-hero-stats dt { font-size: 11px; }
   .medlex-shortcut { display: none; }
+  .medlex-collection-heading { padding-block: 13px; }
+  .medlex-collection-heading .medlex-section-index { display: none; }
+  .medlex-collection-count { margin-top: 6px; }
+  .medlex-topics { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: thin; padding-bottom: 4px; }
+  .medlex-topic { flex: none; white-space: nowrap; }
+  .medlex-topics .medlex-topic:focus-visible { outline-offset: -2px; }
   .medlex-topic, .medlex-reset, .medlex-view-switch button { min-height: 44px; }
-  .medlex-results-head p { flex-basis: 100%; }
+  .medlex-results-head p { flex-basis: 110px; }
   .medlex-view-switch { margin-left: auto; }
   .medlex-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
   .medlex-card-body, .medlex-card-footer { padding-inline: 10px; }

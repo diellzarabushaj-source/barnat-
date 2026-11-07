@@ -340,6 +340,7 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
     await expect(chapterPicker.locator('[data-category="01"]')).toHaveAttribute('aria-pressed','true');
     if (width < 1120) await expect(chapterPicker.locator('summary')).toBeFocused();
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+    await expect.poll(() => grid.locator('img').first().evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
     await page.screenshot({path:path.join(OUTPUT, `tailwind-clinical-medlex-${name}.png`)});
 
     await search.fill('Regio epigastrica');
