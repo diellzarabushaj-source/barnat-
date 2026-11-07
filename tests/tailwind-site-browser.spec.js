@@ -336,6 +336,7 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
       await menu.click();
       await expect(menu).toHaveAttribute('aria-expanded','true');
       await expect(activeNav).toBeInViewport();
+      await expect.poll(async () => Math.abs((await sidebar.boundingBox()).x)).toBeLessThan(1);
       await expect(page.locator('#sidebarBackdrop')).toBeVisible();
       await expect.poll(() => page.locator('.main-shell').evaluate(shell => shell.inert)).toBe(true);
       await page.screenshot({path:path.join(OUTPUT, `tailwind-clinical-medlex-sidebar-${name}.png`)});
