@@ -295,3 +295,16 @@ for (const width of [390, 1440]) {
   await expect(page.getByRole('link',{name:'Vazhdo si Second Doctor'})).toBeVisible();
  });
 }
+
+
+test('Existing signed-in workspace remembers its own account without a fresh login',async({page})=>{
+ await prepare(page);
+ const authRoute=/\/api\/auth(?:\?(?:session_probe|entry)=1)?$/;
+ await page.route(authRoute,route=>route.fulfill({json:{authenticated:true,hardened:true,sessionVersion:3,supabaseAuthenticated:true,
+  authUser:{id:'existing-user-fixture',role:'doctor',status:'active'},user:{name:'Existing Doctor',email:'existing@example.test'},csrfToken:'fixture-only'}}));
+ await page.goto(BASE+'/index.html');
+ await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('drx_remembered_accounts_v1')||'[]').map(a=>a.name))).toContain('Existing Doctor');
+ await page.unroute(authRoute);
+ await page.goto(BASE+'/landing.html');
+ await expect(page.getByRole('link',{name:'Vazhdo si Existing Doctor'})).toBeVisible();
+});
