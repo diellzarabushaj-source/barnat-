@@ -5,7 +5,7 @@
   function clean(value) {
     const email = String(value?.email || '').trim().toLowerCase();
     if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return null;
-    return { email, name:String(value.name || email).trim().slice(0, 120), method:['google','email','fallback'].includes(value.method) ? value.method : '' };
+    return { email, name:String(value.name || '').trim().slice(0, 120) || email, method:['google','email','fallback'].includes(value.method) ? value.method : '' };
   }
   function list() {
     try {
@@ -66,6 +66,7 @@
         remove.setAttribute('aria-label', 'Hiq ' + account.name + ' nga lista');
         remove.addEventListener('click', () => {
           save(list().filter(item => item.email !== account.email));
+          section.querySelector('a')?.focus();
 
         });
         row.append(link, remove); section.append(row);

@@ -99,7 +99,8 @@
     instance?.destroy(); instance = null;
     content.replaceChildren();
     document.body.style.overflow = previousOverflow ?? '';
-    trigger?.focus({ preventScroll:true });
+    if (trigger?.isConnected) trigger.focus({ preventScroll:true });
+    else document.querySelector('[data-remembered-accounts] a')?.focus({ preventScroll:true });
   }
 
   function open(next, search, source, record = true) {
