@@ -297,19 +297,27 @@ for (const width of [390, 1440]) {
 }
 
 
-test('Existing signed-in workspace remembers its own account without a fresh login',async({page})=>{
- await prepare(page);
- let signedIn = true;
- await page.route('**/api/auth**',route=>{
-  if (new URL(route.request().url()).searchParams.has('scope')) return route.fallback();
-  return route.fulfill({json:signedIn
-   ? {authenticated:true,hardened:true,sessionVersion:3,supabaseAuthenticated:true,authUser:{id:'existing-user-fixture',role:'doctor',status:'active'},user:{name:'Existing Doctor',email:'existing@example.test'},csrfToken:'fixture-only'}
-   : {authenticated:false,hardened:true,sessionConfigured:true,googleConfigured:false,passwordFallbackConfigured:true,csrfToken:'fixture-only'}});
+test.describe('Remembered account migration',()=>{
+ // Keep mocked account responses in the page's network route. Worker
+ // persistence is covered separately by the device-session browser suite.
+ test.use({serviceWorkers:'block'});
+
+ test('Existing signed-in workspace remembers its own account without a fresh login',async({page})=>{
+  await prepare(page);
+  let signedIn = true;
+  await page.route('**/api/auth**',route=>{
+   if (new URL(route.request().url()).searchParams.has('scope')) return route.fallback();
+   return route.fulfill({json:signedIn
+    ? {authenticated:true,hardened:true,sessionVersion:3,supabaseAuthenticated:true,authUser:{id:'existing-user-fixture',role:'doctor',status:'active'},user:{name:'Existing Doctor',email:'existing@example.test'},csrfToken:'fixture-only'}
+    : {authenticated:false,hardened:true,sessionConfigured:true,googleConfigured:false,passwordFallbackConfigured:true,csrfToken:'fixture-only'}});
+  });
+  await page.goto(BASE+'/index.html');
+  await page.waitForFunction(()=>location.pathname==='/index.html' &&
+   JSON.parse(localStorage.getItem('drx_remembered_accounts_v1')||'[]')
+    .some(account=>account.email==='existing@example.test' && account.name==='Existing Doctor'));
+  signedIn = false;
+  await page.goto(BASE+'/landing.html');
+  await expect(page).toHaveURL(/landing.html/);
+  await expect(page.getByRole('link',{name:'Vazhdo si Existing Doctor'})).toBeVisible();
  });
- await page.goto(BASE+'/index.html');
- await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('drx_remembered_accounts_v1')||'[]').map(a=>a.name))).toContain('Existing Doctor');
- signedIn = false;
- await page.goto(BASE+'/landing.html');
- await expect(page).toHaveURL(/landing.html/);
- await expect(page.getByRole('link',{name:'Vazhdo si Existing Doctor'})).toBeVisible();
 });
