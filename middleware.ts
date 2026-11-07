@@ -40,6 +40,8 @@ const PUBLIC_PATHS = new Set([
   '/landing.html',
   '/landing.css',
   '/entry-resume.js',
+  '/remembered-accounts.js',
+  '/remembered-accounts.css',
   '/homepage-auth.js',
   '/homepage-auth.css',
   '/session-resume.html',
