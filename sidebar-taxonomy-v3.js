@@ -11,7 +11,7 @@
       || !(auth.supabaseAuthenticated || auth.rollbackSession) || !auth.user?.email) return;
     const hint = { authenticated:true, hardened:true, sessionVersion:3,
       supabaseAuthenticated:auth.supabaseAuthenticated === true, rollbackSession:auth.rollbackSession === true,
-      signInMethod:auth.rollbackSession ? 'fallback' : undefined,
+      signInMethod:auth.signInMethod || (auth.rollbackSession ? 'fallback' : undefined),
       user:{ email:auth.user.email, name:auth.user.name } };
     if (window.DRxRememberedAccounts) { window.DRxRememberedAccounts.remember(hint); return; }
     // Migrate already signed-in browsers without another login or auth request.
