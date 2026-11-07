@@ -189,25 +189,29 @@
 
               <form id="medlexStudySetup" class="medlex-study-panel" aria-label="Përgatit seancën">
                 <div class="medlex-study-fields">
-                  <label>Kapitulli
+                  <div class="medlex-study-field">
+                    <label for="medlexStudyChapter">Kapitulli</label>
                     <select id="medlexStudyChapter"></select>
-                  </label>
-                  <label id="medlexStudyTopicField">Nënkapitulli
+                  </div>
+                  <div class="medlex-study-field" id="medlexStudyTopicField">
+                    <label for="medlexStudyTopic">Nënkapitulli</label>
                     <select id="medlexStudyTopic"></select>
-                  </label>
-                  <label>Numri i kartelave
+                  </div>
+                  <div class="medlex-study-field">
+                    <label for="medlexStudyLimit">Numri i kartelave</label>
                     <select id="medlexStudyLimit">
                       <option value="10">10 kartela</option>
                       <option value="20">20 kartela</option>
                       <option value="all">Të gjitha</option>
                     </select>
-                  </label>
-                  <label>Rendi
+                  </div>
+                  <div class="medlex-study-field">
+                    <label for="medlexStudyOrder">Rendi</label>
                     <select id="medlexStudyOrder">
                       <option value="ordered">Sipas kapitullit</option>
                       <option value="shuffled">I përzier</option>
                     </select>
-                  </label>
+                  </div>
                 </div>
                 <div class="medlex-study-actions">
                   <p id="medlexStudyAvailability" role="status"></p>

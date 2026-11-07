@@ -630,7 +630,7 @@ html.drx-unified-sidebar .medlex-page :is(.medlex-categories button,.medlex-card
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 14px;
 }
-.medlex-study-fields label {
+.medlex-study-field {
   display: grid;
   gap: 6px;
   min-width: 0;
