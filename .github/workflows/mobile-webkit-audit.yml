@@ -80,7 +80,7 @@ jobs:
             --config=playwright.registry-v2.config.js \
             --project=webkit 2>&1 | tee -a /tmp/mobile-webkit-audit.log
           pnpm exec playwright test tests/tailwind-site-browser.spec.js \
-            --config=playwright.registry-v2.config.js --project=webkit --grep '^MedLex' \
+            --config=playwright.registry-v2.config.js --project=webkit --grep 'MedLex chapter' \
             2>&1 | tee -a /tmp/mobile-webkit-audit.log
 
       - name: Verify remembered-device persistence and logout in WebKit

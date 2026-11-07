@@ -462,10 +462,10 @@
     $('medlexHeroCount').textContent = String(state.terms.filter(term => term.status !== 'planned').length);
     const selected = new URLSearchParams(location.search).get('category');
     state.category = selected === 'all' || state.categories.some(item => item.id === selected) ? selected : '01';
+    state.searchFrom = null;
     drawCategories();
     drawTopics();
-    updateCategoryHeading();
-    render();
+    setQuery($('medlexSearch').value);
   }
 
   async function init() {
