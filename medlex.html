@@ -11,10 +11,10 @@
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/protokollet-v2.css?v=2-audit-20261009">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107">
-  <link rel="stylesheet" href="/medlex.css?v=20261107-sidebar-polish">
+  <link rel="stylesheet" href="/medlex.css?v=20261107-flashcards-v1">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
-  <script src="/medlex.js?v=20261107-sidebar-polish" defer></script>
+  <script src="/medlex.js?v=20261107-flashcards-v1" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#medlexContent">Kalo te terminologjia mjekësore</a>
@@ -112,13 +112,17 @@
             <div><dt>Kapituj</dt><dd>18</dd></div>
             <div><dt>Kartela të plotësuara</dt><dd id="medlexHeroCount">—</dd></div>
           </dl>
-          <div class="medlex-toolbox" role="search" aria-label="Kërko në terminologjinë mjekësore">
-            <div class="medlex-search-wrap">
+          <div class="medlex-toolbox">
+            <div class="medlex-search-wrap" role="search" aria-label="Kërko në terminologjinë mjekësore">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2"/></svg>
               <input id="medlexSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko term ose sinonim…" aria-label="Kërko në të 18 kapitujt sipas termit, latinishtes, anglishtes ose shembullit">
               <button type="button" id="medlexClear" class="medlex-search-clear" aria-label="Pastro kërkimin" hidden>×</button>
               <kbd class="medlex-shortcut" aria-hidden="true">Ctrl K</kbd>
             </div>
+            <button type="button" id="medlexStudyShortcut" class="medlex-study-shortcut" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="6" y="3" width="13" height="15" rx="2"/><path d="M15 21H5a2 2 0 0 1-2-2V8m7 0h5m-5 4h5"/></svg>
+              Studio me flashcards
+            </button>
           </div>
         </header>
 
@@ -147,7 +151,7 @@
             <p class="medlex-chapter-empty" id="medlexChapterEmpty" role="status" hidden>Asnjë kapitull nuk përputhet.</p>
           </details>
 
-          <section class="medlex-collection" aria-labelledby="medlexCollectionTitle">
+          <section class="medlex-collection" id="medlexCollection" aria-labelledby="medlexCollectionTitle">
             <div class="medlex-collection-heading">
               <span class="medlex-section-index" id="medlexCollectionEyebrow">01 / Terminologji klinike</span>
               <h2 id="medlexCollectionTitle">Konceptet themelore</h2>
@@ -167,10 +171,106 @@
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h1M4 12h1M4 18h1"/></svg>
                   Listë
                 </button>
+                <button type="button" id="medlexFlashcards" aria-pressed="false" aria-controls="medlexStudy" disabled>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="6" y="3" width="13" height="15" rx="2"/><path d="M15 21H5a2 2 0 0 1-2-2V8m7 0h5m-5 4h5"/></svg>
+                  Flashcards
+                </button>
               </div>
             </div>
             <div class="medlex-grid" id="medlexGridItems"></div>
             <div id="medlexEmpty" class="medlex-empty" hidden><span aria-hidden="true">⌕</span><h3>Nuk u gjet asnjë term</h3><p>Provo një emërtim tjetër, sinonim ose fjalë nga përkufizimi.</p><button type="button" id="medlexEmptyReset" class="medlex-primary-action">Pastro filtrat</button></div>
+
+            <section id="medlexStudy" class="medlex-study" aria-labelledby="medlexStudyTitle" hidden>
+              <header class="medlex-study-header">
+                <span class="medlex-study-kicker">DRx MedLex · Studio</span>
+                <h2 id="medlexStudyTitle" tabindex="-1">Flashcards</h2>
+                <p>Përgjigju nga kujtesa, kthe kartelën dhe shëno çfarë do të përsëritësh.</p>
+              </header>
+
+              <form id="medlexStudySetup" class="medlex-study-panel" aria-label="Përgatit seancën">
+                <div class="medlex-study-fields">
+                  <label>Kapitulli
+                    <select id="medlexStudyChapter"></select>
+                  </label>
+                  <label id="medlexStudyTopicField">Nënkapitulli
+                    <select id="medlexStudyTopic"></select>
+                  </label>
+                  <label>Numri i kartelave
+                    <select id="medlexStudyLimit">
+                      <option value="10">10 kartela</option>
+                      <option value="20">20 kartela</option>
+                      <option value="all">Të gjitha</option>
+                    </select>
+                  </label>
+                  <label>Rendi
+                    <select id="medlexStudyOrder">
+                      <option value="ordered">Sipas kapitullit</option>
+                      <option value="shuffled">I përzier</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="medlex-study-actions">
+                  <p id="medlexStudyAvailability" role="status"></p>
+                  <button type="submit" id="medlexStudyStart" class="medlex-primary-action" disabled>Fillo seancën</button>
+                </div>
+              </form>
+
+              <div id="medlexStudySession" hidden>
+                <div class="medlex-study-progress">
+                  <div>
+                    <span id="medlexStudyScope"></span>
+                    <strong id="medlexStudyPosition"></strong>
+                  </div>
+                  <progress id="medlexStudyProgress" value="0" max="1" aria-label="Përparimi i seancës"></progress>
+                </div>
+
+                <article class="medlex-study-card" aria-labelledby="medlexStudyQuestion">
+                  <div id="medlexStudyFront" class="medlex-study-front">
+                    <span class="medlex-section-index">Pyetja</span>
+                    <h3 id="medlexStudyQuestion" tabindex="-1"></h3>
+                    <p id="medlexStudyClue" hidden></p>
+                    <button type="button" id="medlexStudyReveal" class="medlex-primary-action" aria-controls="medlexStudyAnswer">Zbulo kartelën</button>
+                  </div>
+                  <div id="medlexStudyAnswer" hidden>
+                    <div class="medlex-study-back">
+                      <div class="medlex-study-answer-title">
+                        <span class="medlex-section-index">Përgjigjja</span>
+                        <h3 id="medlexStudyTerm" tabindex="-1"></h3>
+                        <div class="medlex-dialog-translations">
+                          <span class="medlex-dialog-english" id="medlexStudyLatin"></span>
+                          <span class="medlex-dialog-english" id="medlexStudyEnglish"></span>
+                        </div>
+                      </div>
+                      <figure class="medlex-study-art">
+                        <img id="medlexStudyImage" alt="" width="1254" height="1254" decoding="async">
+                        <figcaption>Kartela origjinale e MedLex</figcaption>
+                      </figure>
+                      <div class="medlex-study-explanation">
+                        <h4>Përkufizimi</h4>
+                        <p id="medlexStudyDefinition"></p>
+                        <h4>Shembull klinik</h4>
+                        <blockquote id="medlexStudyExample"></blockquote>
+                      </div>
+                    </div>
+                    <div class="medlex-study-rating" role="group" aria-label="Si të shkoi kjo kartelë?">
+                      <button type="button" id="medlexStudyReview" class="medlex-study-secondary">Për përsëritje</button>
+                      <button type="button" id="medlexStudyKnown" class="medlex-primary-action">E dija</button>
+                    </div>
+                  </div>
+                </article>
+                <button type="button" id="medlexStudyChange" class="medlex-study-secondary">Ndrysho përzgjedhjen</button>
+              </div>
+
+              <section id="medlexStudySummary" class="medlex-study-panel medlex-study-summary" aria-labelledby="medlexStudySummaryTitle" hidden>
+                <span class="medlex-section-index">Përmbledhja</span>
+                <h3 id="medlexStudySummaryTitle" tabindex="-1">Seanca përfundoi</h3>
+                <p id="medlexStudyResult"></p>
+                <div class="medlex-study-actions">
+                  <button type="button" id="medlexStudyAgain" class="medlex-primary-action" hidden>Përsërit të vështirat</button>
+                  <button type="button" id="medlexStudyNew" class="medlex-study-secondary">Seancë e re</button>
+                </div>
+              </section>
+            </section>
           </section>
         </div>
 
