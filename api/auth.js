@@ -24,6 +24,11 @@ const MAX_ATTEMPTS = 5;
 const MAX_TRACKED_CLIENTS = 2000;
 const MAX_BODY_BYTES = 16 * 1024;
 const MAX_PASSWORD_CHARS = 128;
+const SIGN_IN_METHOD = {
+  'supabase-google':'google',
+  'supabase-password':'email',
+  'legacy-password':'fallback',
+};
 
 function securityHeaders(res) {
   res.setHeader('Cache-Control', 'no-store, max-age=0');
@@ -260,10 +265,15 @@ async function renewDeviceSession(auth, device) {
   return { token, refreshToken, session:auth.sessionData(token) };
 }
 
-function sharedDeviceRenewal(auth, device, rawDevice) {
+function sharedDeviceRenewal(auth, device) {
   // New tabs can arrive together before a service worker controls the page.
   // Share in-flight rotation within this instance; never cache account grants.
-  const key = sha256Hex(rawDevice);
+  // A healthy visit can re-encrypt the same refresh token with a new IV.
+  // Key by the verified identity and credential, not its cookie ciphertext.
+  const key = sha256Hex(JSON.stringify([
+    device.provider, device.authUid, device.uid, device.email,
+    device.refreshToken || device.accessRevision,
+  ]));
   if (!deviceRenewals.has(key)) {
     const pending = renewDeviceSession(auth, device).finally(() => deviceRenewals.delete(key));
     deviceRenewals.set(key, pending);
@@ -320,7 +330,7 @@ module.exports = async function handler(req, res) {
     if (rawDevice && !device) cookies.push(Device.expiredDeviceCookie());
     if (device && (!session || session.exp * 1000 - Date.now() <= 30 * 60 * 1000)) {
       try {
-        const renewed = await sharedDeviceRenewal(auth, device, rawDevice);
+        const renewed = await sharedDeviceRenewal(auth, device);
         session = renewed.session;
         cookies.push(auth.sessionCookie(renewed.token),
           Device.deviceCookie(Device.createDeviceToken(session, renewed.refreshToken)));
@@ -353,18 +363,25 @@ module.exports = async function handler(req, res) {
       res.setHeader('Location', session ? destination : `/landing.html?return=${encodeURIComponent(destination)}`);
       return res.status(302).end();
     }
-    const csrfToken = auth.createCsrfToken();
+    // Read-only recovery probes must not replace the CSRF cookie while a
+    // sign-in form or Google's nonce is using it. Reuse a valid form token
+    // across other GETs and rotate it after a successful sign-in.
+    const probeOnly = ['entry', 'offline_probe'].some(name => queryValue(req, name) === '1');
+    const previousCsrf = auth.csrfFromRequest(req);
+    const csrfToken = probeOnly ? '' : (/^[A-Za-z0-9_-]{32}$/.test(previousCsrf) ? previousCsrf : auth.createCsrfToken());
+    if (csrfToken && csrfToken !== previousCsrf) cookies.push(auth.csrfCookie(csrfToken));
     const supabaseAuthenticated = auth.isSupabaseSession(session);
     const rollbackSession = auth.isRollbackSession(session);
     const identityContract = supabaseAuthenticated
       ? 'supabase-v1'
       : (rollbackSession ? 'legacy-password-rollback' : (session ? `legacy-v${session.v}` : ''));
-    res.setHeader('Set-Cookie', [...cookies, auth.csrfCookie(csrfToken)]);
+    if (cookies.length) res.setHeader('Set-Cookie', cookies);
     return res.status(200).json({
       authenticated:Boolean(session),
       user:publicUser(session),
       sessionVersion:Number(session?.v || 0),
       identityContract,
+      signInMethod:SIGN_IN_METHOD[session?.provider] || '',
       supabaseAuthenticated,
       rollbackSession,
       authUser:supabaseAuthenticated ? {
@@ -557,10 +574,12 @@ module.exports = async function handler(req, res) {
     res.setHeader('RateLimit-Remaining', String(MAX_ATTEMPTS));
     return res.status(200).json({
       ok:true,
+      authenticated:true,
       expiresIn:auth.SESSION_TTL_SECONDS,
       deviceRemembered:Boolean(deviceToken),
       hardened:true,
       provider:{ 'supabase-google':'google', 'supabase-password':'email' }[provider] || 'password',
+      signInMethod:SIGN_IN_METHOD[provider],
       sessionVersion:auth.SESSION_VERSION,
       identityContract:auth.SUPABASE_PROVIDERS.includes(provider) ? 'supabase-v1' : 'legacy-password-rollback',
       supabaseAuthenticated:auth.SUPABASE_PROVIDERS.includes(provider),

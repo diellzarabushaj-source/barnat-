@@ -34,6 +34,7 @@ globalThis.fetch = async (value, options = {}) => {
       if (state.refreshGate) await state.refreshGate;
       const token = JSON.parse(options.body).refresh_token;
       if (state.transient) { status = 503; body = {}; }
+      else if (state.refreshError) { ({ status, body } = state.refreshError); }
       else if (state.revoked.has(token)) { status = 400; body = { error_code:'refresh_token_not_found' }; }
       else body = fresh();
     } else body = fresh();

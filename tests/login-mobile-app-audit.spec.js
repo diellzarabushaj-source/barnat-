@@ -201,9 +201,10 @@ test('Unavailable modal assets preserve a working standalone login link',async({
 
 test('Homepage email login preserves the requested destination and server session', async({page})=>{
  await prepare(page);
+ await page.route('**/recetat.html',route=>route.fulfill({contentType:'text/html',body:'<!doctype html><title>Recetat</title>'}));
  await page.route(/\/api\/auth(?:\?(?:session_probe|entry)=1)?$/, async route=>{
   if(route.request().method()==='GET')return route.fallback();
-  await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({authenticated:true,supabaseAuthenticated:true,sessionVersion:3,user:{id:'fixture-user',email:'modal-test@example.com'}})});
+  await route.fulfill({json:{ok:true,authenticated:true,hardened:true,supabaseAuthenticated:true,sessionVersion:3,user:{email:'modal-test@example.com',name:'Doctor Modal'}}});
  });
  await page.goto(BASE+'/landing.html');
  await page.locator('a[href="login.html?return=%2Frecetat.html"]').click();
@@ -212,6 +213,8 @@ test('Homepage email login preserves the requested destination and server sessio
  await page.locator('#loginPassword').fill('test-password-only');
  await page.locator('#emailLoginSubmit').click();
  await expect(page).toHaveURL(/\/recetat\.html$/);
+ expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('drx_remembered_accounts_v1'))))
+  .toEqual([{email:'modal-test@example.com',name:'Doctor Modal',method:'email'}]);
 });
 
 test('Homepage signup keeps email confirmation and profile enrollment inside the dialog',async({page})=>{
