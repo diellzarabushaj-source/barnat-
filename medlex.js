@@ -55,7 +55,8 @@
   const $ = id => document.getElementById(id);
   const state = { terms:[], groups:[], categories:[], category:'01', searchFrom:null, topic:'all', query:'', view:'grid', selected:null, authenticated:false };
 
-  const study = { active:false, deck:[], index:0, review:[], scope:'' };
+  const study = { active:false, deck:[], answers:[], ratings:{}, chapter:'01', topic:'all' };
+  const studySync = { account:'', revision:0, loaded:false, working:false, pending:null, conflict:null };
 
   function normalize(value) {
     return String(value || '').toLocaleLowerCase('sq')
@@ -363,13 +364,11 @@
 
   function studyQuestion(term) {
     const custom = STUDY_QUESTIONS[term.id];
-    if (custom) return { question:custom, clue:'' };
+    if (custom) return custom;
     const definition = ' ' + normalize(term.definition) + ' ';
     const revealsAnswer = [term.term, term.latin, term.english].map(normalize)
       .some(answer => answer && definition.includes(' ' + answer + (answer.length < 5 ? ' ' : '')));
-    return revealsAnswer
-      ? { question:`Çfarë do të thotë «${term.term}»?`, clue:'' }
-      : { question:'Cili term mjekësor i përgjigjet këtij përshkrimi?', clue:term.definition };
+    return revealsAnswer ? `Çfarë do të thotë «${term.term}»?` : term.definition;
   }
 
   function studyTerms() {
@@ -384,7 +383,7 @@
     $('medlexStudyAvailability').textContent = count
       ? `${count} ${count === 1 ? 'kartelë e gatshme' : 'kartela të gatshme'} për studim.`
       : 'Ky kapitull ose nënkapitull ende nuk ka kartela të plotësuara.';
-    $('medlexStudyStart').disabled = count === 0;
+    $('medlexStudyStart').disabled = count === 0 || Boolean(studySync.account && !studySync.loaded);
   }
 
   function updateStudyTopics(value = 'all') {
@@ -420,50 +419,73 @@
         updateStudyTopics(state.topic);
       }
       if (focus) $('medlexStudyTitle').focus();
+      if (studySync.account && !studySync.loaded) void loadStudyProgress();
     }
     syncWorkspaceUrl();
   }
 
-  function resetStudy() {
+  function updateStudyStats() {
+    const ratings = Object.values(study.ratings);
+    const known = ratings.filter(value => value === 'known').length;
+    $('medlexStudyStudied').textContent = ratings.length;
+    $('medlexStudyMastered').textContent = known;
+    $('medlexStudyRemaining').textContent = ratings.length - known;
+  }
+
+  function resetStudy(focus = true) {
     study.deck = [];
-    study.index = 0;
-    study.review = [];
+    study.answers = [];
     $('medlexStudyImage').removeAttribute('src');
     $('medlexStudySession').hidden = true;
     $('medlexStudySummary').hidden = true;
     $('medlexStudySetup').hidden = false;
-    $('medlexStudyChapter').focus();
+    if (focus) $('medlexStudyChapter').focus();
   }
 
-  function drawStudyCard() {
-    const {question, clue} = studyQuestion(study.deck[study.index]);
-    $('medlexStudyPosition').textContent = `Kartela ${study.index + 1} nga ${study.deck.length}`;
+  function drawStudyCard(focus = true) {
+    const index = study.answers.length;
+    $('medlexStudyPosition').textContent = `Kartela ${index + 1} nga ${study.deck.length} · ${Math.round(100 * index / study.deck.length)}%`;
     $('medlexStudyProgress').max = study.deck.length;
-    $('medlexStudyProgress').value = study.index;
-    $('medlexStudyQuestion').textContent = question;
-    $('medlexStudyClue').textContent = clue;
-    $('medlexStudyClue').hidden = !clue;
+    $('medlexStudyProgress').value = index;
+    $('medlexStudyQuestion').textContent = studyQuestion(study.deck[index]);
     $('medlexStudyAnswer').hidden = true;
     $('medlexStudyImage').removeAttribute('src');
     $('medlexStudyFront').hidden = false;
     $('medlexStudyQuestion').closest('article').setAttribute('aria-labelledby', 'medlexStudyQuestion');
-    $('medlexStudyQuestion').focus();
+    if (focus) $('medlexStudyQuestion').focus();
   }
 
-  function beginStudy(deck, scope) {
-    study.deck = deck;
-    study.index = 0;
-    study.review = [];
-    study.scope = scope;
-    $('medlexStudyScope').textContent = scope;
+  function studyScope() {
+    const chapter = state.categories.find(item => item.id === study.chapter);
+    const topic = topicsForCategory(study.chapter).find(item => item.id === study.topic && item.id !== 'all');
+    return [chapter ? chapter.id + ' · ' + chapter.title : 'Të gjithë kapitujt', topic?.label].filter(Boolean).join(' · ');
+  }
+
+  function drawStudySession(focus = true) {
+    const complete = study.answers.length === study.deck.length;
+    $('medlexStudyScope').textContent = studyScope();
     $('medlexStudySetup').hidden = true;
-    $('medlexStudySummary').hidden = true;
-    $('medlexStudySession').hidden = false;
-    drawStudyCard();
+    $('medlexStudySession').hidden = complete;
+    $('medlexStudySummary').hidden = !complete;
+    if (!complete) { drawStudyCard(focus); return; }
+    const known = study.answers.filter(answer => answer === 'known').length;
+    const remaining = study.deck.length - known;
+    $('medlexStudyResult').textContent = `I dije ${known} nga ${study.deck.length} kartela. Për përsëritje: ${remaining}.`;
+    $('medlexStudyAgain').hidden = !remaining;
+    if (focus) $('medlexStudySummaryTitle').focus();
+  }
+
+  function beginStudy(deck) {
+    study.deck = deck;
+    study.answers = [];
+    study.chapter = $('medlexStudyChapter').value;
+    study.topic = $('medlexStudyTopic').value;
+    drawStudySession();
+    saveStudyProgress();
   }
 
   function revealStudyCard() {
-    const term = study.deck[study.index];
+    const term = study.deck[study.answers.length];
     $('medlexStudyTerm').textContent = term.term;
     $('medlexStudyDefinition').textContent = term.definition;
     $('medlexStudyExample').textContent = term.example;
@@ -479,18 +501,148 @@
     $('medlexStudyTerm').focus();
   }
 
-  function rateStudyCard(known) {
-    if ($('medlexStudyAnswer').hidden || study.index >= study.deck.length) return;
-    if (!known) study.review.push(study.deck[study.index]);
-    study.index++;
-    if (study.index < study.deck.length) { drawStudyCard(); return; }
-    const {length:total} = study.deck;
-    const remaining = study.review.length;
-    $('medlexStudySession').hidden = true;
-    $('medlexStudyResult').textContent = `I dije ${total - remaining} nga ${total} kartela. Për përsëritje: ${remaining}.`;
-    $('medlexStudyAgain').hidden = !remaining;
-    $('medlexStudySummary').hidden = false;
-    $('medlexStudySummaryTitle').focus();
+  function rateStudyCard(rating) {
+    const term = study.deck[study.answers.length];
+    if ($('medlexStudyAnswer').hidden || !term) return;
+    study.answers.push(rating);
+    study.ratings[String(term.id)] = rating;
+    updateStudyStats();
+    drawStudySession();
+    saveStudyProgress();
+  }
+
+  function applyStudyProgress(snapshot) {
+    const available = new Map(state.terms.filter(term => term.status !== 'planned').map(term => [String(term.id), term]));
+    study.ratings = Object.fromEntries(Object.entries(snapshot.ratings).filter(([id]) => available.has(id)));
+    updateStudyStats();
+    const saved = snapshot.session;
+    const deck = saved?.deck.map((id, index) => ({ term:available.get(id), rating:saved.answers[index] })).filter(item => item.term);
+    if (!deck?.length) { resetStudy(false); return; }
+    study.deck = deck.map(item => item.term);
+    study.answers = deck.map(item => item.rating).filter(Boolean);
+    study.chapter = saved.chapter;
+    study.topic = saved.topic;
+    $('medlexStudyChapter').value = saved.chapter;
+    updateStudyTopics(saved.topic);
+    drawStudySession(false);
+    if (study.active) syncWorkspaceUrl();
+  }
+
+  function studyCacheKey() { return 'drx.medlex.pending.v1:' + studySync.account; }
+
+  function cachePendingStudy(completedMutation) {
+    try {
+      const key = studyCacheKey();
+      if (studySync.pending) localStorage.setItem(key, JSON.stringify({ revision:studySync.revision, pending:studySync.pending }));
+      else if (JSON.parse(localStorage.getItem(key) || 'null')?.pending?.mutation === completedMutation) localStorage.removeItem(key);
+    } catch { /* The authenticated server remains the source of progress. */ }
+  }
+
+  function setStudySyncStatus(message, action = '') {
+    $('medlexStudySync').textContent = message;
+    $('medlexStudyRetrySync').hidden = action !== 'retry';
+    $('medlexStudyUseSaved').hidden = action !== 'conflict';
+    $('medlexStudyKeepLocal').hidden = action !== 'conflict';
+  }
+
+  async function studyProgressRequest(method, payload) {
+    const response = await fetch('/api/auth?scope=medlex-progress', {
+      method, credentials:'same-origin', cache:'no-store',
+      headers:{ 'x-medlex-account':studySync.account, ...(payload ? {'Content-Type':'application/json'} : {}) },
+      ...(payload ? {body:JSON.stringify(payload), keepalive:true} : {}),
+      signal:AbortSignal.timeout(7000),
+    });
+    const data = await response.json();
+    if (!response.ok && data.code !== 'PROGRESS_CONFLICT') throw new Error(data.code || 'PROGRESS_UNAVAILABLE');
+    if (!Number.isInteger(data.revision) || !data.snapshot?.ratings) throw new Error('PROGRESS_UNAVAILABLE');
+    return data;
+  }
+
+  async function loadStudyProgress() {
+    if (!studySync.account || studySync.working) return;
+    studySync.working = true;
+    setStudySyncStatus('Duke ngarkuar progresin…');
+    let cached;
+    try {
+      const value = JSON.parse(localStorage.getItem(studyCacheKey()) || 'null');
+      if (Number.isInteger(value?.revision) && value?.pending?.snapshot?.ratings) cached = value;
+    } catch {}
+    try {
+      const remote = await studyProgressRequest('GET');
+      studySync.revision = remote.revision;
+      if (!cached?.pending) {
+        applyStudyProgress(remote.snapshot);
+        setStudySyncStatus('I sinkronizuar me llogarinë');
+      }
+    } catch {
+      setStudySyncStatus('Progresi nga llogaria s’u ngarkua', 'retry');
+    } finally {
+      if (cached?.pending) {
+        studySync.revision = cached.revision;
+        studySync.pending = cached.pending;
+        applyStudyProgress(cached.pending.snapshot);
+      }
+      studySync.loaded = true;
+      studySync.working = false;
+      updateStudyAvailability();
+      if (studySync.pending) void flushStudyProgress();
+    }
+  }
+
+  async function flushStudyProgress() {
+    if (!studySync.pending || studySync.working || studySync.conflict) return;
+    studySync.working = true;
+    setStudySyncStatus('Duke ruajtur…');
+    try {
+      while (studySync.pending) {
+        const pending = studySync.pending;
+        const remote = await studyProgressRequest('PUT', {revision:studySync.revision, ...pending});
+        if (remote.code === 'PROGRESS_CONFLICT') {
+          studySync.conflict = remote;
+          setStudySyncStatus('Progresi ndryshoi në një pajisje ose tab tjetër', 'conflict');
+          return;
+        }
+        studySync.revision = remote.revision;
+        if (studySync.pending === pending) studySync.pending = null;
+        cachePendingStudy(pending.mutation);
+      }
+      setStudySyncStatus('I sinkronizuar me llogarinë');
+    } catch (error) {
+      const changed = ['ACCOUNT_CHANGED','AUTH_REQUIRED'].includes(error.message);
+      setStudySyncStatus(changed ? 'Hyr me të njëjtën llogari për ta sinkronizuar' : 'Në pritje të sinkronizimit', 'retry');
+    } finally {
+      studySync.working = false;
+    }
+  }
+
+  function saveStudyProgress() {
+    if (!studySync.account) return;
+    studySync.pending = {mutation:crypto.randomUUID(), snapshot:{
+      ratings:{...study.ratings},
+      session:study.deck.length ? {
+        chapter:study.chapter, topic:study.topic, deck:study.deck.map(term => String(term.id)), answers:[...study.answers],
+      } : null,
+    }};
+    cachePendingStudy();
+    void flushStudyProgress();
+  }
+
+  function resolveStudyConflict(useSaved) {
+    const remote = studySync.conflict;
+    if (!remote) return;
+    studySync.conflict = null;
+    studySync.revision = remote.revision;
+    if (useSaved) {
+      const discardedMutation = studySync.pending?.mutation;
+      studySync.pending = null;
+      applyStudyProgress(remote.snapshot);
+      cachePendingStudy(discardedMutation);
+      setStudySyncStatus('I sinkronizuar me llogarinë');
+    } else {
+      study.ratings = {...remote.snapshot.ratings, ...study.ratings};
+      updateStudyStats();
+      saveStudyProgress();
+    }
   }
 
   function configureStudy() {
@@ -510,16 +662,22 @@
         }
       }
       const limit = Number($('medlexStudyLimit').value) || deck.length;
-      const chapter = $('medlexStudyChapter').selectedOptions[0].textContent;
-      const topic = $('medlexStudyTopic').value === 'all' ? '' : ' · ' + $('medlexStudyTopic').selectedOptions[0].textContent;
-      beginStudy(deck.slice(0, limit), chapter + topic);
+      beginStudy(deck.slice(0, limit));
     });
     $('medlexStudyReveal').addEventListener('click', revealStudyCard);
-    $('medlexStudyKnown').addEventListener('click', () => rateStudyCard(true));
-    $('medlexStudyReview').addEventListener('click', () => rateStudyCard(false));
-    $('medlexStudyAgain').addEventListener('click', () => beginStudy(study.review.slice(), study.scope));
-    $('medlexStudyChange').addEventListener('click', resetStudy);
-    $('medlexStudyNew').addEventListener('click', resetStudy);
+    $('medlexStudyFlipBack').addEventListener('click', () => drawStudyCard());
+    $('medlexStudyKnown').addEventListener('click', () => rateStudyCard('known'));
+    $('medlexStudyReview').addEventListener('click', () => rateStudyCard('review'));
+    $('medlexStudyAgain').addEventListener('click', () => beginStudy(study.deck.filter((term, index) => study.answers[index] === 'review')));
+    for (const id of ['medlexStudyChange','medlexStudyNew']) $(id).addEventListener('click', () => { resetStudy(); saveStudyProgress(); });
+    const retry = () => {
+      if (studySync.pending) void flushStudyProgress();
+      else if (study.active && studySync.account && !$('medlexStudyRetrySync').hidden) void loadStudyProgress();
+    };
+    $('medlexStudyRetrySync').addEventListener('click', retry);
+    $('medlexStudyUseSaved').addEventListener('click', () => resolveStudyConflict(true));
+    $('medlexStudyKeepLocal').addEventListener('click', () => resolveStudyConflict(false));
+    window.addEventListener('online', retry);
   }
 
   function configureActions() {
@@ -724,6 +882,7 @@
     try {
       const account = await ensureAuth();
       if (!account) return;
+      if (account.supabaseAuthenticated === true && account.authUser?.id) studySync.account = account.authUser.id;
       $('appShell').setAttribute('aria-busy','false');
       void syncProfile(account);
       await loadTerms();
