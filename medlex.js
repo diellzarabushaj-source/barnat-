@@ -42,7 +42,7 @@
   };
 
   const $ = id => document.getElementById(id);
-  const state = { terms:[], groups:[], categories:[], category:'01', topic:'all', query:'', view:'grid', selected:null, authenticated:false };
+  const state = { terms:[], groups:[], categories:[], category:'01', searchFrom:null, topic:'all', query:'', view:'grid', selected:null, authenticated:false };
 
   function normalize(value) {
     return String(value || '').toLocaleLowerCase('sq')
@@ -104,7 +104,7 @@
   function updateCategoryHeading() {
     const chapter = state.categories.find(item => item.id === state.category);
     $('medlexCollectionEyebrow').textContent = chapter ? chapter.id + ' / ' + chapter.title.toLocaleUpperCase('sq') : 'DRX MEDLEX / 18 KAPITUJ';
-    $('medlexCollectionTitle').textContent = chapter?.heading || 'Fjalori i përbashkët';
+    $('medlexCollectionTitle').textContent = state.query.trim() ? 'Rezultatet e kërkimit' : chapter?.heading || 'Fjalori i përbashkët';
     $('medlexCollectionDescription').textContent = chapter?.description || 'Kartelat e plotësuara dhe termat e planifikuar nga të 18 kapitujt, në një kërkim të vetëm.';
     const number = state.category === 'all' ? state.terms.length : state.terms.filter(term => term.category === state.category).length;
     $('medlexTotal').textContent = String(number);
@@ -116,6 +116,11 @@
   function drawCategories() {
     const host = $('medlexCategories');
     const fragment = document.createDocumentFragment();
+    const all = create('button', 'medlex-category medlex-category-all');
+    all.type = 'button';
+    all.dataset.category = 'all';
+    all.append(create('span','medlex-category-number','⌕'),create('span','','Të gjithë kapitujt'));
+    fragment.append(all);
     for (const chapter of state.categories) {
       const count = state.terms.filter(term => term.category === chapter.id).length;
       const button = create('button', 'medlex-category');
@@ -127,11 +132,6 @@
       button.append(create('span', 'medlex-category-number', chapter.id), copy);
       fragment.append(button);
     }
-    const all = create('button', 'medlex-category medlex-category-all');
-    all.type = 'button';
-    all.dataset.category = 'all';
-    all.append(create('span','medlex-category-number','⌕'),create('span','','Të gjithë kapitujt'));
-    fragment.append(all);
     host.replaceChildren(fragment);
   }
 
@@ -149,12 +149,15 @@
     const open = create('button', 'medlex-card-open');
     open.type = 'button';
     open.setAttribute('aria-label', `Hap kartelën ${term.term}`);
-    open.addEventListener('click', () => openTerm(term));
+    open.addEventListener('click', () => {
+      open.focus({preventScroll:true});
+      openTerm(term);
+    });
 
     const art = create('span', 'medlex-art');
     const img = document.createElement('img');
     img.src = imagePath(term);
-    img.alt = `Ilustrim edukativ: ${term.term}`;
+    img.alt = '';
     img.width = 1254;
     img.height = 1254;
     img.decoding = 'async';
@@ -162,22 +165,16 @@
     art.append(img);
 
     const body = create('span', 'medlex-card-body');
-    const marker = create('span', 'medlex-card-index');
-    marker.append(create('span', '', `TERM / ${String(term.id).padStart(2,'0')}`));
-    marker.append(create('span', '', term.category));
-    body.append(marker);
+    body.append(create('span', 'medlex-card-index', `Kapitulli ${term.category}`));
     body.append(create('span', 'medlex-card-title', term.term));
     body.append(create('span', 'medlex-card-description', term.definition));
-    open.append(art, body);
-
-    const footer = create('div', 'medlex-card-footer');
-    footer.append(create('span', '', term.latin || term.english || ALIASES[term.id]?.[0] || 'Termin klinik'));
-    const action = create('button', '', 'Shiko ↗');
-    action.type = 'button';
-    action.setAttribute('aria-label', `Shiko ${term.term} në madhësi të plotë`);
-    action.addEventListener('click', () => openTerm(term));
-    footer.append(action);
-    article.append(open, footer);
+    const footer = create('span', 'medlex-card-footer');
+    footer.append(create('span', 'medlex-card-translation', term.latin || term.english || ALIASES[term.id]?.[0] || 'Hap kartelën'));
+    const arrow = create('span', 'medlex-card-arrow', '↗');
+    arrow.setAttribute('aria-hidden','true');
+    footer.append(arrow);
+    open.append(art, body, footer);
+    article.append(open);
     return article;
   }
 
@@ -187,17 +184,15 @@
     const open = create('button', 'medlex-card-open');
     open.type = 'button';
     open.setAttribute('aria-label', 'Hap vendin e përgatitur për ' + term.term);
-    open.addEventListener('click', () => openTerm(term));
+    open.addEventListener('click', () => {
+      open.focus({preventScroll:true});
+      openTerm(term);
+    });
     const preview = create('span','medlex-planned-preview');
-    const topline = create('span','medlex-planned-topline');
-    topline.append(create('span','','DRX MEDLEX · ' + term.category),create('span','medlex-planned-badge','Në përgatitje'));
-    preview.append(topline,create('span','medlex-planned-term',term.term));
-    const slots = create('span','medlex-planned-slots');
-    for (const label of ['Ilustrimi','Përkufizimi','Shembulli klinik']) slots.append(create('span','',label));
-    preview.append(slots);
+    preview.append(create('span','medlex-planned-badge','Në përgatitje'),create('span','medlex-card-title',term.term));
     const body = create('span','medlex-card-body');
     const chapter = state.categories.find(item => item.id === term.category);
-    body.append(create('span','medlex-card-index',chapter?.groups.find(item => item.id === term.group)?.label || chapter?.title),create('span','medlex-card-description','Vendi i termit është gati. Përmbajtja do të plotësohet.'));
+    body.append(create('span','medlex-card-index',chapter?.groups.find(item => item.id === term.group)?.label || chapter?.title));
     open.append(preview,body);
     article.append(open);
     return article;
@@ -250,15 +245,28 @@
     document.querySelectorAll('.medlex-topic').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.topic === state.topic)));
     $('medlexGrid').setAttribute('aria-pressed', String(state.view === 'grid'));
     $('medlexList').setAttribute('aria-pressed', String(state.view === 'list'));
-    $('medlexGrid').classList.toggle('is-selected', state.view === 'grid');
-    $('medlexList').classList.toggle('is-selected', state.view === 'list');
+  }
+
+  function setQuery(value) {
+    state.query = value;
+    if (value.trim() && state.category !== 'all') {
+      state.searchFrom = state.category;
+      state.category = 'all';
+      state.topic = 'all';
+      drawTopics();
+    } else if (!value.trim() && state.searchFrom) {
+      state.category = state.searchFrom;
+      state.searchFrom = null;
+      drawTopics();
+    }
+    updateCategoryHeading();
+    render();
   }
 
   function reset() {
-    state.query = '';
     state.topic = 'all';
     $('medlexSearch').value = '';
-    render();
+    setQuery('');
     $('medlexSearch').focus();
   }
 
@@ -281,9 +289,10 @@
     const planned = term.status === 'planned';
     state.selected = term;
     $('medlexDialogTitle').textContent = term.term;
-    $('medlexDialogCategory').textContent = `DRX MEDLEX · KATEGORIA ${term.category}`;
+    $('medlexDialogCategory').textContent = `DRx MedLex · Kapitulli ${term.category}`;
     $('medlexDialogLatin').textContent = term.latin ? `Latinisht: ${term.latin}` : '';
-    $('medlexDialogEnglish').textContent = term.english ? `Anglisht: ${term.english}` : (ALIASES[term.id]?.[0] || '');
+    const english = term.english || ALIASES[term.id]?.[0];
+    $('medlexDialogEnglish').textContent = english ? `Anglisht: ${english}` : '';
     $('medlexDialogDefinition').textContent = term.definition || 'Përkufizimi do të plotësohet.';
     $('medlexDialogExample').textContent = term.example || 'Shembulli klinik do të plotësohet.';
     $('medlexDialogImage').hidden = planned;
@@ -299,34 +308,34 @@
       $('medlexDownload').href = term.imageUrl + '?fm=webp&q=95&dl=' + encodeURIComponent($('medlexDownload').download);
     }
     $('medlexCopy').textContent = 'Kopjo termin';
-    if (!dialog.open) dialog.showModal();
+    if (!dialog.open) {
+      dialog.showModal();
+      dialog.scrollTop = 0;
+    }
   }
 
   function configureActions() {
+    const chapterPicker = $('medlexChapterPicker');
+    const wideLayout = window.matchMedia('(min-width:1120px)');
+    chapterPicker.open = wideLayout.matches;
     $('medlexCategories').addEventListener('click', event => {
       const button = event.target.closest('.medlex-category');
       if (!button || !$('medlexCategories').contains(button)) return;
       state.category = button.dataset.category;
+      state.searchFrom = null;
       state.topic = 'all';
       state.query = '';
       $('medlexSearch').value = '';
       drawTopics();
       updateCategoryHeading();
       render();
-      $('medlexChapterPicker').open = false;
-      try { history.replaceState(null,'',state.category === 'all' ? '/medlex.html' : `/medlex.html?category=${state.category}`); } catch {}
-    });
-    $('medlexSearch').addEventListener('input', event => {
-      state.query = event.target.value;
-      // The search field covers all categories; topic chips remain category-scoped.
-      if (state.query.trim() && state.category !== 'all') {
-        state.category = 'all';
-        state.topic = 'all';
-        drawTopics();
-        updateCategoryHeading();
+      if (!wideLayout.matches) {
+        chapterPicker.open = false;
+        chapterPicker.querySelector('summary').focus({preventScroll:true});
       }
-      render();
+      try { history.replaceState(null,'',`/medlex.html?category=${state.category}`); } catch {}
     });
+    $('medlexSearch').addEventListener('input', event => setQuery(event.target.value));
     $('medlexSearch').addEventListener('keydown', event => {
       if (event.key === 'Escape' && event.target.value) { event.stopPropagation(); reset(); }
     });
