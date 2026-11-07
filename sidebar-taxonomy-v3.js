@@ -21,7 +21,7 @@
       script.src = '/remembered-accounts.js?v=20261107'; script.async = true;
       script.onload = resolve; script.onerror = reject; document.head.appendChild(script);
     });
-    void accountHintsReady.then(() => window.DRxRememberedAccounts?.remember(hint)).catch(() => {});
+    void accountHintsReady.then(() => window.DRxRememberedAccounts?.remember(hint)).catch(() => { accountHintsReady = null; });
   }
   if ('serviceWorker' in navigator) {
     const firstFetch = window.fetch.bind(window);
@@ -33,9 +33,11 @@
       if (target.pathname === '/api/auth' && !target.searchParams.has('scope')) {
         const auth = await response.clone().json().catch(() => ({}));
         rememberExistingAccount(auth);
-        window.DRxDeviceReachable = auth.offline !== true;
-        window.dispatchEvent(new CustomEvent('drx:device-network', {detail:{online:window.DRxDeviceReachable}}));
-        firstReadOwner = auth.authenticated ? String(auth.authUser?.id || auth.user?.email || '') : '';
+        if (!target.search) {
+          window.DRxDeviceReachable = auth.offline !== true;
+          window.dispatchEvent(new CustomEvent('drx:device-network', {detail:{online:window.DRxDeviceReachable}}));
+          firstReadOwner = auth.authenticated ? String(auth.authUser?.id || auth.user?.email || '') : '';
+        }
       }
       if (!navigator.serviceWorker.controller && firstReadOwner && ['/api/drug-search','/api/icd','/api/dosage','/api/medical-hub','/data/protocols.json'].includes(target.pathname)) {
         const owner = firstReadOwner;
