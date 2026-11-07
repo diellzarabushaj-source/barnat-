@@ -188,6 +188,7 @@ async function auditClinicalViewport(page,label,{requireControls=false}={}) {
     const topbar=document.querySelector('.mi-topbar,.topbar');
     return {
       sidebarBg:sidebar ? getComputedStyle(sidebar).backgroundColor : '',
+      sidebarFinish:sidebar ? getComputedStyle(sidebar).backgroundImage : '',
       topbarHeight:topbar ? Math.round(topbar.getBoundingClientRect().height) : 0,
       viewportWidth:innerWidth,
     };
@@ -195,6 +196,7 @@ async function auditClinicalViewport(page,label,{requireControls=false}={}) {
 
   expect(audit.token,`${label}: Stripe accent token was not applied`).toBe('#533afd');
   expect(chrome.sidebarBg,`${label}: sidebar must use the approved navy shell`).toBe('rgb(28, 30, 84)');
+  expect(chrome.sidebarFinish,`${label}: shared sidebar polish must apply`).toContain('linear-gradient');
   const expectedTopbarHeight=58;
   expect(chrome.topbarHeight,`${label}: topbar height must match the Stripe shell`).toBe(expectedTopbarHeight);
   assertCommonViewport(audit,label,{requireControls});
@@ -325,6 +327,27 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
     const grid = page.locator('#medlexGridItems');
     await expect(grid.locator('.medlex-card')).toHaveCount(157);
     if (name === 'small-dark') await page.locator('html').evaluate(html => html.dataset.theme = 'dark');
+    const sidebar = page.locator('#sidebar');
+    const activeNav = sidebar.locator('a[aria-current="page"][href="/medlex.html"]');
+    await expect(activeNav).toHaveCSS('background-color','rgb(67, 54, 137)');
+    if (width < 1024) {
+      const menu = page.locator('#menuButton');
+      const dockMenu = page.locator('#drxMobileNav button');
+      await menu.click();
+      await expect(menu).toHaveAttribute('aria-expanded','true');
+      await expect(activeNav).toBeInViewport();
+      await expect.poll(async () => Math.abs((await sidebar.boundingBox()).x)).toBeLessThan(1);
+      await expect(page.locator('#sidebarBackdrop')).toBeVisible();
+      await expect.poll(() => page.locator('.main-shell').evaluate(shell => shell.inert)).toBe(true);
+      await page.screenshot({path:path.join(OUTPUT, `tailwind-clinical-medlex-sidebar-${name}.png`)});
+      await page.locator('#sidebarClose').click();
+      await expect(menu).toBeFocused();
+      await dockMenu.click();
+      await expect(menu).toHaveAttribute('aria-expanded','true');
+      await page.keyboard.press('Escape');
+      await expect(dockMenu).toBeFocused();
+      await expect(page.locator('#sidebarBackdrop')).toBeHidden();
+    }
 
     const searchBounds = await search.boundingBox();
     expect(searchBounds.y + searchBounds.height).toBeLessThan(height * .7);
@@ -335,7 +358,15 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
       await chapterPicker.locator('summary').click();
     }
     await expect(chapterPicker.getByRole('button')).toHaveCount(19);
+    const chapterFilter = chapterPicker.getByRole('searchbox',{name:'Filtro kapitujt'});
+    await chapterFilter.fill('pa rezultat 999');
+    await expect(chapterPicker.getByRole('status')).toBeVisible();
+    await chapterFilter.press('Escape');
+    await expect(chapterPicker.getByRole('button')).toHaveCount(19);
+    await chapterFilter.fill('01 terminologji');
+    await expect(chapterPicker.getByRole('button')).toHaveCount(1);
     await chapterPicker.locator('[data-category="01"]').click();
+    await expect(chapterPicker.locator('#medlexChapterFilter')).toHaveValue('');
     await expect(grid.locator('.medlex-card')).toHaveCount(20);
     await expect(chapterPicker.locator('[data-category="01"]')).toHaveAttribute('aria-pressed','true');
     if (width < 1120) await expect(chapterPicker.locator('summary')).toBeFocused();

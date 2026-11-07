@@ -28,7 +28,22 @@ html[data-drx-app="medlex-v1"][data-theme="dark"] {
   --ml-shadow: none;
 }
 
-html[data-drx-app="medlex-v1"][data-theme="dark"] .main-shell { background: var(--ml-soft); }
+html.drx-unified-sidebar[data-drx-app="medlex-v1"][data-theme="dark"] {
+  --drx-shell-canvas: var(--ml-soft);
+  --drx-finish-border: var(--ml-border);
+}
+html.drx-unified-sidebar[data-drx-app="medlex-v1"][data-theme="dark"] :is(.topbar,.drx-mobile-nav) {
+  background: var(--ml-surface) !important;
+  border-color: var(--ml-border) !important;
+}
+html.drx-unified-sidebar[data-drx-app="medlex-v1"][data-theme="dark"] .breadcrumbs strong {
+  color: var(--ml-ink) !important;
+}
+html[data-drx-app="medlex-v1"][data-theme="dark"] .drx-mobile-nav :is(a,button) { color: var(--ml-muted); }
+html[data-drx-app="medlex-v1"][data-theme="dark"] .drx-mobile-nav :is([aria-current="page"],.is-active) {
+  color: var(--ml-accent);
+  background: var(--ml-selected);
+}
 
 html[data-drx-app="medlex-v1"] .medlex-page {
   max-width: 1512px;
@@ -146,18 +161,63 @@ html[data-drx-app="medlex-v1"] .medlex-page {
   box-shadow: var(--ml-shadow);
 }
 .medlex-chapter-picker > summary {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 15px;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 15px;
   list-style: none;
   cursor: pointer;
 }
 .medlex-chapter-picker > summary::-webkit-details-marker { display: none; }
-.medlex-chapter-picker > summary strong { display: block; margin-top: 4px; color: var(--ml-ink); font-size: 13px; line-height: 1.45; }
+.medlex-chapter-picker > summary:hover { background: var(--ml-soft); }
+.medlex-chapter-picker > summary strong {
+  display: block;
+  margin-top: 3px;
+  color: var(--ml-ink);
+  font-size: 13px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.medlex-picker-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  color: var(--ml-accent);
+  background: var(--ml-selected);
+}
+.medlex-picker-icon svg, .medlex-chapter-search svg { width: 17px; height: 17px; flex: none; }
 .medlex-picker-chevron { color: var(--ml-accent); }
 .medlex-chapter-picker[open] .medlex-picker-chevron { transform: rotate(180deg); }
+.medlex-chapter-search {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 11px 7px;
+  padding-inline: 9px;
+  border: 1px solid var(--ml-border);
+  border-radius: 8px;
+  color: var(--ml-accent);
+  background: var(--ml-soft);
+}
+.medlex-chapter-search input {
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ml-ink);
+  font: inherit;
+  font-size: 13px;
+}
+.medlex-chapter-search input::placeholder { color: var(--ml-muted); opacity: 1; }
+html.drx-unified-sidebar .medlex-chapter-search input:focus-visible { outline: none !important; }
+.medlex-chapter-search:focus-within { outline: 2px solid var(--ml-accent); outline-offset: 1px; }
+.medlex-chapter-empty { margin: 0; padding: 2px 14px 15px; color: var(--ml-muted); font-size: 13px; }
 .medlex-section-index {
   display: block;
   color: var(--ml-accent);
@@ -169,7 +229,7 @@ html[data-drx-app="medlex-v1"] .medlex-page {
 .medlex-categories {
   display: grid;
   gap: 4px;
-  max-height: min(590px, 61dvh);
+  max-height: min(590px, max(144px, calc(100dvh - 252px)));
   overflow: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
@@ -197,6 +257,8 @@ html[data-drx-app="medlex-v1"] .medlex-page {
 }
 .medlex-category:hover { background: var(--ml-soft); }
 .medlex-category[aria-pressed="true"] { border-color: var(--ml-accent); background: var(--ml-selected); }
+.medlex-category-all { margin-bottom: 4px; background: var(--ml-soft); }
+.medlex-category-title { display: block; overflow-wrap: anywhere; }
 .medlex-category-number {
   display: grid;
   place-items: center;
@@ -463,7 +525,7 @@ html[data-drx-app="medlex-v1"] .medlex-page {
 .medlex-dialog-placeholder p { margin: 0; color: var(--ml-muted); font-size: 13px; }
 
 :is(.medlex-page, .medlex-dialog) :is(a, button, summary):focus-visible { outline: 2px solid var(--ml-accent); outline-offset: 2px; }
-.medlex-categories button:focus-visible, .medlex-card-open:focus-visible { outline-offset: -2px; }
+html.drx-unified-sidebar .medlex-page :is(.medlex-categories button,.medlex-card-open):focus-visible { outline-offset: -2px !important; }
 
 @media (max-width: 1119px) {
   .medlex-browser { grid-template-columns: minmax(0, 1fr); }

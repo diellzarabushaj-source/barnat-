@@ -10,11 +10,11 @@
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/protokollet-v2.css?v=2-audit-20261009">
-  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009">
-  <link rel="stylesheet" href="/medlex.css?v=20261107-signature">
+  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107">
+  <link rel="stylesheet" href="/medlex.css?v=20261107-sidebar-polish">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
-  <script src="/medlex.js?v=20261107-signature" defer></script>
+  <script src="/medlex.js?v=20261107-sidebar-polish" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#medlexContent">Kalo te terminologjia mjekësore</a>
@@ -29,7 +29,7 @@
         </button>
       </div>
 
-      <nav class="nav-stack">
+      <nav class="nav-stack" aria-label="Seksionet e Barnat">
         <p class="nav-label">Klinike</p>
         <a class="nav-item" href="/index.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 20V9h3.6a2.9 2.9 0 0 1 0 5.8H7"/><path d="m11.4 14.8 4.1 5.2"/><path d="m15.2 9.4 4.4 4.4M19.6 9.4l-4.4 4.4"/><path d="M4 4h6"/></svg></span><span>Barnat</span></a>
         <details class="nav-group" id="atcNavGroup">
@@ -85,7 +85,7 @@
 
     <main class="main-shell">
       <header class="topbar">
-        <button class="icon-button menu-button" id="menuButton" type="button" aria-label="Hap menynë">
+        <button class="icon-button menu-button" id="menuButton" type="button" aria-label="Hap menynë" aria-controls="sidebar" aria-expanded="false">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
         </button>
         <div class="breadcrumbs" aria-label="Pozicioni aktual"><span>DRx</span><span class="crumb-sep">/</span><strong>MedLex</strong></div>
@@ -125,17 +125,26 @@
         <div class="medlex-browser">
           <details class="medlex-chapter-picker" id="medlexChapterPicker">
             <summary>
-              <span>
+              <span class="medlex-picker-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M8 6h12M8 12h12M8 18h12M4 6h.1M4 12h.1M4 18h.1"/></svg>
+              </span>
+              <span class="medlex-picker-label">
                 <span class="medlex-section-index">Kapitujt e MedLex</span>
                 <strong id="medlexSelectedChapter">01 · Terminologji e përgjithshme klinike</strong>
               </span>
               <svg class="medlex-picker-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
             </summary>
+            <label class="medlex-chapter-search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2"/></svg>
+              <span class="sr-only">Filtro kapitujt</span>
+              <input id="medlexChapterFilter" type="search" autocomplete="off" spellcheck="false" placeholder="Filtro kapitujt…" aria-controls="medlexCategories">
+            </label>
             <nav class="medlex-categories" id="medlexCategories" aria-label="Kapitujt e MedLex">
               <button type="button" class="medlex-category medlex-category-all" data-category="all" aria-pressed="false"><span class="medlex-category-number">⌕</span><span>Të gjithë kapitujt</span></button>
               <button type="button" class="medlex-category" data-category="01" aria-pressed="true"><span class="medlex-category-number">01</span><span>Terminologji klinike</span></button>
               <button type="button" class="medlex-category" data-category="02" aria-pressed="false"><span class="medlex-category-number">02</span><span>Anatomi dhe orientim</span></button>
             </nav>
+            <p class="medlex-chapter-empty" id="medlexChapterEmpty" role="status" hidden>Asnjë kapitull nuk përputhet.</p>
           </details>
 
           <section class="medlex-collection" aria-labelledby="medlexCollectionTitle">

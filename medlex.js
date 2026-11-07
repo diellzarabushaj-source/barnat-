@@ -111,6 +111,7 @@
     $('medlexCountLabel').textContent = chapter?.status === 'planned' || state.category === 'all' ? 'terma' : 'kartela';
     $('medlexSelectedChapter').textContent = chapter ? chapter.id + ' · ' + chapter.title : 'Të gjithë kapitujt';
     document.querySelectorAll('.medlex-category').forEach(button => button.setAttribute('aria-pressed',String(button.dataset.category === state.category)));
+    if (!$('medlexChapterFilter').value) revealSelectedChapter();
   }
 
   function drawCategories() {
@@ -119,7 +120,7 @@
     const all = create('button', 'medlex-category medlex-category-all');
     all.type = 'button';
     all.dataset.category = 'all';
-    all.append(create('span','medlex-category-number','⌕'),create('span','','Të gjithë kapitujt'));
+    all.append(create('span','medlex-category-number','⌕'),create('span','medlex-category-title','Të gjithë kapitujt'));
     fragment.append(all);
     for (const chapter of state.categories) {
       const count = state.terms.filter(term => term.category === chapter.id).length;
@@ -127,12 +128,40 @@
       button.type = 'button';
       button.dataset.category = chapter.id;
       button.setAttribute('aria-pressed', String(chapter.id === state.category));
-      const copy = create('span', '', chapter.title);
+      const copy = create('span', 'medlex-category-title', chapter.title);
       copy.append(create('small', '', count + (chapter.status === 'planned' ? ' terma · Në përgatitje' : ' kartela')));
       button.append(create('span', 'medlex-category-number', chapter.id), copy);
       fragment.append(button);
     }
     host.replaceChildren(fragment);
+    filterChapters();
+  }
+
+  function filterChapters() {
+    const query = normalize($('medlexChapterFilter').value);
+    const words = query ? query.split(' ') : [];
+    const host = $('medlexCategories');
+    let visible = 0;
+    for (const button of host.children) {
+      const number = button.dataset.category;
+      const title = button.lastElementChild.firstChild.textContent;
+      const key = normalize(number + ' ' + title);
+      button.hidden = !words.every(word => key.includes(word));
+      if (!button.hidden) visible++;
+    }
+    $('medlexChapterEmpty').hidden = visible !== 0;
+    host.scrollTop = 0;
+    if (!query) revealSelectedChapter();
+  }
+
+  function revealSelectedChapter() {
+    const host = $('medlexCategories');
+    const selected = host.querySelector('[aria-pressed="true"]:not([hidden])');
+    if (!selected || !host.clientHeight) return;
+    const bounds = host.getBoundingClientRect();
+    const row = selected.getBoundingClientRect();
+    if (row.bottom > bounds.bottom) host.scrollTop += row.bottom - bounds.bottom + 8;
+    else if (row.top < bounds.top) host.scrollTop -= bounds.top - row.top + 8;
   }
 
   function setStatus(message) { $('medlexStatus').textContent = message; }
@@ -317,7 +346,21 @@
   function configureActions() {
     const chapterPicker = $('medlexChapterPicker');
     const wideLayout = window.matchMedia('(min-width:1120px)');
-    chapterPicker.open = wideLayout.matches;
+    const chapterFilter = $('medlexChapterFilter');
+    const syncPicker = () => { chapterPicker.open = wideLayout.matches; };
+    syncPicker();
+    wideLayout.addEventListener('change', syncPicker);
+    chapterPicker.addEventListener('toggle', () => {
+      if (chapterPicker.open) revealSelectedChapter();
+    });
+    chapterFilter.addEventListener('input', filterChapters);
+    chapterFilter.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && chapterFilter.value) {
+        event.preventDefault();
+        chapterFilter.value = '';
+        filterChapters();
+      }
+    });
     $('medlexCategories').addEventListener('click', event => {
       const button = event.target.closest('.medlex-category');
       if (!button || !$('medlexCategories').contains(button)) return;
@@ -329,6 +372,10 @@
       drawTopics();
       updateCategoryHeading();
       render();
+      if (chapterFilter.value) {
+        chapterFilter.value = '';
+        filterChapters();
+      }
       if (!wideLayout.matches) {
         chapterPicker.open = false;
         chapterPicker.querySelector('summary').focus({preventScroll:true});
@@ -416,7 +463,21 @@
   }
 
   function sidebarControls() {
-    // The shared sidebar controller owns mobile opening/closing and focus trapping.
+    // As on the other workspaces, the page toggles the drawer and the shared
+    // controller syncs focus, inert state and Escape.
+    const sidebar = $('sidebar');
+    const backdrop = $('sidebarBackdrop');
+    const close = () => {
+      sidebar.classList.remove('is-open');
+      backdrop.hidden = true;
+    };
+    $('menuButton').addEventListener('click', event => {
+      if (!$('drxMobileNav')?.contains(document.activeElement)) event.currentTarget.focus({preventScroll:true});
+      sidebar.classList.add('is-open');
+      backdrop.hidden = false;
+    });
+    $('sidebarClose').addEventListener('click', close);
+    backdrop.addEventListener('click', close);
     $('logoutButton')?.addEventListener('click', logout);
   }
 
