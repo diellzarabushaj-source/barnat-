@@ -11,10 +11,10 @@
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/protokollet-v2.css?v=2-audit-20261009">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-mobile-finish-20260930-audit-20261009">
-  <link rel="stylesheet" href="/medlex.css?v=20261105-content-03-10-v1">
+  <link rel="stylesheet" href="/medlex.css?v=20261107-signature">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
-<script src="/medlex.js?v=20261106-sanity-v1" defer></script>
+  <script src="/medlex.js?v=20261107-signature" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#medlexContent">Kalo te terminologjia mjekësore</a>
@@ -101,64 +101,105 @@
       <section class="page-wrap medlex-page" id="medlexContent" aria-labelledby="pageTitle" tabindex="-1">
         <header class="medlex-hero">
           <div class="medlex-hero-copy">
-            <span class="medlex-eyebrow"><span class="medlex-eyebrow-dot"></span> DRX MEDLEX <span class="medlex-eyebrow-sep">/</span> FJALOR KLINIK</span>
-            <h1 id="pageTitle">Terminologjia <em>Mjekësore.</em></h1>
-            <p>Termat që përdor çdo ditë në praktikën klinike — të shpjeguar thjesht, me shembuj dhe kartela vizuale që mbahen mend.</p>
-            <div class="medlex-hero-meta"><span>Shqip</span><span>Shembuj klinikë</span><span>Kartela ilustruese</span></div>
+            <span class="medlex-eyebrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5c-2.5-2-5.5-2.5-9-1v13c3.5-1.5 6.5-1 9 1 2.5-2 5.5-2.5 9-1v-13c-3.5-1.5-6.5-1-9 1Zm0 0v13"/></svg>
+              DRx MedLex
+            </span>
+            <h1 id="pageTitle">Terminologjia <em>mjekësore</em></h1>
+            <p>Përkufizime në shqip, emërtime në latinisht dhe anglisht, ilustrime dhe shembuj klinikë.</p>
           </div>
-          <div class="medlex-hero-feature" aria-hidden="true">
-            <div class="medlex-feature-emblem">Rx<span>+</span></div>
-            <strong id="medlexHeroCount">177</strong><span>kartela të plotësuara</span>
-            <small>18 kapituj të organizuar</small>
-          </div>
-        </header>
-
-        <section class="medlex-collection" aria-labelledby="medlexCollectionTitle">
-          <details class="medlex-chapter-picker" id="medlexChapterPicker">
-          <summary><span><span class="medlex-section-index">BIBLIOTEKA · 18 KAPITUJ</span><strong id="medlexSelectedChapter">01 · Terminologji e përgjithshme klinike</strong></span><span class="medlex-picker-action">Zgjidh kapitull <span aria-hidden="true">⌄</span></span></summary>
-          <nav class="medlex-categories" id="medlexCategories" aria-label="Kapitujt e MedLex">
-            <button type="button" class="medlex-category" data-category="01" aria-pressed="true"><span class="medlex-category-number">01</span><span>Terminologji klinike <small>20 terma</small></span></button>
-            <button type="button" class="medlex-category" data-category="02" aria-pressed="false"><span class="medlex-category-number">02</span><span>Anatomi dhe orientim <small>157 terma</small></span></button>
-            <button type="button" class="medlex-category medlex-category-all" data-category="all" aria-pressed="false"><span class="medlex-category-number">⌕</span><span>Të gjitha kategoritë <small>Kërkim i përbashkët</small></span></button>
-          </nav>
-          </details>
-          <div class="medlex-collection-heading">
-            <div><span class="medlex-section-index" id="medlexCollectionEyebrow">01 / TERMINOLOGJI KLINIKE</span><h2 id="medlexCollectionTitle">Konceptet themelore</h2><p id="medlexCollectionDescription">Fillimi, origjina, natyra, përgjigjja ndaj trajtimit dhe përhapja e sëmundjes.</p></div>
-            <span class="medlex-collection-count"><span id="medlexTotal">20</span> <span id="medlexCountLabel">kartela</span></span>
-          </div>
-
+          <dl class="medlex-hero-stats">
+            <div><dt>Kapituj</dt><dd>18</dd></div>
+            <div><dt>Kartela të plotësuara</dt><dd id="medlexHeroCount">—</dd></div>
+          </dl>
           <div class="medlex-toolbox" role="search" aria-label="Kërko në terminologjinë mjekësore">
             <div class="medlex-search-wrap">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2"/></svg>
-              <input id="medlexSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko: epigastrum, agnozi, hemoptizë…" aria-label="Kërko në të 18 kapitujt sipas termit, latinishtes, anglishtes ose shembullit">
+              <input id="medlexSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko term ose sinonim…" aria-label="Kërko në të 18 kapitujt sipas termit, latinishtes, anglishtes ose shembullit">
               <button type="button" id="medlexClear" class="medlex-search-clear" aria-label="Pastro kërkimin" hidden>×</button>
-              <span class="medlex-shortcut" aria-hidden="true">Ctrl K</span>
-            </div>
-            <div class="medlex-view-switch" role="group" aria-label="Mënyra e paraqitjes">
-              <button type="button" id="medlexGrid" class="is-selected" aria-pressed="true" title="Kartela">▦ <span>Kartela</span></button>
-              <button type="button" id="medlexList" aria-pressed="false" title="Listë">☷ <span>Listë</span></button>
+              <kbd class="medlex-shortcut" aria-hidden="true">Ctrl K</kbd>
             </div>
           </div>
-          <div class="medlex-topics" id="medlexTopics" aria-label="Filtro sipas grupit"></div>
-          <div class="medlex-results-head"><p id="medlexStatus" role="status" aria-live="polite">Duke ngarkuar termat…</p><button type="button" id="medlexReset" class="medlex-reset" hidden>Hiq filtrat</button></div>
-          <div class="medlex-grid" id="medlexGridItems" aria-live="polite"></div>
-          <div id="medlexEmpty" class="medlex-empty" hidden><span aria-hidden="true">⌕</span><h3>Nuk u gjet asnjë term</h3><p>Provo një emërtim tjetër, sinonim ose fjalë nga përkufizimi.</p><button type="button" id="medlexEmptyReset">Shfaq të gjitha</button></div>
-        </section>
+        </header>
+
+        <div class="medlex-browser">
+          <details class="medlex-chapter-picker" id="medlexChapterPicker">
+            <summary>
+              <span>
+                <span class="medlex-section-index">Kapitujt e MedLex</span>
+                <strong id="medlexSelectedChapter">01 · Terminologji e përgjithshme klinike</strong>
+              </span>
+              <svg class="medlex-picker-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <nav class="medlex-categories" id="medlexCategories" aria-label="Kapitujt e MedLex">
+              <button type="button" class="medlex-category medlex-category-all" data-category="all" aria-pressed="false"><span class="medlex-category-number">⌕</span><span>Të gjithë kapitujt</span></button>
+              <button type="button" class="medlex-category" data-category="01" aria-pressed="true"><span class="medlex-category-number">01</span><span>Terminologji klinike</span></button>
+              <button type="button" class="medlex-category" data-category="02" aria-pressed="false"><span class="medlex-category-number">02</span><span>Anatomi dhe orientim</span></button>
+            </nav>
+          </details>
+
+          <section class="medlex-collection" aria-labelledby="medlexCollectionTitle">
+            <div class="medlex-collection-heading">
+              <span class="medlex-section-index" id="medlexCollectionEyebrow">01 / Terminologji klinike</span>
+              <h2 id="medlexCollectionTitle">Konceptet themelore</h2>
+              <p id="medlexCollectionDescription">Fillimi, origjina, natyra, përgjigjja ndaj trajtimit dhe përhapja e sëmundjes.</p>
+              <span class="medlex-collection-count"><strong id="medlexTotal">20</strong> <span id="medlexCountLabel">kartela</span></span>
+            </div>
+            <div class="medlex-topics" id="medlexTopics" role="group" aria-label="Filtro sipas grupit"></div>
+            <div class="medlex-results-head">
+              <p id="medlexStatus" role="status">Duke ngarkuar termat…</p>
+              <button type="button" id="medlexReset" class="medlex-reset" hidden>Hiq filtrat</button>
+              <div class="medlex-view-switch" role="group" aria-label="Mënyra e paraqitjes">
+                <button type="button" id="medlexGrid" aria-pressed="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>
+                  Kartela
+                </button>
+                <button type="button" id="medlexList" aria-pressed="false">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h1M4 12h1M4 18h1"/></svg>
+                  Listë
+                </button>
+              </div>
+            </div>
+            <div class="medlex-grid" id="medlexGridItems"></div>
+            <div id="medlexEmpty" class="medlex-empty" hidden><span aria-hidden="true">⌕</span><h3>Nuk u gjet asnjë term</h3><p>Provo një emërtim tjetër, sinonim ose fjalë nga përkufizimi.</p><button type="button" id="medlexEmptyReset" class="medlex-primary-action">Pastro filtrat</button></div>
+          </section>
+        </div>
 
         <aside class="medlex-disclaimer"><span aria-hidden="true">ⓘ</span><p>Kartelat janë materiale edukative. Përkufizimet e shkurtra nuk janë kritere diagnostike dhe ilustrimet kërkojnë rishikim profesional para përdorimit si referencë klinike autoritative.</p></aside>
       </section>
 
       <dialog id="medlexDialog" class="medlex-dialog" aria-labelledby="medlexDialogTitle">
+        <header class="medlex-dialog-bar">
+          <span class="medlex-section-index" id="medlexDialogCategory">DRx MedLex · Kapitulli 01</span>
+          <button type="button" class="medlex-dialog-close" id="medlexClose" aria-label="Mbyll kartelën" autofocus>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+          </button>
+        </header>
         <div class="medlex-dialog-layout">
-          <div class="medlex-dialog-art"><img id="medlexDialogImage" alt="" width="1254" height="1254"><div class="medlex-dialog-placeholder" id="medlexDialogPlaceholder" hidden><span class="medlex-section-index">DRX MEDLEX · NË PËRGATITJE</span><strong id="medlexDialogPlaceholderTerm"></strong><div class="medlex-illustration-slot"><span aria-hidden="true">＋</span><span>Vendi për ilustrimin</span></div><p>Ilustrimi do të shpjegojë termin dhe shenjat kryesore.</p></div></div>
           <div class="medlex-dialog-details">
-            <button type="button" class="medlex-dialog-close" id="medlexClose" aria-label="Mbyll kartelën">×</button>
-            <span class="medlex-section-index" id="medlexDialogCategory">DRX MEDLEX · KATEGORIA 01</span>
-            <h2 id="medlexDialogTitle"></h2><span class="medlex-dialog-english" id="medlexDialogLatin"></span><span class="medlex-dialog-english" id="medlexDialogEnglish"></span>
-            <span class="medlex-dialog-label">PËRKUFIZIMI</span><p id="medlexDialogDefinition"></p>
-            <span class="medlex-dialog-label">SHEMBULL KLINIK</span><blockquote id="medlexDialogExample"></blockquote>
+            <h2 id="medlexDialogTitle"></h2>
+            <div class="medlex-dialog-translations">
+              <span class="medlex-dialog-english" id="medlexDialogLatin"></span>
+              <span class="medlex-dialog-english" id="medlexDialogEnglish"></span>
+            </div>
+            <section aria-labelledby="medlexDefinitionLabel">
+              <h3 class="medlex-dialog-label" id="medlexDefinitionLabel">Përkufizimi</h3>
+              <p id="medlexDialogDefinition"></p>
+            </section>
+            <section aria-labelledby="medlexExampleLabel">
+              <h3 class="medlex-dialog-label" id="medlexExampleLabel">Shembull klinik</h3>
+              <blockquote id="medlexDialogExample"></blockquote>
+            </section>
             <div class="medlex-dialog-actions"><a id="medlexDownload" download class="medlex-primary-action">Shkarko kartelën ↓</a><button type="button" id="medlexCopy">Kopjo termin</button></div>
             <small>Material ilustrues për mësim dhe orientim terminologjik.</small>
+          </div>
+          <div class="medlex-dialog-art">
+            <img id="medlexDialogImage" alt="" width="1254" height="1254">
+            <div class="medlex-dialog-placeholder" id="medlexDialogPlaceholder" hidden>
+              <span class="medlex-section-index">Në përgatitje</span>
+              <strong id="medlexDialogPlaceholderTerm"></strong>
+              <p>Ilustrimi do të shpjegojë termin dhe shenjat kryesore.</p>
+            </div>
           </div>
         </div>
       </dialog>

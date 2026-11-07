@@ -315,3 +315,59 @@ for (const viewport of viewports) {
     await auditTailwindViewport(page, `recovery.html / ${viewport.name}`);
   });
 }
+
+for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,height:700}]) {
+  test(`MedLex chapter, global search and card reading on ${name}`, async ({page}) => {
+    await page.setViewportSize({width,height});
+    await page.goto('http://127.0.0.1:4173/medlex.html?category=02');
+    const chapterPicker = page.locator('#medlexChapterPicker');
+    const search = page.locator('#medlexSearch');
+    const grid = page.locator('#medlexGridItems');
+    await expect(grid.locator('.medlex-card')).toHaveCount(157);
+    if (name === 'small-dark') await page.locator('html').evaluate(html => html.dataset.theme = 'dark');
+
+    const searchBounds = await search.boundingBox();
+    expect(searchBounds.y + searchBounds.height).toBeLessThan(height * .7);
+    const chapterBounds = await chapterPicker.boundingBox();
+    expect(chapterBounds.y).toBeGreaterThan(searchBounds.y);
+    if (width < 1120) {
+      await expect(chapterPicker.locator('.medlex-category').first()).toBeHidden();
+      await chapterPicker.locator('summary').click();
+    }
+    await expect(chapterPicker.getByRole('button')).toHaveCount(19);
+    await chapterPicker.locator('[data-category="01"]').click();
+    await expect(grid.locator('.medlex-card')).toHaveCount(20);
+    await expect(chapterPicker.locator('[data-category="01"]')).toHaveAttribute('aria-pressed','true');
+    if (width < 1120) await expect(chapterPicker.locator('summary')).toBeFocused();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+    await expect.poll(() => grid.locator('img').first().evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
+    await page.screenshot({path:path.join(OUTPUT, `tailwind-clinical-medlex-${name}.png`)});
+
+    await search.fill('Regio epigastrica');
+    await expect(page.locator('#medlexCollectionTitle')).toHaveText('Rezultatet e kërkimit');
+    const card = grid.getByRole('button',{name:'Hap kartelën Epigastriumi',exact:true});
+    await expect(card).toBeVisible();
+    await page.getByRole('button',{name:'Listë',exact:true}).click();
+    await expect(grid).toHaveAttribute('data-view','list');
+    await card.click();
+    const dialog = page.getByRole('dialog',{name:'Epigastriumi'});
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByText('Latinisht: Regio epigastrica')).toBeVisible();
+    await expect(dialog.locator('#medlexDialogExample')).not.toBeEmpty();
+    await expect(dialog.getByRole('link',{name:/Shkarko kartelën/})).toHaveAttribute('href',/ab02\.webp/);
+    const close = dialog.getByRole('button',{name:'Mbyll kartelën'});
+    await expect(close).toBeFocused();
+    const dialogBounds = await dialog.boundingBox();
+    expect(dialogBounds.x).toBeGreaterThanOrEqual(0);
+    expect(dialogBounds.x + dialogBounds.width).toBeLessThanOrEqual(width + 1);
+    await dialog.screenshot({path:path.join(OUTPUT, `tailwind-clinical-medlex-dialog-${name}.png`)});
+    await page.keyboard.press('Escape');
+    await expect(dialog).toBeHidden();
+    await expect(card).toBeFocused();
+    await page.getByRole('button',{name:'Pastro kërkimin'}).click();
+    await expect(grid.locator('.medlex-card')).toHaveCount(20);
+    await expect(chapterPicker.locator('#medlexSelectedChapter')).toHaveText(/^01 ·/);
+    await page.reload();
+    await expect(grid).toHaveAttribute('data-view','list');
+  });
+}
