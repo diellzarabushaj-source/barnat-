@@ -395,7 +395,7 @@ async function staticResponse(event) {
   const request = event.request;
   const cache = await caches.open(STATIC_CACHE);
   const cached = await cache.match(request);
-  if (deviceOnline && ['/entry-resume.js', '/session-resume.js', '/login.js', '/auth-client.js', '/sidebar-taxonomy-v3.js', '/sidebar-taxonomy-core-v3.js'].includes(new URL(request.url).pathname)) {
+  if (deviceOnline && ['/remembered-accounts.js', '/entry-resume.js', '/session-resume.js', '/login.js', '/auth-client.js', '/sidebar-taxonomy-v3.js', '/sidebar-taxonomy-core-v3.js'].includes(new URL(request.url).pathname)) {
     try {
       const response = await timeoutFetch(new Request(request, { cache:'no-store' }), STATIC_NETWORK_TIMEOUT_MS);
       if (response.ok && !response.redirected) {

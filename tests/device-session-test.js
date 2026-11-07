@@ -114,6 +114,9 @@ const F = require('./device-session-fixture.js');
     'Changing the fallback password revokes its remembered devices.');
 
   const middleware = await F.middleware();
+  const activeToken = auth.createSessionToken({uid:F.id,authUid:F.id,email:F.email,provider:'supabase-password',authRole:'doctor',authStatus:'active'});
+  const chooserPage = await middleware(new Request('https://drx.test/login.html?reauth=1&email=other%40example.test', {headers:{cookie:'medindex_session='+activeToken}}));
+  assert.equal(chooserPage.headers.get('x-test-next'), '1', 'Explicit account selection must not redirect into a different active account.');
   const forged = await middleware(new Request('https://drx.test/recetat.html', { headers:{ cookie:'medindex_device=forged' } }));
   assert.equal(forged.status, 302);
   assert.ok(new URL(forged.headers.get('location')).pathname === '/session-resume.html', 'Cookie presence opens public recovery, requiring server verification.');

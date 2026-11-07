@@ -55,10 +55,15 @@
     };
   }
 
-  function safeReturnPath(value) {
-    const path = String(value || '');
-    if (!path.startsWith('/') || path.startsWith('//') || path.startsWith('/api/') || path.startsWith('/login') || path.startsWith('/recovery')) return '/index.html';
-    return path;
+  function safeReturnPath(input) {
+    const value = String(input || '');
+    try {
+      const target = new URL(value, location.origin);
+      if (!value.startsWith('/') || /[\\\u0000-\u001f\u007f]/.test(value)
+        || target.origin !== location.origin
+        || /^\/(api|login|admin-login|landing|recovery|hyrje|session-resume)(\/|\.|$)/.test(target.pathname)) return '/index.html';
+      return target.pathname + target.search + target.hash;
+    } catch { return '/index.html'; }
   }
 
   function destination() {
@@ -196,9 +201,10 @@
     return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
   }
 
-  async function completeLogin(payload) {
+  async function completeLogin(payload, provider) {
     if (!active) return;
     if (!phase5Session(payload)) throw new Error('Serveri nuk krijoi sesionin e ri të sigurt.');
+    window.DRxRememberedAccounts?.remember({ ...payload, signInMethod:provider === 'password' ? 'fallback' : provider });
     saveBootstrapLease(payload);
     redirecting = true;
     setMessage('U verifikua. Po hapet DRx…', true);
@@ -207,7 +213,7 @@
       : 'U aktivizua hyrja rezervë.');
     if (password) password.value = '';
     try { sessionStorage.removeItem(RETURN_KEY); } catch {}
-    await Promise.race([purgeOnlyStaleRuntimeEntries(), new Promise(resolve => schedule(resolve, 1200))]);
+    void purgeOnlyStaleRuntimeEntries();
     navigate(destination());
   }
 
@@ -239,7 +245,7 @@
         const suffix = response.status === 429 && retryAfter ? ` Provo pas rreth ${Math.ceil(retryAfter / 60)} minutash.` : '';
         throw new Error((payload.error || 'Hyrja dështoi.') + suffix);
       }
-      await completeLogin(payload);
+      await completeLogin(payload, provider);
     } catch (error) {
       if (configurationBlocked) return;
       const value = error?.name === 'AbortError'
@@ -466,7 +472,10 @@
         schedule(checkExistingSession, 5000);
         return;
       }
-      if (response.ok && payload.authenticated && phase5Session(payload)) {
+      if (response.ok && payload.authenticated && phase5Session(payload)
+        && (!selectedEmail || selectedEmail.toLowerCase() === String(payload.user?.email || '').toLowerCase())
+        && (!window.DRxSelectedAccount || window.DRxSelectedAccount === String(payload.user?.email || '').toLowerCase())) {
+        window.DRxRememberedAccounts?.remember(payload);
         redirecting = true;
         navigate(destination());
         return;
@@ -486,6 +495,23 @@
     }
   }
 
+  function chooseRemembered(account) {
+    window.DRxSelectedAccount = account?.email || '__other__';
+    if (emailInput) emailInput.value = account?.email || '';
+    if (emailPassword) { emailPassword.value = ''; emailPassword.focus(); }
+    if (!account) emailInput?.focus();
+    if (account?.method === 'google') {
+      googleButton.tabIndex = -1; googleButton.focus();
+      setMessage('Vazhdo me butonin Google për këtë llogari.');
+    } else if (account?.method === 'fallback') {
+      fallback.hidden = false; fallback.open = true; password?.focus();
+      setMessage('Vazhdo me hyrjen rezervë të kësaj llogarie.');
+    } else setMessage(account ? 'Emaili është plotësuar. Verifiko hyrjen për të vazhduar.' : '');
+  }
+  const rememberedChooser = window.DRxRememberedAccounts?.mount(root.querySelector('.auth-card'), chooseRemembered);
+  const selectedEmail = query().get('email');
+  if (selectedEmail && emailInput && selectedEmail.length <= 254) emailInput.value = selectedEmail;
+
   function init() {
     setBusy(false);
     clearLegacyOfflineLeases();
@@ -497,8 +523,11 @@
     if (!busy && !configurationBlocked && fallback.open) password?.focus();
   });
   init();
+  if (selectedEmail) chooseRemembered(window.DRxRememberedAccounts?.list().find(account => account.email === selectedEmail.toLowerCase()) || {email:selectedEmail});
   return { destroy() {
     active = false;
+    window.DRxSelectedAccount = '';
+    rememberedChooser?.remove();
     lifetime.abort();
     timers.forEach(timer => clearTimeout(timer));
     disposers.forEach(dispose => dispose());

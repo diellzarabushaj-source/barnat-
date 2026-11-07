@@ -77,7 +77,7 @@
       });
       // Email remains usable if the optional Google SDK cannot load.
       void script('https://accounts.google.com/gsi/client').catch(() => {});
-      content.querySelector(next === 'login' ? '#loginEmail' : '#signupEmail')?.focus({ preventScroll:true });
+      content.querySelector(next === 'login' ? (new URLSearchParams(currentSearch).has('email') ? (window.DRxRememberedAccounts?.list().find(a => a.email === new URLSearchParams(currentSearch).get('email'))?.method === 'google' ? '#googleLoginButton' : '#loginPassword') : '#loginEmail') : '#signupEmail')?.focus({ preventScroll:true });
     } catch (error) {
       if (token !== generation || !dialog.open || error.name === 'AbortError') return;
       const note = document.createElement('p');

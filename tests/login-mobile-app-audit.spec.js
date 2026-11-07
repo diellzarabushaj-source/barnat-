@@ -267,3 +267,28 @@ test('Signup Google button resizes inside the dialog after orientation changes',
   await expect.poll(()=>page.locator('.home-auth__panel').evaluate(el=>el.scrollWidth-el.clientWidth)).toBeLessThanOrEqual(1);
  }
 });
+
+for (const width of [390, 1440]) {
+ test(`Remembered accounts keep each user's identity and require verification at ${width}px`,async({page})=>{
+  await prepare(page);
+  await page.setViewportSize({width,height:844});
+  await page.goto(BASE+'/landing.html');
+  await page.evaluate(()=>localStorage.setItem('drx_remembered_accounts_v1',JSON.stringify([
+   {name:'First Doctor',email:'first@example.test'}, {name:'Second Doctor',email:'second@example.test'}
+  ])));
+  await page.reload();
+  await expect(page.getByRole('link',{name:'Vazhdo si First Doctor'})).toBeVisible();
+  await page.getByRole('link',{name:'Vazhdo si Second Doctor'}).click();
+  await expect(page.locator('#loginEmail')).toHaveValue('second@example.test');
+  await expect(page.locator('#loginPassword')).toBeFocused();
+  await expect(page).toHaveURL(/landing.html/);
+  await expect(page.locator('#loginPassword')).toHaveValue('');
+  await page.getByRole('button',{name:'Hiq First Doctor nga lista'}).last().click();
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('drx_remembered_accounts_v1')).some(a=>a.email==='first@example.test'))).toBe(false);
+  if(width===390)await page.screenshot({path:path.join(OUTPUT,'remembered-accounts-phone.png')});
+  await page.locator('[data-auth-close]').click();
+  await page.reload();
+  await expect(page.getByRole('link',{name:'Vazhdo si First Doctor'})).toHaveCount(0);
+  await expect(page.getByRole('link',{name:'Vazhdo si Second Doctor'})).toBeVisible();
+ });
+}
