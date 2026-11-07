@@ -37,6 +37,7 @@ jobs:
         run: |
           node tests/device-session-test.js
           node tests/entry-resume-test.js
+          node tests/remembered-accounts-test.js
           node tests/session-worker-recovery-test.js
           node tests/phase5-session-cutover-test.js
 

@@ -9,7 +9,7 @@ const source = fs.readFileSync(path.resolve(__dirname, '../entry-resume.js'), 'u
 const worker = fs.readFileSync(path.resolve(__dirname, '../sw-resilient.js'), 'utf8');
 const landing = fs.readFileSync(path.resolve(__dirname, '../landing.html'), 'utf8');
 
-async function checkResume({ response, dialogOpen = false }) {
+async function checkResume({ response, dialogOpen = false, search = '?return=%2Frecetat.html%3Fdraft%3Dreturning', selectedAccount = '' }) {
   const calls = [];
   const destinations = [];
   const timers = [];
@@ -17,10 +17,11 @@ async function checkResume({ response, dialogOpen = false }) {
   const context = {
     navigator:{ onLine:true },
     location:{
-      search:'?return=%2Frecetat.html%3Fdraft%3Dreturning',
+      origin:'https://drx.test',
+      search,
       replace(url) { destinations.push(url); },
     },
-    window:{ addEventListener(name, handler) { handlers.set(name, handler); } },
+    window:{ DRxSelectedAccount:selectedAccount, addEventListener(name, handler) { handlers.set(name, handler); } },
     document:{
       hidden:false,
       querySelector() { return dialogOpen ? { open:true } : null; },
@@ -34,7 +35,7 @@ async function checkResume({ response, dialogOpen = false }) {
     AbortSignal:{ timeout:ms => ({ timeoutMs:ms }) },
     setTimeout(handler, milliseconds) { timers.push(milliseconds); return timers.length; },
     clearTimeout() {},
-    URLSearchParams,
+    URL, URLSearchParams,
     encodeURIComponent,
   };
 
@@ -49,8 +50,14 @@ async function checkResume({ response, dialogOpen = false }) {
   assert.equal(valid.calls.length, 1, 'An open login modal must not block remembered-session checks.');
   assert.equal(valid.calls[0].url, '/api/auth?entry=1', 'Renewal must bypass stale service-worker auth snapshots.');
   assert.equal(valid.calls[0].options.signal.timeoutMs, 45000, 'Slow mobile connections need a bounded renewal window.');
-  assert.deepEqual(valid.destinations, ['/api/auth?resume=1&return=%2Frecetat.html%3Fdraft%3Dreturning']);
+  assert.deepEqual(valid.destinations, ['/recetat.html?draft=returning']);
 
+  for (const unsafe of ['//evil.test', '/\\evil.test', '/api/auth', '/%2e%2e/api/auth', '/landing.html', '/\n/evil.test']) {
+    const guarded = await checkResume({ search:'?return=' + encodeURIComponent(unsafe), response:{ status:200, payload:{authenticated:true,hardened:true,sessionVersion:3} } });
+    assert.deepEqual(guarded.destinations, ['/index.html'], unsafe);
+  }
+  const differentAccount = await checkResume({ selectedAccount:'other@example.test', response:{status:200,payload:{authenticated:true,hardened:true,sessionVersion:3,user:{email:'first@example.test'}}} });
+  assert.equal(differentAccount.destinations.length, 0, 'Account selection must not open another account.');
   const offline = await checkResume({ response:{ status:200,
     payload:{ authenticated:true, hardened:true, sessionVersion:3, offline:true } } });
   assert.equal(offline.destinations.length, 0, 'An offline snapshot cannot restore server authorization.');

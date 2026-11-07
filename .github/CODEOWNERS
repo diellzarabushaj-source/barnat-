@@ -21,3 +21,7 @@
 /tests/entry-resume-test.js        @diellzarabushaj-source
 /.github/workflows/medindex-validation.yml @diellzarabushaj-source
 /.github/CODEOWNERS                @diellzarabushaj-source
+
+/remembered-accounts.js @diellzarabushaj-source
+/remembered-accounts.css @diellzarabushaj-source
+/tests/remembered-accounts-test.js @diellzarabushaj-source
