@@ -283,8 +283,11 @@ for (const width of [390, 1440]) {
   await expect(page.locator('#loginPassword')).toBeFocused();
   await expect(page).toHaveURL(/landing.html/);
   await expect(page.locator('#loginPassword')).toHaveValue('');
+  await expect(page.getByRole('heading',{name:'Vazhdo si Second Doctor'})).toBeVisible();
+  await page.getByRole('button',{name:'Ndërro llogari',exact:true}).click();
   await page.getByRole('button',{name:'Hiq First Doctor nga lista'}).last().click();
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('drx_remembered_accounts_v1')).some(a=>a.email==='first@example.test'))).toBe(false);
+  await page.getByRole('link',{name:'Vazhdo si Second Doctor'}).last().click();
   if(width===390)await page.screenshot({path:path.join(OUTPUT,'remembered-accounts-phone.png')});
   await page.locator('[data-auth-close]').click();
   await page.reload();

@@ -495,21 +495,42 @@
     }
   }
 
+  let selectedEmail = query().get('email');
+  const accountHeading = find('loginTitle');
+  const accountDescription = root.querySelector('.auth-card__head h2 + p');
+  const originalHeading = accountHeading?.textContent || '';
+  const originalDescription = accountDescription?.textContent || '';
+  const switchAccount = document.createElement('button');
+  switchAccount.type = 'button'; switchAccount.className = 'drx-accounts__other';
+  switchAccount.textContent = 'Ndërro llogari'; switchAccount.hidden = true;
+  root.querySelector('.auth-card__head')?.append(switchAccount);
+  switchAccount.addEventListener('click', () => {
+    window.DRxSelectedAccount = '__other__'; selectedEmail = '';
+    if (accountHeading) accountHeading.textContent = originalHeading;
+    if (accountDescription) accountDescription.textContent = originalDescription;
+    if (emailPassword) emailPassword.value = '';
+    if (rememberedChooser) { rememberedChooser.hidden = false; rememberedChooser.querySelector('a')?.focus(); }
+    switchAccount.hidden = true;
+  }, { signal:lifetime.signal });
   function chooseRemembered(account) {
+    selectedEmail = account?.email || '';
+    if (accountHeading) accountHeading.textContent = account ? 'Vazhdo si ' + (account.name || account.email) : originalHeading;
+    if (accountDescription) accountDescription.textContent = account?.email || originalDescription;
+    if (rememberedChooser) rememberedChooser.hidden = true;
+    switchAccount.hidden = !rememberedChooser;
     window.DRxSelectedAccount = account?.email || '__other__';
     if (emailInput) emailInput.value = account?.email || '';
     if (emailPassword) { emailPassword.value = ''; emailPassword.focus(); }
     if (!account) emailInput?.focus();
     if (account?.method === 'google') {
       googleButton.tabIndex = -1; googleButton.focus();
-      setMessage('Vazhdo me butonin Google për këtë llogari.');
+      setMessage(''); setGoogleStatus('Vazhdo me butonin Google për këtë llogari.');
     } else if (account?.method === 'fallback') {
       fallback.hidden = false; fallback.open = true; password?.focus();
-      setMessage('Vazhdo me hyrjen rezervë të kësaj llogarie.');
-    } else setMessage(account ? 'Emaili është plotësuar. Verifiko hyrjen për të vazhduar.' : '');
+      setMessage('Vazhdo me hyrjen rezervë të kësaj llogarie.', true);
+    } else setMessage('');
   }
   const rememberedChooser = window.DRxRememberedAccounts?.mount(root.querySelector('.auth-card'), chooseRemembered);
-  const selectedEmail = query().get('email');
   if (selectedEmail && emailInput && selectedEmail.length <= 254) emailInput.value = selectedEmail;
 
   function init() {
@@ -528,6 +549,7 @@
     active = false;
     window.DRxSelectedAccount = '';
     rememberedChooser?.remove();
+    switchAccount.remove();
     lifetime.abort();
     timers.forEach(timer => clearTimeout(timer));
     disposers.forEach(dispose => dispose());
