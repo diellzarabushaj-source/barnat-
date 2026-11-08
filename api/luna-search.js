@@ -11,7 +11,10 @@ const MAX_BODY_BYTES = 4096;
 const tracked = new Map();
 
 function enabled() {
-  return process.env.DRX_LUNA_ENABLED === '1' && Boolean(String(process.env.OPENAI_API_KEY || '').trim());
+  // Paid AI endpoint must never run without cross-instance request budgeting.
+  return process.env.DRX_LUNA_ENABLED === '1'
+    && SharedBudget.enabled()
+    && Boolean(String(process.env.OPENAI_API_KEY || '').trim());
 }
 
 function sameOrigin(req) {
@@ -77,7 +80,7 @@ module.exports = async function lunaSearch(req, res) {
       res.setHeader('Retry-After', String(budget.reset));
       return res.status(429).json({ ok:false, code:'LUNA_RATE_LIMIT', error:'Shumë kërkime. Provo përsëri pas pak.' });
     }
-    if (SharedBudget.enabled() && !await SharedBudget.enforce(res, [['luna-user',session.authUid,MAX_PER_MINUTE,60]])) return;
+    if (!await SharedBudget.enforce(res, [['luna-user',session.authUid,MAX_PER_MINUTE,60]])) return;
 
     const terms = await Luna.extractTerms(question, String(process.env.OPENAI_API_KEY).trim());
     const results = await Luna.findPublishedDrugs(terms, DrugSearch, supabaseRequest);
