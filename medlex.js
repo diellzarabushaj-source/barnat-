@@ -447,7 +447,9 @@
     surface.addEventListener('pointerdown', event => {
       if (deck.moving || !dialog.open || deck.terms.length < 2 || (event.pointerType === 'mouse' && event.button !== 0) || event.target.closest('button,a')) return;
       deck.pointer = { id:event.pointerId, x:event.clientX, y:event.clientY, dx:0, dy:0, started:performance.now() };
+      try { surface.setPointerCapture(event.pointerId); } catch { /* Native touch capture is sufficient. */ }
     });
+    surface.addEventListener('dragstart',event => event.preventDefault());
     surface.addEventListener('pointermove', event => {
       if (!deck.pointer || event.pointerId !== deck.pointer.id || deck.moving) return;
       const swipe = deck.pointer;
