@@ -57,7 +57,7 @@
   const deck = { terms:[], index:0, moving:false, drag:null, ignoreClicksUntil:0 };
 
   const study = { active:false, deck:[], answers:[], ratings:{}, chapter:'01', topic:'all' };
-  const studyMotion = { moving:false, drag:null };
+  const studyMotion = { moving:false, drag:null, pointer:null };
   const studySync = { account:'', revision:0, loaded:false, working:false, pending:null, conflict:null };
   const ORL_CHAPTER = '19';
   const ORL_EXTRA_CHAPTER = '20';
@@ -613,6 +613,7 @@
   function resetStudy(focus = true) {
     resetStudyDrag();
     studyMotion.moving = false;
+    studyMotion.pointer = null;
     study.deck = [];
     study.answers = [];
     $('medlexStudyImage').removeAttribute('src');
@@ -700,6 +701,16 @@
     studyMotion.drag = null;
   }
 
+  function paintStudyDrag(card, x) {
+    const magnitude = Math.min(1,Math.abs(x)/155);
+    card.style.setProperty('--study-drag-x',x+'px');
+    card.style.setProperty('--study-drag-y',(-11*magnitude).toFixed(2)+'px');
+    card.style.setProperty('--study-drag-rotate',Math.max(-14,Math.min(14,x/23))+'deg');
+    card.style.setProperty('--study-drag-tilt',Math.max(-7,Math.min(7,-x/29))+'deg');
+    card.style.setProperty('--study-cue-opacity',magnitude.toFixed(3));
+    card.dataset.studyDirection = x < 0 ? 'review' : 'known';
+  }
+
   function submitStudyRating(rating) {
     if (studyMotion.moving || $('medlexStudyAnswer').hidden || !study.deck[study.answers.length]) return;
     studyMotion.moving = true;
@@ -740,6 +751,49 @@
   function configureStudySwipe() {
     const card = $('medlexStudyCard');
     card.addEventListener('dragstart',event => event.preventDefault());
+    // Capture native pointers as a resilient mobile/desktop path. Interact.js
+    // still supplies inertia, but Safari and scripted mouse drags must never
+    // depend on its start/end event ordering to advance the study session.
+    card.addEventListener('pointerdown',event => {
+      if (event.button !== 0 || event.target.closest('button,a,input,select') || !study.active ||
+          studyMotion.moving || $('medlexStudyAnswer').hidden || $('medlexStudySession').hidden) return;
+      studyMotion.pointer = {id:event.pointerId,x:event.clientX,y:event.clientY,started:performance.now()};
+      try { card.setPointerCapture(event.pointerId); } catch {}
+    });
+    card.addEventListener('pointermove',event => {
+      const start = studyMotion.pointer;
+      if (!start || start.id !== event.pointerId || studyMotion.drag || studyMotion.moving) return;
+      const x = event.clientX-start.x;
+      const y = event.clientY-start.y;
+      if (Math.abs(x) < 7 || Math.abs(x) < Math.abs(y)*1.1) return;
+      card.classList.remove('is-returning');
+      card.classList.add('is-dragging');
+      paintStudyDrag(card,Math.max(-window.innerWidth,Math.min(window.innerWidth,x)));
+    });
+    card.addEventListener('pointerup',event => {
+      const start = studyMotion.pointer;
+      if (!start || start.id !== event.pointerId) return;
+      studyMotion.pointer = null;
+      if (studyMotion.moving || $('medlexStudyAnswer').hidden) return;
+      const x = event.clientX-start.x;
+      const y = event.clientY-start.y;
+      const elapsed = Math.max(1,performance.now()-start.started);
+      if (Math.abs(x)>68 && Math.abs(x)>Math.abs(y)*1.1 ||
+          (Math.abs(x)>30 && Math.abs(x)>Math.abs(y)*1.35 && Math.abs(x)/elapsed>.45)) {
+        submitStudyRating(x<0?'review':'known');
+      } else {
+        card.classList.add('is-returning');
+        resetStudyDrag();
+        window.setTimeout(() => card.classList.remove('is-returning'),520);
+      }
+    });
+    card.addEventListener('pointercancel',event => {
+      if (studyMotion.pointer?.id !== event.pointerId) return;
+      studyMotion.pointer = null;
+      card.classList.add('is-returning');
+      resetStudyDrag();
+      window.setTimeout(() => card.classList.remove('is-returning'),520);
+    });
     if (typeof window.interact !== 'function') return;
     // The same self-hosted Interact.js engine powers the Atlas and Studio.
     window.interact(card).draggable({
@@ -756,14 +810,7 @@
           if (!studyMotion.drag || studyMotion.moving) return;
           const gesture = studyMotion.drag;
           gesture.x = Math.max(-window.innerWidth,Math.min(window.innerWidth,gesture.x + event.dx));
-          const x = gesture.x;
-          const magnitude = Math.min(1,Math.abs(x)/155);
-          card.style.setProperty('--study-drag-x',x+'px');
-          card.style.setProperty('--study-drag-y',(-11*magnitude).toFixed(2)+'px');
-          card.style.setProperty('--study-drag-rotate',Math.max(-14,Math.min(14,x/23))+'deg');
-          card.style.setProperty('--study-drag-tilt',Math.max(-7,Math.min(7,-x/29))+'deg');
-          card.style.setProperty('--study-cue-opacity',magnitude.toFixed(3));
-          card.dataset.studyDirection = x < 0 ? 'review' : 'known';
+          paintStudyDrag(card,gesture.x);
         },
         end() {
           if (!studyMotion.drag || studyMotion.moving) return;
