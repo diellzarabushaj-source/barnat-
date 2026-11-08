@@ -436,7 +436,8 @@ test('MedLex atlas supports tapping, dismissing, and swipe-style navigation', as
   await page.setViewportSize({width:390,height:844});
   await page.goto('http://127.0.0.1:4173/medlex.html?category=20');
   await page.getByRole('button',{name:'Hap kartelën Timpan normal'}).click();
-  const dialog = page.getByRole('dialog',{name:'Timpan normal'});
+  // The dialog's accessible name intentionally changes as the active card changes.
+  const dialog = page.locator('#medlexDialog');
   await expect(dialog).toBeVisible();
   await expect(dialog.locator('#medlexDeckCount')).toHaveText('1 / 7');
   await expect(dialog.locator('#medlexDeckProgress')).toHaveAttribute('style',/14\.285/);

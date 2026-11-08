@@ -397,6 +397,9 @@
     const surface = $('medlexSwipeSurface');
     surface.dataset.exit = direction < 0 ? 'left' : 'right';
     const finish = () => {
+      // Reveal the next card from the stack, rather than pulling the dismissed
+      // card back across the screen in the opposite direction.
+      surface.classList.add('is-resetting');
       if (remove) {
         deck.terms.splice(deck.index,1);
         if (!deck.terms.length) {
@@ -406,6 +409,12 @@
       if ($('medlexDialog').open && deck.terms.length) showDeckTerm();
       delete surface.dataset.exit;
       deck.moving = false;
+      window.requestAnimationFrame(() => {
+        surface.classList.remove('is-resetting');
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !$('medlexDialog').open) return;
+        surface.classList.add('is-entering');
+        window.setTimeout(() => surface.classList.remove('is-entering'),260);
+      });
     };
     window.setTimeout(finish, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 240);
   }
@@ -421,6 +430,7 @@
       deck.terms = [];
       resetDeckDrag();
       delete surface.dataset.exit;
+      surface.classList.remove('is-entering','is-resetting');
     });
     dialog.addEventListener('keydown', event => {
       if (event.altKey || event.ctrlKey || event.metaKey || event.target.closest('a')) return;
