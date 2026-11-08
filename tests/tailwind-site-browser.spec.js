@@ -521,6 +521,10 @@ test('MedLex Studio presents a 3D flashcard and supports swipe-to-rate', async (
   await expect(study.locator('#medlexStudySwipeHint')).toBeVisible();
   await expect(card).toHaveClass(/is-revealed/);
   await expect(study.locator('#medlexStudyTerm')).toHaveText('Takikardi');
+  const actionDock = study.locator('.medlex-study-action-dock');
+  await expect(actionDock).toBeVisible();
+  await expect(actionDock.locator('.medlex-study-choice')).toHaveCount(2);
+  expect(await card.evaluate(node => node.contains(document.getElementById('medlexStudyKnown')))).toBe(false);
   const clinicalDetails = study.locator('#medlexStudyDetailsDialog');
   await expect(clinicalDetails).toBeHidden();
   await study.getByRole('button',{name:'Më shumë'}).click();

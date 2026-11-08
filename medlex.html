@@ -267,17 +267,15 @@
                       <figure class="medlex-study-art">
                         <img id="medlexStudyImage" alt="" width="1254" height="1254" draggable="false">
                       </figure>
-                      <div class="medlex-study-card-tools" role="group" aria-label="Veprimet e kartelës">
-                        <button type="button" id="medlexStudyFlipBack" class="medlex-study-flip-back" aria-label="Kthe te pyetja" title="Kthe te pyetja" aria-controls="medlexStudyFront"><span aria-hidden="true">↶</span></button>
-                        <button type="button" id="medlexStudyMore" class="medlex-study-more" aria-haspopup="dialog" aria-controls="medlexStudyDetailsDialog">Më shumë <span aria-hidden="true">⌃</span></button>
-                      </div>
-                    </div>
-                    <div class="medlex-study-rating" role="group" aria-label="Si të shkoi kjo kartelë?">
-                      <button type="button" id="medlexStudyReview" class="medlex-study-secondary"><span aria-hidden="true">↶</span> Për përsëritje</button>
-                      <button type="button" id="medlexStudyKnown" class="medlex-primary-action"><span aria-hidden="true">✓</span> E dija</button>
                     </div>
                   </div>
                 </article>
+                </div>
+                <div class="medlex-study-action-dock" role="group" aria-label="Vlerëso kartelën ose hap detajet">
+                  <button type="button" id="medlexStudyReview" class="medlex-study-choice medlex-study-choice-review" aria-label="Për përsëritje" title="Për përsëritje"><span class="medlex-study-choice-symbol" aria-hidden="true">×</span><span class="medlex-study-choice-caption">Përsërit</span></button>
+                  <button type="button" id="medlexStudyFlipBack" class="medlex-study-dock-back" aria-label="Kthe te pyetja" title="Kthe te pyetja" aria-controls="medlexStudyFront"><span aria-hidden="true">↶</span></button>
+                  <button type="button" id="medlexStudyMore" class="medlex-study-dock-more" aria-haspopup="dialog" aria-controls="medlexStudyDetailsDialog">Më shumë <span aria-hidden="true">⌃</span></button>
+                  <button type="button" id="medlexStudyKnown" class="medlex-study-choice medlex-study-choice-known" aria-label="E dija" title="E dija"><span class="medlex-study-choice-symbol" aria-hidden="true">✓</span><span class="medlex-study-choice-caption">E dija</span></button>
                 </div>
                 <dialog id="medlexStudyDetailsDialog" class="medlex-study-details-dialog" aria-labelledby="medlexStudyDetailsHeading">
                   <div class="medlex-study-details-handle" aria-hidden="true"></div>
