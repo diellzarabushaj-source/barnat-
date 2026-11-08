@@ -1793,3 +1793,104 @@ html.medlex-deck-open { overflow: hidden; }
 @media(prefers-reduced-motion:reduce) {
   .medlex-study-action-dock button,.medlex-study-card.is-returning {transition:none;}
 }
+
+/* Distinct circular X / check actions. Older button IDs must not reintroduce
+   rectangular background fills around the new floating controls. */
+#medlexStudyReview.medlex-study-choice,#medlexStudyKnown.medlex-study-choice {
+  border:0;background:transparent;box-shadow:none;padding:0;
+}
+#medlexStudyReview.medlex-study-choice {color:#e9567b;}
+#medlexStudyKnown.medlex-study-choice {color:#119d84;}
+.medlex-study-card-stage:has(.medlex-study-card.is-dragging[data-study-direction="review"])::before {
+  background:radial-gradient(ellipse at 38% 50%,#ff759b4a,transparent 70%);
+}
+.medlex-study-card-stage:has(.medlex-study-card.is-dragging[data-study-direction="known"])::before {
+  background:radial-gradient(ellipse at 63% 50%,#37c8a94a,transparent 70%);
+}
+.medlex-study-progress-track {display:flex!important;align-items:center;gap:10px;flex-wrap:nowrap!important;}
+.medlex-study-progress-track progress {flex:1 1 auto;min-width:0;}
+.medlex-study-focus-toggle {
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:37px;
+  padding:6px 11px;border:1px solid #d8d6ef;border-radius:12px;
+  background:linear-gradient(140deg,#fff,#f2efff);color:#5545ba;
+  font:inherit;font-size:11px;font-weight:830;white-space:nowrap;cursor:pointer;
+  box-shadow:0 4px 14px #2c25580f;transition:transform .18s ease,background .18s ease;
+}
+.medlex-study-focus-toggle span:first-child {font-size:17px;line-height:1;}
+.medlex-study-focus-toggle:hover {background:#ebe8ff;transform:translateY(-2px);}
+.medlex-study-focus-toggle:focus-visible {outline:3px solid #8371e8;outline-offset:3px;}
+html.medlex-study-immersive-open {overflow:hidden;}
+.medlex-study-session.is-immersive {
+  position:fixed;z-index:2100;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-start;gap:5px;
+  width:100%;height:100dvh;margin:0;overflow-x:hidden;overflow-y:auto;
+  padding:max(17px,env(safe-area-inset-top)) clamp(12px,3vw,40px) max(18px,env(safe-area-inset-bottom));
+  overscroll-behavior:contain;
+  background:radial-gradient(ellipse 64% 46% at 50% 47%,#43458a70,transparent 80%),
+    radial-gradient(ellipse at 100% 94%,#196b7169,transparent 44%),
+    radial-gradient(ellipse at 0% 0%,#5841a268,transparent 35%),
+    linear-gradient(156deg,#17193f,#101735 65%,#101a37);
+  color:#fff;box-shadow:inset 0 1px #ffffff16;
+}
+.medlex-study-session.is-immersive::before {
+  content:"";position:fixed;z-index:-1;inset:0;pointer-events:none;opacity:.2;
+  background-image:radial-gradient(#ffffff68 .7px,transparent .7px);
+  background-size:26px 26px;mask-image:linear-gradient(to bottom,#000,transparent 90%);
+}
+.medlex-study-session.is-immersive .medlex-study-progress {
+  flex:0 0 auto;width:min(100%,660px);max-width:660px;gap:10px;
+  margin:0 auto 2px;padding:0;color:#e4e7ff;
+}
+.medlex-study-session.is-immersive .medlex-study-progress>div {color:#d7dcf4;}
+.medlex-study-session.is-immersive .medlex-study-progress #medlexStudyScope {color:#e0e2fa;}
+.medlex-study-session.is-immersive .medlex-study-progress strong {color:#a5f4d9;}
+.medlex-study-session.is-immersive .medlex-study-progress progress {background:#ffffff32;}
+.medlex-study-session.is-immersive .medlex-study-progress progress::-webkit-progress-bar {background:#ffffff32;}
+.medlex-study-session.is-immersive .medlex-study-focus-toggle {
+  min-height:40px;border-color:#ffffff4b;background:#ffffff19;color:#fff;
+  box-shadow:0 7px 19px #04082230;backdrop-filter:blur(15px);
+}
+.medlex-study-session.is-immersive .medlex-study-focus-toggle:hover {background:#ffffff30;}
+.medlex-study-session.is-immersive .medlex-study-card-stage {
+  flex:1 1 auto;min-height:0;width:min(100%,740px);max-height:none;
+  margin:0 auto;padding:12px 8px 15px;align-content:center;
+}
+.medlex-study-session.is-immersive .medlex-study-card-shadow {
+  border-color:#ffffff65;box-shadow:0 20px 60px #04072299;
+}
+.medlex-study-session.is-immersive .medlex-study-card {
+  width:min(100%,620px);border-color:#ffffffee;
+  box-shadow:0 32px 90px #050819b9,0 0 0 7px #ffffff0a;
+}
+.medlex-study-session.is-immersive .medlex-study-front {
+  min-height:clamp(320px,55dvh,510px);
+}
+.medlex-study-session.is-immersive .medlex-study-art img {max-height:min(54dvh,540px);}
+.medlex-study-session.is-immersive .medlex-study-action-dock {
+  flex:0 0 auto;min-height:92px;margin:0 auto;
+}
+.medlex-study-session.is-immersive .medlex-study-choice-caption {color:#edefff;}
+.medlex-study-session.is-immersive .medlex-study-dock-back,
+.medlex-study-session.is-immersive .medlex-study-dock-more {
+  border-color:#ffffffa3;box-shadow:0 14px 35px #03072070;
+}
+.medlex-study-session.is-immersive .medlex-study-swipe-help {flex:0 0 auto;color:#d0d5ed;}
+.medlex-study-session.is-immersive .medlex-study-swipe-help>span:not(.medlex-study-swipe-divider) {color:#8ef2db;}
+.medlex-study-session.is-immersive #medlexStudyChange {display:none;}
+@media(max-width:700px) {
+  .medlex-study-progress-track {gap:8px;}
+  .medlex-study-focus-toggle {min-height:35px;padding:6px 9px;font-size:10px;}
+  .medlex-study-session.is-immersive {gap:4px;padding-inline:12px;}
+  .medlex-study-session.is-immersive .medlex-study-card-stage {padding:7px 4px 11px;}
+  .medlex-study-session.is-immersive .medlex-study-card {width:100%;}
+  .medlex-study-session.is-immersive .medlex-study-front {min-height:clamp(310px,50dvh,465px);}
+  .medlex-study-session.is-immersive .medlex-study-art img {max-height:min(51dvh,430px);}
+  .medlex-study-session.is-immersive .medlex-study-action-dock {min-height:79px;}
+  .medlex-study-session.is-immersive .medlex-study-swipe-help {font-size:10px;}
+}
+@media(max-height:650px) and (max-width:700px) {
+  .medlex-study-session.is-immersive .medlex-study-front {min-height:290px;}
+  .medlex-study-session.is-immersive .medlex-study-art img {max-height:43dvh;}
+  .medlex-study-session.is-immersive .medlex-study-action-dock {min-height:72px;}
+}
+@media(prefers-reduced-motion:reduce) { .medlex-study-focus-toggle {transition:none;} }

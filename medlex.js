@@ -582,9 +582,19 @@
     try { history.replaceState(null, '', url); } catch {}
   }
 
+  function setStudyFocus(active) {
+    const session = $('medlexStudySession');
+    session.classList.toggle('is-immersive',active);
+    document.documentElement.classList.toggle('medlex-study-immersive-open',active);
+    $('medlexStudyFocus').setAttribute('aria-pressed',String(active));
+    $('medlexStudyFocus').setAttribute('aria-label',active ? 'Dil nga ekrani i plotë' : 'Hap studimin në ekran të plotë');
+    $('medlexStudyFocusText').textContent = active ? 'Dil' : 'Fokus';
+  }
+
   function setStudyMode(active, focus = true) {
     if (active && !state.terms.length) return;
     if (!active && $('medlexStudyDetailsDialog').open) $('medlexStudyDetailsDialog').close();
+    if (!active) setStudyFocus(false);
     study.active = active;
     $('medlexContent').dataset.mode = active ? 'flashcards' : 'browse';
     $('medlexStudy').hidden = !active;
@@ -613,6 +623,7 @@
 
   function resetStudy(focus = true) {
     if ($('medlexStudyDetailsDialog').open) $('medlexStudyDetailsDialog').close();
+    setStudyFocus(false);
     resetStudyDrag();
     studyMotion.moving = false;
     studyMotion.pointer = null;
@@ -654,6 +665,7 @@
 
   function drawStudySession(focus = true) {
     const complete = study.answers.length === study.deck.length;
+    if (complete) setStudyFocus(false);
     $('medlexStudyScope').textContent = studyScope();
     $('medlexStudySetup').hidden = true;
     $('medlexStudySession').hidden = complete;
@@ -996,6 +1008,14 @@
       beginStudy(deck.slice(0, limit));
     });
     $('medlexStudyReveal').addEventListener('click', revealStudyCard);
+    $('medlexStudyFocus').addEventListener('click', () => setStudyFocus(!$('medlexStudySession').classList.contains('is-immersive')));
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && $('medlexStudySession').classList.contains('is-immersive') && !$('medlexStudyDetailsDialog').open) {
+        event.preventDefault();
+        setStudyFocus(false);
+        $('medlexStudyFocus').focus({preventScroll:true});
+      }
+    });
     const studyDetailsDialog = $('medlexStudyDetailsDialog');
     $('medlexStudyMore').addEventListener('click', () => {
       if (!studyDetailsDialog.open) studyDetailsDialog.showModal();

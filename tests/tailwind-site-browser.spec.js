@@ -537,6 +537,13 @@ test('MedLex Studio presents a 3D flashcard and supports swipe-to-rate', async (
   await expect(study.locator('#medlexStudyFront')).toBeVisible();
   await study.getByRole('button',{name:'Zbulo kartelën'}).click();
   await expect(study.locator('#medlexStudyTerm')).toHaveText('Takikardi');
+  await study.getByRole('button',{name:'Hap studimin në ekran të plotë'}).click();
+  await expect(study.locator('#medlexStudySession')).toHaveClass(/is-immersive/);
+  await expect(study.locator('#medlexStudyFocus')).toHaveAttribute('aria-pressed','true');
+  await page.waitForTimeout(460);
+  await page.screenshot({path:path.join(OUTPUT,'tailwind-clinical-medlex-study-focus-mobile.png')});
+  await page.keyboard.press('Escape');
+  await expect(study.locator('#medlexStudySession')).not.toHaveClass(/is-immersive/);
   const artwork = await study.locator('#medlexStudyImage').boundingBox();
   await page.mouse.move(artwork.x+artwork.width*.73,artwork.y+artwork.height*.4);
   await page.mouse.down();
@@ -583,6 +590,7 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
     expect(await image.getAttribute('src')).toBeNull();
     await expect(page.locator('#medlexStudyPosition')).toHaveText('Kartela 1 nga 4 · 0%');
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+    await page.waitForTimeout(450);
     await page.screenshot({path:path.join(OUTPUT, `tailwind-clinical-medlex-study-front-${name}.png`)});
 
     if (width < 600) await page.locator('#medlexStudyFront').click({position:{x:22,y:25}});
@@ -592,6 +600,7 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
     await expect(image).toHaveAttribute('src',/\/assets\/medlex-chapters\/c05-001\.webp/);
     await image.evaluate(node => node.decode());
     await expect(image).toBeVisible();
+    await page.waitForTimeout(450);
     await page.screenshot({path:path.join(OUTPUT, `tailwind-clinical-medlex-study-back-${name}.png`)});
 
     await page.getByRole('button',{name:'Listë',exact:true}).click();
