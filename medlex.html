@@ -267,7 +267,10 @@
                       <figure class="medlex-study-art">
                         <img id="medlexStudyImage" alt="" width="1254" height="1254" draggable="false">
                       </figure>
-                      <button type="button" id="medlexStudyMore" class="medlex-study-more" aria-haspopup="dialog" aria-controls="medlexStudyDetailsDialog">Më shumë <span aria-hidden="true">⌃</span></button>
+                      <div class="medlex-study-card-tools" role="group" aria-label="Veprimet e kartelës">
+                        <button type="button" id="medlexStudyFlipBack" class="medlex-study-flip-back" aria-label="Kthe te pyetja" title="Kthe te pyetja" aria-controls="medlexStudyFront"><span aria-hidden="true">↶</span></button>
+                        <button type="button" id="medlexStudyMore" class="medlex-study-more" aria-haspopup="dialog" aria-controls="medlexStudyDetailsDialog">Më shumë <span aria-hidden="true">⌃</span></button>
+                      </div>
                     </div>
                     <div class="medlex-study-rating" role="group" aria-label="Si të shkoi kjo kartelë?">
                       <button type="button" id="medlexStudyReview" class="medlex-study-secondary"><span aria-hidden="true">↶</span> Për përsëritje</button>
@@ -287,7 +290,6 @@
                     </div>
                     <section class="medlex-study-keypoint"><h4>Përkufizimi</h4><p id="medlexStudyDefinition"></p></section>
                     <section class="medlex-study-clinical-content"><h4>Shembull klinik</h4><blockquote id="medlexStudyExample"></blockquote></section>
-                    <button type="button" id="medlexStudyFlipBack" class="medlex-study-back-action" aria-label="Kthe te pyetja" aria-controls="medlexStudyFront"><span aria-hidden="true">↶</span> Kthehu te pyetja</button>
                   </div>
                 </dialog>
                 <p class="medlex-study-swipe-help" id="medlexStudySwipeHint" hidden><span aria-hidden="true">←</span> Rrëshqit majtas për përsëritje <span class="medlex-study-swipe-divider">·</span> djathtas nëse e dije <span aria-hidden="true">→</span></p>

@@ -529,6 +529,10 @@ test('MedLex Studio presents a 3D flashcard and supports swipe-to-rate', async (
   await expect(clinicalDetails.locator('#medlexStudyExample')).toBeVisible();
   await clinicalDetails.getByRole('button',{name:'Mbyll detajet'}).click();
   await expect(clinicalDetails).toBeHidden();
+  await study.getByRole('button',{name:'Kthe te pyetja'}).click();
+  await expect(study.locator('#medlexStudyFront')).toBeVisible();
+  await study.getByRole('button',{name:'Zbulo kartelën'}).click();
+  await expect(study.locator('#medlexStudyTerm')).toHaveText('Takikardi');
   const artwork = await study.locator('#medlexStudyImage').boundingBox();
   await page.mouse.move(artwork.x+artwork.width*.73,artwork.y+artwork.height*.4);
   await page.mouse.down();
