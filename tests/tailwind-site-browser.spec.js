@@ -676,6 +676,9 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
     await expect(study.locator('#medlexStudyScoreRing')).toHaveAttribute('aria-label','75% të kartelave i dije');
     await expect(study.locator('#medlexStudySummaryKnown')).toHaveText('3');
     await expect(study.locator('#medlexStudySummaryReview')).toHaveText('1');
+    if (name === 'small-dark') {
+      await expect(study.locator('.medlex-study-stats div:first-child dd')).toHaveCSS('color','rgb(37, 41, 77)');
+    }
     await page.screenshot({path:path.join(OUTPUT, `tailwind-clinical-medlex-study-summary-${name}.png`)});
     await expect(study.locator('#medlexStudyUndoSummary')).toBeVisible();
     await study.locator('#medlexStudyUndoSummary').click();

@@ -1286,6 +1286,7 @@ html.medlex-deck-open { overflow: hidden; }
 .medlex-study-stats div { padding-inline:clamp(9px,2vw,23px);border-color:#e5e5f5; }
 .medlex-study-stats dt { color:#696f89;font-size:11px;font-weight:620; }
 .medlex-study-stats dd { font-size:clamp(25px,3.4vw,34px);font-weight:850;letter-spacing:-.05em; }
+.medlex-study-stats div:first-child dd { color:#25294d; }
 .medlex-study-stats div:nth-child(2) dd { color:#168577; }
 .medlex-study-stats div:nth-child(3) dd { color:#7365dc; }
 .medlex-study-sync { color:#677087; }
