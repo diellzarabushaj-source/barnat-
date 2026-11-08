@@ -5,7 +5,7 @@
   const DATA_URL = '/data/medlex-terms.json';
   const ANATOMY_ARTWORK_VERSION = '20261104-clinical-v2';
   const ANATOMY_DATA_URL = '/data/medlex-anatomy.json?v=' + ANATOMY_ARTWORK_VERSION;
-  const CHAPTER_ARTWORK_VERSION = '20261108-orl-v1';
+  const CHAPTER_ARTWORK_VERSION = '20261108-orl-v2';
   const CHAPTERS_URL = '/data/medlex-chapters.json?v=' + CHAPTER_ARTWORK_VERSION;
   const IMAGE_BASE = '/assets/medlex/';
   const ANATOMY_IMAGE_BASE = '/assets/medlex-anatomy/';
@@ -53,7 +53,8 @@
   };
 
   const $ = id => document.getElementById(id);
-  const state = { terms:[], groups:[], categories:[], category:'01', searchFrom:null, topic:'all', query:'', view:'grid', selected:null, authenticated:false };
+  const state = { terms:[], groups:[], categories:[], category:'01', searchFrom:null, topic:'all', query:'', view:'grid', selected:null, visibleTerms:[], authenticated:false };
+  const deck = { terms:[], index:0, moving:false, pointer:null, ignoreClicksUntil:0 };
 
   const study = { active:false, deck:[], answers:[], ratings:{}, chapter:'01', topic:'all' };
   const studySync = { account:'', revision:0, loaded:false, working:false, pending:null, conflict:null };
@@ -105,7 +106,7 @@
     if (/^https:\/\/cdn\.sanity\.io\/images\/4wdtp8cz\/production\/[a-z0-9]+-\d+x\d+\.(?:webp|png|jpg|jpeg)$/.test(term.imageUrl || '')) return term.imageUrl + '?auto=format&w=1254&q=95';
     const name = String(term.image || '').replace(/\.png$/i,'.webp');
     if (term.category === '02') return /^(?:or|ab|th|up|lo|he|ne|ba|pe)\d{2}\.webp$/.test(name) ? ANATOMY_IMAGE_BASE + name + '?v=' + ANATOMY_ARTWORK_VERSION : '';
-    if (/^(?:0[3-9]|1[0-9])$/.test(term.category)) return new RegExp('^c' + term.category + '-\\d{3}\\.webp$').test(name) ? '/assets/medlex-chapters/' + name + '?v=' + CHAPTER_ARTWORK_VERSION : '';
+    if (/^(?:0[3-9]|1[0-9]|20)$/.test(term.category)) return new RegExp('^c' + term.category + '-\\d{3}\\.webp$').test(name) ? '/assets/medlex-chapters/' + name + '?v=' + CHAPTER_ARTWORK_VERSION : '';
     return /^\d{2}-[a-z-]+\.webp$/.test(name) ? IMAGE_BASE + name : '';
   }
 
@@ -119,7 +120,7 @@
     const chapter = state.categories.find(item => item.id === state.category);
     $('medlexCollectionEyebrow').textContent = chapter ? chapter.id + ' / ' + chapter.title.toLocaleUpperCase('sq') : 'DRX MEDLEX / 19 KAPITUJ';
     $('medlexCollectionTitle').textContent = state.query.trim() ? 'Rezultatet e kërkimit' : chapter?.heading || 'Fjalori i përbashkët';
-    $('medlexCollectionDescription').textContent = chapter?.description || 'Kartelat e plotësuara dhe termat e planifikuar nga të 19 kapitujt, në një kërkim të vetëm.';
+    $('medlexCollectionDescription').textContent = chapter?.description || 'Kartelat e plotësuara dhe termat e planifikuar nga të 20 kapitujt, në një kërkim të vetëm.';
     const number = state.category === 'all' ? state.terms.length : state.terms.filter(term => term.category === state.category).length;
     $('medlexTotal').textContent = String(number);
     $('medlexCountLabel').textContent = chapter?.status === 'planned' || state.category === 'all' ? 'terma' : 'kartela';
@@ -256,11 +257,12 @@
       .filter(item => item.score > 0)
       .sort((a,b) => query ? b.score - a.score || String(a.term.id).localeCompare(String(b.term.id)) :
         a.term.category.localeCompare(b.term.category) || String(a.term.id).localeCompare(String(b.term.id),undefined,{numeric:true}));
+    state.visibleTerms = matches.map(item => item.term);
 
     const grid = $('medlexGridItems');
     grid.dataset.view = state.view;
     const fragment = document.createDocumentFragment();
-    const grouped = !query && /^(?:0[3-9]|1[0-9])$/.test(state.category);
+    const grouped = !query && /^(?:0[3-9]|1[0-9]|20)$/.test(state.category);
     grid.dataset.grouped = String(grouped);
     if (grouped) {
       const groups = topicsForCategory().filter(item => item.id !== 'all' && (state.topic === 'all' || item.id === state.topic));
@@ -332,8 +334,9 @@
     host.replaceChildren(fragment);
   }
 
-  function openTerm(term) {
-    const dialog = $('medlexDialog');
+  function showDeckTerm() {
+    const term = deck.terms[deck.index];
+    if (!term) return;
     const planned = term.status === 'planned';
     state.selected = term;
     $('medlexDialogTitle').textContent = term.term;
@@ -356,10 +359,126 @@
       $('medlexDownload').href = term.imageUrl + '?fm=webp&q=95&dl=' + encodeURIComponent($('medlexDownload').download);
     }
     $('medlexCopy').textContent = 'Kopjo termin';
-    if (!dialog.open) {
-      dialog.showModal();
-      dialog.scrollTop = 0;
-    }
+    $('medlexDeckCount').textContent = `${deck.index + 1} / ${deck.terms.length}`;
+    $('medlexDeckProgress').style.width = `${(deck.index + 1) / deck.terms.length * 100}%`;
+    $('medlexDeckPrev').disabled = deck.terms.length < 2;
+    $('medlexDeckNext').disabled = deck.terms.length < 2;
+    $('medlexDeckImageHit').setAttribute('aria-disabled',String(deck.terms.length < 2));
+    $('medlexDeckLive').textContent = `${term.term}. Kartela ${deck.index + 1} nga ${deck.terms.length}.`;
+    $('medlexSwipeSurface').scrollTop = 0;
+  }
+
+  function openTerm(term) {
+    const dialog = $('medlexDialog');
+    deck.terms = state.visibleTerms.length ? [...state.visibleTerms] : [term];
+    deck.index = deck.terms.findIndex(item => item === term);
+    if (deck.index < 0) { deck.terms = [term]; deck.index = 0; }
+    deck.moving = false;
+    resetDeckDrag();
+    showDeckTerm();
+    if (!dialog.open) dialog.showModal();
+    document.documentElement.classList.add('medlex-deck-open');
+  }
+
+  function resetDeckDrag() {
+    const surface = $('medlexSwipeSurface');
+    surface.classList.remove('is-dragging');
+    surface.style.removeProperty('--medlex-drag-x');
+    surface.style.removeProperty('--medlex-drag-turn');
+    deck.pointer = null;
+  }
+
+  function moveDeck(direction, remove = false) {
+    if (deck.moving || !$('medlexDialog').open || !deck.terms.length) return;
+    if (!remove && deck.terms.length < 2) return;
+    deck.moving = true;
+    deck.ignoreClicksUntil = Date.now() + 500;
+    resetDeckDrag();
+    const surface = $('medlexSwipeSurface');
+    surface.dataset.exit = direction < 0 ? 'left' : 'right';
+    const finish = () => {
+      // Reveal the next card from the stack, rather than pulling the dismissed
+      // card back across the screen in the opposite direction.
+      surface.classList.add('is-resetting');
+      if (remove) {
+        deck.terms.splice(deck.index,1);
+        if (!deck.terms.length) {
+          $('medlexDialog').close();
+        } else if (deck.index >= deck.terms.length) deck.index = 0;
+      } else deck.index = (deck.index + (direction < 0 ? 1 : -1) + deck.terms.length) % deck.terms.length;
+      if ($('medlexDialog').open && deck.terms.length) showDeckTerm();
+      delete surface.dataset.exit;
+      deck.moving = false;
+      window.requestAnimationFrame(() => {
+        surface.classList.remove('is-resetting');
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !$('medlexDialog').open) return;
+        surface.classList.add('is-entering');
+        window.setTimeout(() => surface.classList.remove('is-entering'),260);
+      });
+    };
+    window.setTimeout(finish, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 240);
+  }
+
+  function configureDeck() {
+    const dialog = $('medlexDialog');
+    const surface = $('medlexSwipeSurface');
+    $('medlexDeckPrev').addEventListener('click', () => moveDeck(1));
+    $('medlexDeckNext').addEventListener('click', () => moveDeck(-1));
+    $('medlexDeckDismiss').addEventListener('click', () => moveDeck(-1,true));
+    dialog.addEventListener('close', () => {
+      document.documentElement.classList.remove('medlex-deck-open');
+      deck.terms = [];
+      resetDeckDrag();
+      delete surface.dataset.exit;
+      surface.classList.remove('is-entering','is-resetting');
+    });
+    dialog.addEventListener('keydown', event => {
+      if (event.altKey || event.ctrlKey || event.metaKey || event.target.closest('a')) return;
+      if (event.key === 'ArrowRight') { event.preventDefault(); moveDeck(-1); }
+      else if (event.key === 'ArrowLeft') { event.preventDefault(); moveDeck(1); }
+      else if (event.key.toLowerCase() === 'x' && event.target.tagName !== 'BUTTON') { event.preventDefault(); moveDeck(-1,true); }
+    });
+    $('medlexDeckImageHit').addEventListener('click', () => {
+      if (Date.now() >= deck.ignoreClicksUntil) moveDeck(-1);
+    });
+    $('medlexDeckImageHit').addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); moveDeck(-1); }
+    });
+    surface.addEventListener('pointerdown', event => {
+      if (deck.moving || !dialog.open || deck.terms.length < 2 || (event.pointerType === 'mouse' && event.button !== 0) || event.target.closest('button,a')) return;
+      deck.pointer = { id:event.pointerId, x:event.clientX, y:event.clientY, dx:0, dy:0, started:performance.now(), captured:false };
+    });
+    surface.addEventListener('dragstart',event => event.preventDefault());
+    surface.addEventListener('pointermove', event => {
+      if (!deck.pointer || event.pointerId !== deck.pointer.id || deck.moving) return;
+      const swipe = deck.pointer;
+      swipe.dx = event.clientX - swipe.x;
+      swipe.dy = event.clientY - swipe.y;
+      if (Math.abs(swipe.dy) > Math.abs(swipe.dx) * 1.4) return;
+      if (Math.abs(swipe.dx) < 8) return;
+      if (!swipe.captured) {
+        try { surface.setPointerCapture(event.pointerId); swipe.captured = true; }
+        catch { /* Native touch capture is sufficient. */ }
+      }
+      surface.classList.add('is-dragging');
+      const offset = Math.max(-180,Math.min(180,swipe.dx));
+      surface.style.setProperty('--medlex-drag-x',offset + 'px');
+      surface.style.setProperty('--medlex-drag-turn',Math.max(-10,Math.min(10,offset / 18)) + 'deg');
+    });
+    surface.addEventListener('pointerup', event => {
+      if (!deck.pointer || event.pointerId !== deck.pointer.id) return;
+      const swipe = deck.pointer;
+      const dx = event.clientX - swipe.x;
+      const dy = event.clientY - swipe.y;
+      const elapsed = Math.max(1,performance.now() - swipe.started);
+      const horizontal = Math.abs(dx) > Math.abs(dy) * 1.25;
+      resetDeckDrag();
+      if (horizontal && (Math.abs(dx) > 72 || (Math.abs(dx) > 38 && Math.abs(dx)/elapsed > .65))) {
+        deck.ignoreClicksUntil = Date.now() + 500;
+        moveDeck(dx < 0 ? -1 : 1);
+      }
+    });
+    surface.addEventListener('pointercancel', resetDeckDrag);
   }
 
   function studyQuestion(term) {
@@ -739,6 +858,7 @@
     $('medlexDialog').addEventListener('click', event => {
       if (event.target === $('medlexDialog')) event.target.close();
     });
+    configureDeck();
     $('medlexCopy').addEventListener('click', async () => {
       if (!state.selected) return;
       try {
@@ -827,7 +947,7 @@
     const [response, anatomyResponse, chaptersResponse] = await Promise.all([DATA_URL,ANATOMY_DATA_URL,CHAPTERS_URL].map(url => fetch(url, {credentials:'same-origin',cache:'force-cache'})));
     if (!response.ok || !anatomyResponse.ok || !chaptersResponse.ok) throw new Error('Fjalori nuk u ngarkua. Provo përsëri.');
     const [data,anatomy,localChapters,remote] = await Promise.all([response.json(),anatomyResponse.json(),chaptersResponse.json(),cms]);
-    const chapters = remote?.ok && remote.catalog?.categories?.length === 19 ? remote.catalog : localChapters;
+    const chapters = remote?.ok && remote.catalog?.categories?.length === 20 ? remote.catalog : localChapters;
     if (!Array.isArray(data.terms)) throw new Error('Struktura e fjalorit nuk është e vlefshme.');
     const terms = data.terms.map(term => ({...term,category:'01'})).filter(term => Number.isInteger(term.id) && term.id >= 1 &&
       typeof term.term === 'string' && typeof term.definition === 'string' &&
@@ -849,7 +969,7 @@
       unique.add(term.id);
     }
     state.groups = anatomy.groups;
-    if (!Array.isArray(chapters.categories) || chapters.categories.length !== 19 || new Set(chapters.categories.map(item => item.id)).size !== 19) throw new Error('Struktura e kapitujve nuk është e vlefshme.');
+    if (!Array.isArray(chapters.categories) || chapters.categories.length !== 20 || new Set(chapters.categories.map(item => item.id)).size !== 20) throw new Error('Struktura e kapitujve nuk është e vlefshme.');
     const plannedTerms = chapters.categories.flatMap(chapter => (chapter.terms || []).map(term => ({...term,category:chapter.id})));
     const plannedIds = new Set();
     for (const term of plannedTerms) {

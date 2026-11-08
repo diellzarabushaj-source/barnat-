@@ -357,12 +357,12 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
       await expect(chapterPicker.locator('.medlex-category').first()).toBeHidden();
       await chapterPicker.locator('summary').click();
     }
-    await expect(chapterPicker.getByRole('button')).toHaveCount(20);
+    await expect(chapterPicker.getByRole('button')).toHaveCount(21);
     const chapterFilter = chapterPicker.getByRole('searchbox',{name:'Filtro kapitujt'});
     await chapterFilter.fill('pa rezultat 999');
     await expect(chapterPicker.getByRole('status')).toBeVisible();
     await chapterFilter.press('Escape');
-    await expect(chapterPicker.getByRole('button')).toHaveCount(20);
+    await expect(chapterPicker.getByRole('button')).toHaveCount(21);
     await chapterFilter.fill('01 terminologji');
     await expect(chapterPicker.getByRole('button')).toHaveCount(1);
     await chapterPicker.locator('[data-category="01"]').click();
@@ -403,13 +403,13 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
   });
 }
 
-test('MedLex ORL chapter renders 13 illustrated mouth and pharynx findings', async ({page}) => {
+test('MedLex ORL mouth and pharynx renders 14 illustrated findings including normal throat', async ({page}) => {
   await page.goto('http://127.0.0.1:4173/medlex.html?category=19');
   const cards = page.locator('#medlexGridItems .medlex-card');
   await expect(page.locator('#medlexCollectionTitle')).toHaveText('Inspektimi i gojës dhe faringut');
-  await expect(cards).toHaveCount(13);
+  await expect(cards).toHaveCount(14);
   await expect(page.locator('.medlex-subchapter')).toHaveCount(4);
-  await expect(cards.locator('img')).toHaveCount(13);
+  await expect(cards.locator('img')).toHaveCount(14);
   await expect(cards.locator('img').first()).toHaveAttribute('src',/\/assets\/medlex-chapters\/c19-001\.webp/);
   await expect.poll(() => cards.locator('img').first().evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
   await page.getByRole('button',{name:'Hap kartelën Abscesi peritonsilar'}).click();
@@ -417,6 +417,49 @@ test('MedLex ORL chapter renders 13 illustrated mouth and pharynx findings', asy
   await expect(dialog).toBeVisible();
   await expect(dialog.locator('#medlexDialogExample')).toContainText('urgjent ORL');
   await expect(dialog.locator('#medlexDialogImage')).toHaveAttribute('src',/c19-010\.webp/);
+});
+
+test('MedLex ear and nose shows normal and pathological reference cards', async ({page}) => {
+  await page.goto('http://127.0.0.1:4173/medlex.html?category=20');
+  const cards = page.locator('#medlexGridItems .medlex-card');
+  await expect(page.locator('#medlexCollectionTitle')).toHaveText('Otoskopia dhe rinoskopia');
+  await expect(cards).toHaveCount(7);
+  await expect(page.locator('.medlex-subchapter')).toHaveCount(2);
+  await expect(cards.locator('img')).toHaveCount(7);
+  await page.getByRole('button',{name:'Hap kartelën Timpan normal'}).click();
+  const dialog = page.getByRole('dialog',{name:'Timpan normal'});
+  await expect(dialog.locator('#medlexDialogImage')).toHaveAttribute('src',/c20-001\.webp/);
+  await expect(dialog.locator('#medlexDialogExample')).toContainText('pa bombim');
+});
+
+test('MedLex atlas supports tapping, dismissing, and swipe-style navigation', async ({page}) => {
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('http://127.0.0.1:4173/medlex.html?category=20');
+  await page.getByRole('button',{name:'Hap kartelën Timpan normal'}).click();
+  // The dialog's accessible name intentionally changes as the active card changes.
+  const dialog = page.locator('#medlexDialog');
+  await expect(dialog).toBeVisible();
+  await expect(dialog.locator('#medlexDeckCount')).toHaveText('1 / 7');
+  await expect(dialog.locator('#medlexDeckProgress')).toHaveAttribute('style',/14\.285/);
+  await dialog.locator('#medlexDeckImageHit').click();
+  await expect(dialog.locator('#medlexDialogTitle')).toHaveText('Otiti i mesëm akut');
+  await expect(dialog.locator('#medlexDeckCount')).toHaveText('2 / 7');
+  await dialog.getByRole('button',{name:'Hiqe këtë kartelë nga prezantimi'}).click();
+  await expect(dialog.locator('#medlexDialogTitle')).toHaveText('Efuzioni i veshit të mesëm');
+  await expect(dialog.locator('#medlexDeckCount')).toHaveText('2 / 6');
+  await page.keyboard.press('ArrowLeft');
+  await expect(dialog.locator('#medlexDialogTitle')).toHaveText('Timpan normal');
+  await page.keyboard.press('ArrowRight');
+  await expect(dialog.locator('#medlexDialogTitle')).toHaveText('Efuzioni i veshit të mesëm');
+  const surface = dialog.locator('#medlexSwipeSurface');
+  const rect = await surface.boundingBox();
+  await page.mouse.move(rect.x + rect.width * .68,rect.y + Math.min(rect.height * .25,140));
+  await page.mouse.down();
+  await page.mouse.move(rect.x + rect.width * .30,rect.y + Math.min(rect.height * .25,140),{steps:7});
+  await page.mouse.up();
+  await expect(dialog.locator('#medlexDialogTitle')).toHaveText('Hunda normale');
+  await dialog.getByRole('button',{name:'Mbyll kartelën'}).click();
+  await expect(dialog).toBeHidden();
 });
 
 for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,height:700}]) {
@@ -431,7 +474,7 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
     const start = study.getByRole('button',{name:'Fillo seancën'});
     const answer = page.locator('#medlexStudyAnswer');
     const image = page.locator('#medlexStudyImage');
-    await expect(chapter.locator('option')).toHaveCount(20);
+    await expect(chapter.locator('option')).toHaveCount(21);
     await expect(chapter).toHaveValue('01');
     await chapter.selectOption('11');
     await expect(start).toBeDisabled();

@@ -30,7 +30,7 @@ function request(method, cookie = '') {
     const result = await request('GET', `${auth.COOKIE_NAME}=${token}`);
     assert.equal(result.statusCode, 200);
     assert.equal(result.body.source, 'sanity-medlex-published');
-    assert.equal(result.body.catalog.categories.length, 19);
+    assert.equal(result.body.catalog.categories.length, 20);
     assert.equal(result.headers['Cache-Control'], 'private, no-store, max-age=0');
     assert.equal(queries, 1);
     console.log('MedLex API passed: authenticated published Sanity reads, protected methods, cache policy and complete local fallback.');

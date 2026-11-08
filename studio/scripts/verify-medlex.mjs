@@ -15,7 +15,7 @@ const client = getCliClient({apiVersion: '2026-08-30'}).withConfig({projectId: '
 const remote = await client.fetch(QUERY, {}, {perspective: 'published'})
 assert.equal(remote.chapters.length, 18)
 assert.equal(remote.subchapters.length, original.categories.reduce((sum, item) => sum + item.groups.length, 0))
-assert.equal(remote.cards.length, 299)
+assert.equal(remote.cards.length, 307)
 const catalog = mergeCatalog(remote)
 assert.deepEqual(catalog.categories.slice(0, 2), original.categories.slice(0, 2))
 for (const chapter of original.categories.slice(2)) for (const term of chapter.terms) {
