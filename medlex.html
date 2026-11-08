@@ -263,24 +263,11 @@
                   </div>
                   <div id="medlexStudyAnswer" hidden>
                     <div class="medlex-study-back">
-                      <div class="medlex-study-answer-title">
-                        <div class="medlex-study-answer-head"><span class="medlex-section-index">✦ Përgjigjja</span><button type="button" id="medlexStudyFlipBack" class="medlex-study-back-action" aria-label="Kthe te pyetja" aria-controls="medlexStudyFront"><span aria-hidden="true">↶</span> Pyetja</button></div>
-                        <h3 id="medlexStudyTerm" tabindex="-1"></h3>
-                        <div class="medlex-dialog-translations">
-                          <span class="medlex-dialog-english" id="medlexStudyLatin"></span>
-                          <span class="medlex-dialog-english" id="medlexStudyEnglish"></span>
-                        </div>
-                      </div>
+                      <h3 id="medlexStudyTerm" class="medlex-study-sr-only" tabindex="-1"></h3>
                       <figure class="medlex-study-art">
                         <img id="medlexStudyImage" alt="" width="1254" height="1254" draggable="false">
-                        <figcaption>Kartela origjinale e MedLex</figcaption>
                       </figure>
-                      <div class="medlex-study-explanation">
-                        <h4>Përkufizimi</h4>
-                        <p id="medlexStudyDefinition"></p>
-                        <h4>Shembull klinik</h4>
-                        <blockquote id="medlexStudyExample"></blockquote>
-                      </div>
+                      <button type="button" id="medlexStudyMore" class="medlex-study-more" aria-haspopup="dialog" aria-controls="medlexStudyDetailsDialog">Më shumë <span aria-hidden="true">⌃</span></button>
                     </div>
                     <div class="medlex-study-rating" role="group" aria-label="Si të shkoi kjo kartelë?">
                       <button type="button" id="medlexStudyReview" class="medlex-study-secondary"><span aria-hidden="true">↶</span> Për përsëritje</button>
@@ -289,6 +276,20 @@
                   </div>
                 </article>
                 </div>
+                <dialog id="medlexStudyDetailsDialog" class="medlex-study-details-dialog" aria-labelledby="medlexStudyDetailsHeading">
+                  <div class="medlex-study-details-handle" aria-hidden="true"></div>
+                  <div class="medlex-study-details-top"><span>DRx MEDLEX · DETAJET KLINIKE</span><button type="button" id="medlexStudyDetailsClose" aria-label="Mbyll detajet">×</button></div>
+                  <div class="medlex-study-details-content">
+                    <h3 id="medlexStudyDetailsHeading"></h3>
+                    <div class="medlex-dialog-translations">
+                      <span class="medlex-dialog-english" id="medlexStudyLatin"></span>
+                      <span class="medlex-dialog-english" id="medlexStudyEnglish"></span>
+                    </div>
+                    <section class="medlex-study-keypoint"><h4>Përkufizimi</h4><p id="medlexStudyDefinition"></p></section>
+                    <section class="medlex-study-clinical-content"><h4>Shembull klinik</h4><blockquote id="medlexStudyExample"></blockquote></section>
+                    <button type="button" id="medlexStudyFlipBack" class="medlex-study-back-action" aria-label="Kthe te pyetja" aria-controls="medlexStudyFront"><span aria-hidden="true">↶</span> Kthehu te pyetja</button>
+                  </div>
+                </dialog>
                 <p class="medlex-study-swipe-help" id="medlexStudySwipeHint" hidden><span aria-hidden="true">←</span> Rrëshqit majtas për përsëritje <span class="medlex-study-swipe-divider">·</span> djathtas nëse e dije <span aria-hidden="true">→</span></p>
                 <button type="button" id="medlexStudyChange" class="medlex-study-secondary">Ndrysho përzgjedhjen</button>
               </div>
@@ -335,7 +336,7 @@
           </div>
           <footer class="medlex-deck-footer">
             <nav class="medlex-deck-controls" aria-label="Navigimi i kartelave">
-              <button type="button" class="medlex-deck-accessible-nav" id="medlexDeckPrev" aria-label="Kartela e mëparshme">Mëparshme</button>
+              <button type="button" class="medlex-deck-prev-visible" id="medlexDeckPrev" aria-label="Kartela e mëparshme" title="Kthehu te kartela e mëparshme"><span aria-hidden="true">↶</span></button>
               <button type="button" class="medlex-deck-more" id="medlexDeckMore" aria-controls="medlexDetailsSheet" aria-expanded="false">Më shumë <span aria-hidden="true">⌃</span></button>
               <button type="button" class="medlex-deck-dismiss" id="medlexDeckDismiss" aria-label="Hiqe këtë kartelë nga prezantimi" title="Hiqe këtë kartelë"><span aria-hidden="true">×</span></button>
               <button type="button" class="medlex-deck-accessible-nav" id="medlexDeckNext" aria-label="Kartela tjetër">Tjetër</button>

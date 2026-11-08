@@ -584,6 +584,7 @@
 
   function setStudyMode(active, focus = true) {
     if (active && !state.terms.length) return;
+    if (!active && $('medlexStudyDetailsDialog').open) $('medlexStudyDetailsDialog').close();
     study.active = active;
     $('medlexContent').dataset.mode = active ? 'flashcards' : 'browse';
     $('medlexStudy').hidden = !active;
@@ -611,6 +612,7 @@
   }
 
   function resetStudy(focus = true) {
+    if ($('medlexStudyDetailsDialog').open) $('medlexStudyDetailsDialog').close();
     resetStudyDrag();
     studyMotion.moving = false;
     studyMotion.pointer = null;
@@ -634,6 +636,7 @@
     $('medlexStudyProgress').max = study.deck.length;
     $('medlexStudyProgress').value = index;
     $('medlexStudyQuestion').textContent = studyQuestion(study.deck[index]);
+    if ($('medlexStudyDetailsDialog').open) $('medlexStudyDetailsDialog').close();
     $('medlexStudyAnswer').hidden = true;
     $('medlexStudyImage').removeAttribute('src');
     $('medlexStudyFront').hidden = false;
@@ -675,6 +678,7 @@
   function revealStudyCard() {
     const term = study.deck[study.answers.length];
     $('medlexStudyTerm').textContent = term.term;
+    $('medlexStudyDetailsHeading').textContent = term.term;
     $('medlexStudyDefinition').textContent = term.definition;
     $('medlexStudyExample').textContent = term.example;
     $('medlexStudyLatin').textContent = term.latin ? `Latinisht: ${term.latin}` : '';
@@ -992,6 +996,15 @@
       beginStudy(deck.slice(0, limit));
     });
     $('medlexStudyReveal').addEventListener('click', revealStudyCard);
+    const studyDetailsDialog = $('medlexStudyDetailsDialog');
+    $('medlexStudyMore').addEventListener('click', () => {
+      if (!studyDetailsDialog.open) studyDetailsDialog.showModal();
+      $('medlexStudyDetailsClose').focus({preventScroll:true});
+    });
+    $('medlexStudyDetailsClose').addEventListener('click', () => studyDetailsDialog.close());
+    studyDetailsDialog.addEventListener('click', event => {
+      if (event.target === studyDetailsDialog) studyDetailsDialog.close();
+    });
     $('medlexStudyFlipBack').addEventListener('click', () => drawStudyCard());
     $('medlexStudyKnown').addEventListener('click', () => submitStudyRating('known'));
     $('medlexStudyReview').addEventListener('click', () => submitStudyRating('review'));
