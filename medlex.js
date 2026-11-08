@@ -5,7 +5,7 @@
   const DATA_URL = '/data/medlex-terms.json';
   const ANATOMY_ARTWORK_VERSION = '20261104-clinical-v2';
   const ANATOMY_DATA_URL = '/data/medlex-anatomy.json?v=' + ANATOMY_ARTWORK_VERSION;
-  const CHAPTER_ARTWORK_VERSION = '20261105-content-03-10-v1';
+  const CHAPTER_ARTWORK_VERSION = '20261108-orl-v1';
   const CHAPTERS_URL = '/data/medlex-chapters.json?v=' + CHAPTER_ARTWORK_VERSION;
   const IMAGE_BASE = '/assets/medlex/';
   const ANATOMY_IMAGE_BASE = '/assets/medlex-anatomy/';
@@ -105,7 +105,7 @@
     if (/^https:\/\/cdn\.sanity\.io\/images\/4wdtp8cz\/production\/[a-z0-9]+-\d+x\d+\.(?:webp|png|jpg|jpeg)$/.test(term.imageUrl || '')) return term.imageUrl + '?auto=format&w=1254&q=95';
     const name = String(term.image || '').replace(/\.png$/i,'.webp');
     if (term.category === '02') return /^(?:or|ab|th|up|lo|he|ne|ba|pe)\d{2}\.webp$/.test(name) ? ANATOMY_IMAGE_BASE + name + '?v=' + ANATOMY_ARTWORK_VERSION : '';
-    if (/^(?:0[3-9]|1[0-8])$/.test(term.category)) return new RegExp('^c' + term.category + '-\\d{3}\\.webp$').test(name) ? '/assets/medlex-chapters/' + name + '?v=' + CHAPTER_ARTWORK_VERSION : '';
+    if (/^(?:0[3-9]|1[0-9])$/.test(term.category)) return new RegExp('^c' + term.category + '-\\d{3}\\.webp$').test(name) ? '/assets/medlex-chapters/' + name + '?v=' + CHAPTER_ARTWORK_VERSION : '';
     return /^\d{2}-[a-z-]+\.webp$/.test(name) ? IMAGE_BASE + name : '';
   }
 
@@ -117,9 +117,9 @@
 
   function updateCategoryHeading() {
     const chapter = state.categories.find(item => item.id === state.category);
-    $('medlexCollectionEyebrow').textContent = chapter ? chapter.id + ' / ' + chapter.title.toLocaleUpperCase('sq') : 'DRX MEDLEX / 18 KAPITUJ';
+    $('medlexCollectionEyebrow').textContent = chapter ? chapter.id + ' / ' + chapter.title.toLocaleUpperCase('sq') : 'DRX MEDLEX / 19 KAPITUJ';
     $('medlexCollectionTitle').textContent = state.query.trim() ? 'Rezultatet e kërkimit' : chapter?.heading || 'Fjalori i përbashkët';
-    $('medlexCollectionDescription').textContent = chapter?.description || 'Kartelat e plotësuara dhe termat e planifikuar nga të 18 kapitujt, në një kërkim të vetëm.';
+    $('medlexCollectionDescription').textContent = chapter?.description || 'Kartelat e plotësuara dhe termat e planifikuar nga të 19 kapitujt, në një kërkim të vetëm.';
     const number = state.category === 'all' ? state.terms.length : state.terms.filter(term => term.category === state.category).length;
     $('medlexTotal').textContent = String(number);
     $('medlexCountLabel').textContent = chapter?.status === 'planned' || state.category === 'all' ? 'terma' : 'kartela';
@@ -260,7 +260,7 @@
     const grid = $('medlexGridItems');
     grid.dataset.view = state.view;
     const fragment = document.createDocumentFragment();
-    const grouped = !query && /^(?:0[3-9]|1[0-8])$/.test(state.category);
+    const grouped = !query && /^(?:0[3-9]|1[0-9])$/.test(state.category);
     grid.dataset.grouped = String(grouped);
     if (grouped) {
       const groups = topicsForCategory().filter(item => item.id !== 'all' && (state.topic === 'all' || item.id === state.topic));
@@ -827,7 +827,7 @@
     const [response, anatomyResponse, chaptersResponse] = await Promise.all([DATA_URL,ANATOMY_DATA_URL,CHAPTERS_URL].map(url => fetch(url, {credentials:'same-origin',cache:'force-cache'})));
     if (!response.ok || !anatomyResponse.ok || !chaptersResponse.ok) throw new Error('Fjalori nuk u ngarkua. Provo përsëri.');
     const [data,anatomy,localChapters,remote] = await Promise.all([response.json(),anatomyResponse.json(),chaptersResponse.json(),cms]);
-    const chapters = remote?.ok && remote.catalog?.categories?.length === 18 ? remote.catalog : localChapters;
+    const chapters = remote?.ok && remote.catalog?.categories?.length === 19 ? remote.catalog : localChapters;
     if (!Array.isArray(data.terms)) throw new Error('Struktura e fjalorit nuk është e vlefshme.');
     const terms = data.terms.map(term => ({...term,category:'01'})).filter(term => Number.isInteger(term.id) && term.id >= 1 &&
       typeof term.term === 'string' && typeof term.definition === 'string' &&
@@ -849,7 +849,7 @@
       unique.add(term.id);
     }
     state.groups = anatomy.groups;
-    if (!Array.isArray(chapters.categories) || chapters.categories.length !== 18 || new Set(chapters.categories.map(item => item.id)).size !== 18) throw new Error('Struktura e kapitujve nuk është e vlefshme.');
+    if (!Array.isArray(chapters.categories) || chapters.categories.length !== 19 || new Set(chapters.categories.map(item => item.id)).size !== 19) throw new Error('Struktura e kapitujve nuk është e vlefshme.');
     const plannedTerms = chapters.categories.flatMap(chapter => (chapter.terms || []).map(term => ({...term,category:chapter.id})));
     const plannedIds = new Set();
     for (const term of plannedTerms) {

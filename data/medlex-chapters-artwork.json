@@ -1,5 +1,5 @@
 {
-  "version": "20261105-content-03-10-v1",
+  "version": "20261108-orl-v1",
   "status": "draft_for_clinical_review",
   "generator": "imagegen built-in",
   "mascot": false,
@@ -2113,6 +2113,189 @@
       "references": [
         "https://dermnetnz.org/topics/terminology",
         "https://dermnetnz.org/glossary.html"
+      ]
+    },
+    {
+      "id": "c19-001",
+      "category": "19",
+      "file": "c19-001.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "ac7d5d012c1843b86c096cc25fcf7722bff8d95a8c120e16a8d35ec8aa686418",
+      "sourceSha256": "62bf582544610fdd2d42e342255a64eb6bf01525f15b3c110a27a84e4eaa9031",
+      "definitionSha256": "a2662180208ee72e9bc5b9719ef37e4add3b113eb9e1eb92c17d06792dd59eac",
+      "exampleSha256": "c2d6823fa45d738c5809ebefba8c3f4c3c5fe457d97e69a0c8658cc9608070e8",
+      "references": [
+        "https://www.merckmanuals.com/professional/dental-disorders/lip-and-tongue-disorders/tongue-discoloration-and-other-changes"
+      ]
+    },
+    {
+      "id": "c19-002",
+      "category": "19",
+      "file": "c19-002.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "3f8093fd3b41d0dc0c29a1f28d41e5cfc0ba71ef843432959cf1d094fc2e30c2",
+      "sourceSha256": "fc9509f5f2f2c9fde7de90b4b31364fa9a78258959b10c6d42889d89f14e12c6",
+      "definitionSha256": "2553a486769136a8ec8e8fa55a4590fe8760981a873fcab654a47cb6a0f724a2",
+      "exampleSha256": "b5e03f87becf6f5feba5a8f862e09a9e493fa3cf55da7e6beb7d5152878d064d",
+      "references": [
+        "https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/strep-throat.html"
+      ]
+    },
+    {
+      "id": "c19-003",
+      "category": "19",
+      "file": "c19-003.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "2f2f8dab2d9ebc56f267a07af7c2d11fb4961c7dd9375153a9b78c10e7bb2d9e",
+      "sourceSha256": "85ab8da9c634edc4add7861bead6f2e404edc8e0da1ddfffc2ea1e88fbe5021e",
+      "definitionSha256": "92f3f46ef12113170fcd07b49ec8975fdce367431276b91d514391ef2eb0d8ad",
+      "exampleSha256": "8f79f30fa92c166e52a818becd45c8098c32b6c97b11e3d3fd523417ac7cda03",
+      "references": [
+        "https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/strep-throat.html"
+      ]
+    },
+    {
+      "id": "c19-004",
+      "category": "19",
+      "file": "c19-004.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "7cb219378a0fd0ae5a12f3d887a33a76536590e46ea3ef8ff947b95a1fee841a",
+      "sourceSha256": "6e4bd153edff6784ab5d3dbd5442ea954496edfbd957f0f8cee2784b1d8c2902",
+      "definitionSha256": "cb9b743148af0a9b7fac7da1499c780c63891ecbadea4f2bb00901f73165571b",
+      "exampleSha256": "e7accf8cbebd2f388017b85c0e8b1c1793ae61cdd1c867c8bc86c48daf8dd8a6",
+      "references": [
+        "https://www.merckmanuals.com/professional/dental-disorders/symptoms-of-dental-and-oral-disorders/stomatitis"
+      ]
+    },
+    {
+      "id": "c19-005",
+      "category": "19",
+      "file": "c19-005.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "e6207ddea85461ed40777675f79e078e6e8545b3958156df27f00e2fe1b8a04d",
+      "sourceSha256": "b7ea9222be9a5231a2cda4d05486e81ee5a780729313ca2d04cd90edf270c185",
+      "definitionSha256": "39ab1bfabbbb35938a80daefddc04b1e76204c957d5dc52a9979c5a655caa6fc",
+      "exampleSha256": "5f2b16fdfa41569cc2fd0a82785de129a0f13fb06ff71e187c01d238e7d54064",
+      "references": [
+        "https://www.merckmanuals.com/professional/dental-disorders/lip-and-tongue-disorders/tongue-discoloration-and-other-changes"
+      ]
+    },
+    {
+      "id": "c19-006",
+      "category": "19",
+      "file": "c19-006.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "733c87e15fa88098d5706d55da633d7ff17ea87d22a8990679b52f6e25def305",
+      "sourceSha256": "5c9995e5dd0d4cbc14a1587f3ffcc60e89fd534a15732cf4a3564b65484d1247",
+      "definitionSha256": "b218eab634f9233e5d060c5181a13feb260b19a8551035193e2178ff3c407df5",
+      "exampleSha256": "ce366a77266f09de1963fe23b896d77c03c0dc9b18f06ce5b27bb98c12df828b",
+      "references": [
+        "https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/strep-throat.html"
+      ]
+    },
+    {
+      "id": "c19-007",
+      "category": "19",
+      "file": "c19-007.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "03a345b9c0c8e3a39ef820e4664cd2d27022bb6f6e2a4a14ff731256bab3a7ab",
+      "sourceSha256": "22a0b78d3b9d4a700f04b84a1524ac8a684a56590aceca18fe1c612c1f86cb97",
+      "definitionSha256": "49a2332c5e011f372dbe45fb18ded258a4837885f6b9d37e19e88b9e06067e96",
+      "exampleSha256": "464f929645caca915a7d9b7ced31fcea85c00a5c1d237edb1296198a6bb0475b",
+      "references": [
+        "https://www.merckmanuals.com/professional/dental-disorders/symptoms-of-dental-and-oral-disorders/stomatitis"
+      ]
+    },
+    {
+      "id": "c19-008",
+      "category": "19",
+      "file": "c19-008.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "b78c8db19e62700afe4438420e9b23246037873f6a186e30b543bdb3a770c741",
+      "sourceSha256": "6c0d4d295db10776c4a1337e4a33ce610fe171561493e2297d122fffd4c86886",
+      "definitionSha256": "4afdfd205489dde01dbe3c4ab0f85549ff212c67ba888761817b4f49892d26b2",
+      "exampleSha256": "cdb43be47819aedd9da53781d52279842476b3b250597e5aca860a8261022792",
+      "references": [
+        "https://www.merckmanuals.com/professional/dental-disorders/lip-and-tongue-disorders/tongue-discoloration-and-other-changes"
+      ]
+    },
+    {
+      "id": "c19-009",
+      "category": "19",
+      "file": "c19-009.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "0f8afda9035e649460da8c5e2516e3dc1d8cb10fce83b87e8baeaada23d2d95a",
+      "sourceSha256": "2be88ea90ed971ed3a0995375702d44e8feb470a5766a0f4215de558d1c2e145",
+      "definitionSha256": "fedd5bcb31e422d610d4fb3c111b8c3387212192b2fd324d43302321c593176d",
+      "exampleSha256": "e698b4076b8e8527bfe62f174fd002a1d1c46b432e7a5077afa92cb5dbc55754",
+      "references": [
+        "https://www.merckmanuals.com/professional/multimedia/table/some-infectious-causes-and-features-of-sore-throat"
+      ]
+    },
+    {
+      "id": "c19-010",
+      "category": "19",
+      "file": "c19-010.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "0103e66c20a65288deec3c6630913453fbf85212eab5213d1533188b328d94e7",
+      "sourceSha256": "8efabfa0b28aa9682d9fa0771f7b178b84abfd3d5f9b8ab143cc200eb7c154cf",
+      "definitionSha256": "b95658b71d56f8f69e5aeec67f3f3434e2ab9f26b0bdaa2e1e114f59453fc4a4",
+      "exampleSha256": "e5e62c3331adbe3e630139acf9f432ac71c8610f67195db29c68dc9a70b8f225",
+      "references": [
+        "https://www.merckmanuals.com/professional/ear%2C-nose%2C-and-throat-disorders/oral-and-pharyngeal-disorders/peritonsillar-abscess-and-cellulitis"
+      ]
+    },
+    {
+      "id": "c19-011",
+      "category": "19",
+      "file": "c19-011.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "2112c60b50a74153aa040a395bfd3805cf2a2f2801b527908d938dce86a592d0",
+      "sourceSha256": "365e2f1631e9a14383f113bae48b98ca0246aaabfe444253869c0590b71dc187",
+      "definitionSha256": "5f89eaa9a6816f1dd1670b13d8bec3a74a6e659aa70b7aac10a6486f37128288",
+      "exampleSha256": "9dc59fc4fc5f3ddd81e47585571029b8c1e709fc01a0be4f730e8829a603df39",
+      "references": [
+        "https://www.merckmanuals.com/professional/infectious-diseases/enteroviruses/herpangina"
+      ]
+    },
+    {
+      "id": "c19-012",
+      "category": "19",
+      "file": "c19-012.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "ceecf7b6d88f3b7f808b2543a06f90a8d841107fe589da4485fa7de7b50abb50",
+      "sourceSha256": "e54f362fbfdfe08182992c049b69cf9dd8eb58561cb5c03abf63545a970f73e2",
+      "definitionSha256": "df153d162901a015323527a8767a7cc8e8b620391c5ae80f328235333ae73b38",
+      "exampleSha256": "96f3acaefccb5fb07baf3a47b6ae92be256157ec0f5fe8ec9f1060a099bd8df2",
+      "references": [
+        "https://www.merckmanuals.com/professional/dental-disorders/approach-to-the-dental-patient/evaluation-of-the-dental-patient"
+      ]
+    },
+    {
+      "id": "c19-013",
+      "category": "19",
+      "file": "c19-013.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "7a3813a28c2a720453936b8c433e48adca8c4875c2bd206808958ccd80ee3be3",
+      "sourceSha256": "6fb2b018ab0544a09f9af64b88c06a1f879ff8936c5102ed1cd7c5255cb23be2",
+      "definitionSha256": "ae0c28d1aa228a70c43111755ca02ca8643b57b138a18908b9c6374eba3ceba7",
+      "exampleSha256": "bcbf987a34208065c62b1dc87c1b6babcc45feba7f14422250764542d70dca2e",
+      "references": [
+        "https://www.cdc.gov/diphtheria/hcp/clinical-signs/index.html",
+        "https://www.cdc.gov/infection-control/hcp/healthcare-personnel-epidemiology-control/diphtheria.html"
       ]
     }
   ]
