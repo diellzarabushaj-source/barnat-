@@ -57,7 +57,17 @@
   const deck = { terms:[], index:0, moving:false, drag:null, ignoreClicksUntil:0 };
 
   const study = { active:false, deck:[], answers:[], ratings:{}, chapter:'01', topic:'all' };
+  const studyMotion = { moving:false, drag:null, pointer:null };
   const studySync = { account:'', revision:0, loaded:false, working:false, pending:null, conflict:null };
+  const ORL_CHAPTER = '19';
+  const ORL_EXTRA_CHAPTER = '20';
+
+  function publicChapter(category) { return category === ORL_EXTRA_CHAPTER ? ORL_CHAPTER : category; }
+  function chapterIncludes(category, term) {
+    return category === 'all' || term.category === category ||
+      (category === ORL_CHAPTER && term.category === ORL_EXTRA_CHAPTER);
+  }
+  function listedChapters() { return state.categories.filter(chapter => chapter.id !== ORL_EXTRA_CHAPTER); }
 
   function normalize(value) {
     return String(value || '').toLocaleLowerCase('sq')
@@ -120,8 +130,8 @@
     const chapter = state.categories.find(item => item.id === state.category);
     $('medlexCollectionEyebrow').textContent = chapter ? chapter.id + ' / ' + chapter.title.toLocaleUpperCase('sq') : 'DRX MEDLEX / 19 KAPITUJ';
     $('medlexCollectionTitle').textContent = state.query.trim() ? 'Rezultatet e kërkimit' : chapter?.heading || 'Fjalori i përbashkët';
-    $('medlexCollectionDescription').textContent = chapter?.description || 'Kartelat e plotësuara dhe termat e planifikuar nga të 20 kapitujt, në një kërkim të vetëm.';
-    const number = state.category === 'all' ? state.terms.length : state.terms.filter(term => term.category === state.category).length;
+    $('medlexCollectionDescription').textContent = chapter?.description || 'Kartelat e plotësuara dhe termat e planifikuar nga të 19 kapitujt, në një kërkim të vetëm.';
+    const number = state.terms.filter(term => chapterIncludes(state.category, term)).length;
     $('medlexTotal').textContent = String(number);
     $('medlexCountLabel').textContent = chapter?.status === 'planned' || state.category === 'all' ? 'terma' : 'kartela';
     $('medlexSelectedChapter').textContent = chapter ? chapter.id + ' · ' + chapter.title : 'Të gjithë kapitujt';
@@ -137,8 +147,8 @@
     all.dataset.category = 'all';
     all.append(create('span','medlex-category-number','⌕'),create('span','medlex-category-title','Të gjithë kapitujt'));
     fragment.append(all);
-    for (const chapter of state.categories) {
-      const count = state.terms.filter(term => term.category === chapter.id).length;
+    for (const chapter of listedChapters()) {
+      const count = state.terms.filter(term => chapterIncludes(chapter.id, term)).length;
       const button = create('button', 'medlex-category');
       button.type = 'button';
       button.dataset.category = chapter.id;
@@ -209,7 +219,7 @@
     art.append(img);
 
     const body = create('span', 'medlex-card-body');
-    body.append(create('span', 'medlex-card-index', `Kapitulli ${term.category}`));
+    body.append(create('span', 'medlex-card-index', `Kapitulli ${publicChapter(term.category)}`));
     body.append(create('span', 'medlex-card-title', term.term));
     body.append(create('span', 'medlex-card-description', term.definition));
     const footer = create('span', 'medlex-card-footer');
@@ -243,7 +253,7 @@
   }
 
   function matchesScope(term, category, topic) {
-    return (category === 'all' || term.category === category) &&
+    return chapterIncludes(category, term) &&
       (topic.id === 'all' || (term.category === '01' ? topic.ids.includes(term.id) : term.group === topic.id));
   }
 
@@ -287,7 +297,7 @@
     }
     grid.replaceChildren(fragment);
     $('medlexEmpty').hidden = matches.length !== 0 || !state.terms.length;
-    const available = state.terms.filter(term => state.category === 'all' || term.category === state.category).length;
+    const available = state.terms.filter(term => chapterIncludes(state.category, term)).length;
     const pending = matches.filter(item => item.term.status === 'planned').length;
     setStatus(`${matches.length} nga ${available} terma${pending ? ` · ${pending} në përgatitje` : ''}${query ? ` · Kërkim: “${state.query.trim()}”` : ''}`);
     $('medlexClear').hidden = !state.query;
@@ -341,7 +351,7 @@
     state.selected = term;
     $('medlexDialogTitle').textContent = term.term;
     $('medlexDetailsTitle').textContent = term.term;
-    $('medlexDialogCategory').textContent = `DRx MedLex · Kapitulli ${term.category}`;
+    $('medlexDialogCategory').textContent = `DRx MedLex · Kapitulli ${publicChapter(term.category)}`;
     $('medlexDialogLatin').textContent = term.latin ? `Latinisht: ${term.latin}` : '';
     const english = term.english || ALIASES[term.id]?.[0];
     $('medlexDialogEnglish').textContent = english ? `Anglisht: ${english}` : '';
@@ -390,7 +400,7 @@
   function openTerm(term) {
     const dialog = $('medlexDialog');
     // A search for a single term must still open a swipeable chapter atlas.
-    const chapterTerms = state.terms.filter(item => item.category === term.category && item.status !== 'planned');
+    const chapterTerms = state.terms.filter(item => chapterIncludes(publicChapter(term.category), item) && item.status !== 'planned');
     const available = state.terms.filter(item => item.status !== 'planned');
     deck.terms = state.visibleTerms.length > 1 ? [...state.visibleTerms] :
       chapterTerms.length > 1 ? chapterTerms : available.length > 1 ? available : [term];
@@ -601,6 +611,9 @@
   }
 
   function resetStudy(focus = true) {
+    resetStudyDrag();
+    studyMotion.moving = false;
+    studyMotion.pointer = null;
     study.deck = [];
     study.answers = [];
     $('medlexStudyImage').removeAttribute('src');
@@ -612,6 +625,11 @@
 
   function drawStudyCard(focus = true) {
     const index = study.answers.length;
+    const surface = $('medlexStudyCard');
+    surface.classList.remove('is-returning','is-dragging');
+    surface.classList.toggle('is-revealed',false);
+    $('medlexStudySwipeHint').hidden = true;
+    $('medlexStudyCardNumber').textContent = `${String(index + 1).padStart(2,'0')} / ${String(study.deck.length).padStart(2,'0')}`;
     $('medlexStudyPosition').textContent = `Kartela ${index + 1} nga ${study.deck.length} · ${Math.round(100 * index / study.deck.length)}%`;
     $('medlexStudyProgress').max = study.deck.length;
     $('medlexStudyProgress').value = index;
@@ -620,6 +638,8 @@
     $('medlexStudyImage').removeAttribute('src');
     $('medlexStudyFront').hidden = false;
     $('medlexStudyQuestion').closest('article').setAttribute('aria-labelledby', 'medlexStudyQuestion');
+    const nextArtwork = imagePath(study.deck[index]);
+    if (nextArtwork) { const preload = new Image(); preload.src = nextArtwork; }
     if (focus) $('medlexStudyQuestion').focus();
   }
 
@@ -665,8 +685,147 @@
     image.src = imagePath(term);
     $('medlexStudyFront').hidden = true;
     $('medlexStudyAnswer').hidden = false;
+    $('medlexStudyCard').classList.add('is-revealed');
+    $('medlexStudySwipeHint').hidden = false;
     $('medlexStudyTerm').closest('article').setAttribute('aria-labelledby', 'medlexStudyTerm');
     $('medlexStudyTerm').focus();
+  }
+
+  function resetStudyDrag(clearOffset = true) {
+    const card = $('medlexStudyCard');
+    card.classList.remove('is-dragging');
+    if (clearOffset) {
+      for (const variable of ['--study-drag-x','--study-drag-y','--study-drag-rotate','--study-drag-tilt','--study-cue-opacity']) card.style.removeProperty(variable);
+      delete card.dataset.studyDirection;
+    }
+    studyMotion.drag = null;
+  }
+
+  function paintStudyDrag(card, x) {
+    const magnitude = Math.min(1,Math.abs(x)/155);
+    card.style.setProperty('--study-drag-x',x+'px');
+    card.style.setProperty('--study-drag-y',(-11*magnitude).toFixed(2)+'px');
+    card.style.setProperty('--study-drag-rotate',Math.max(-14,Math.min(14,x/23))+'deg');
+    card.style.setProperty('--study-drag-tilt',Math.max(-7,Math.min(7,-x/29))+'deg');
+    card.style.setProperty('--study-cue-opacity',magnitude.toFixed(3));
+    card.dataset.studyDirection = x < 0 ? 'review' : 'known';
+  }
+
+  function submitStudyRating(rating) {
+    if (studyMotion.moving || $('medlexStudyAnswer').hidden || !study.deck[study.answers.length]) return;
+    studyMotion.moving = true;
+    const card = $('medlexStudyCard');
+    const stage = $('medlexStudyCardStage');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // The outgoing artwork flies away as an inert visual copy. Ratings and
+    // account sync update immediately, independently of animation timing.
+    if (!reducedMotion) {
+      const ghost = card.cloneNode(true);
+      ghost.removeAttribute('id');
+      ghost.querySelectorAll('[id]').forEach(node => node.removeAttribute('id'));
+      ghost.inert = true;
+      ghost.setAttribute('aria-hidden','true');
+      ghost.classList.remove('is-dragging','is-returning','is-entering');
+      ghost.classList.add('is-study-ghost');
+      ghost.style.left = card.offsetLeft + 'px';
+      ghost.style.top = card.offsetTop + 'px';
+      ghost.style.width = card.offsetWidth + 'px';
+      ghost.style.height = card.offsetHeight + 'px';
+      stage.append(ghost);
+      window.requestAnimationFrame(() => { ghost.dataset.studyExit = rating; });
+      window.setTimeout(() => ghost.remove(),370);
+    }
+    card.classList.add('is-resetting');
+    resetStudyDrag();
+    rateStudyCard(rating);
+    studyMotion.moving = false;
+    card.classList.remove('is-resetting');
+    if (!reducedMotion && !$('medlexStudySession').hidden) {
+      card.classList.remove('is-entering');
+      void card.offsetWidth;
+      card.classList.add('is-entering');
+      window.setTimeout(() => card.classList.remove('is-entering'),350);
+    }
+  }
+
+  function configureStudySwipe() {
+    const card = $('medlexStudyCard');
+    card.addEventListener('dragstart',event => event.preventDefault());
+    // Capture native pointers as a resilient mobile/desktop path. Interact.js
+    // still supplies inertia, but Safari and scripted mouse drags must never
+    // depend on its start/end event ordering to advance the study session.
+    card.addEventListener('pointerdown',event => {
+      if (event.button !== 0 || event.target.closest('button,a,input,select') || !study.active ||
+          studyMotion.moving || $('medlexStudyAnswer').hidden || $('medlexStudySession').hidden) return;
+      studyMotion.pointer = {id:event.pointerId,x:event.clientX,y:event.clientY,started:performance.now()};
+      try { card.setPointerCapture(event.pointerId); } catch {}
+    });
+    card.addEventListener('pointermove',event => {
+      const start = studyMotion.pointer;
+      if (!start || start.id !== event.pointerId || studyMotion.drag || studyMotion.moving) return;
+      const x = event.clientX-start.x;
+      const y = event.clientY-start.y;
+      if (Math.abs(x) < 7 || Math.abs(x) < Math.abs(y)*1.1) return;
+      card.classList.remove('is-returning');
+      card.classList.add('is-dragging');
+      paintStudyDrag(card,Math.max(-window.innerWidth,Math.min(window.innerWidth,x)));
+    });
+    card.addEventListener('pointerup',event => {
+      const start = studyMotion.pointer;
+      if (!start || start.id !== event.pointerId) return;
+      studyMotion.pointer = null;
+      if (studyMotion.moving || $('medlexStudyAnswer').hidden) return;
+      const x = event.clientX-start.x;
+      const y = event.clientY-start.y;
+      // A short, intentional horizontal flick should count even when the
+      // artwork is narrow on a small phone or inside a compact grid.
+      if (Math.abs(x)>=30 && Math.abs(x)>Math.abs(y)*1.25) {
+        submitStudyRating(x<0?'review':'known');
+      } else {
+        card.classList.add('is-returning');
+        resetStudyDrag();
+        window.setTimeout(() => card.classList.remove('is-returning'),520);
+      }
+    });
+    card.addEventListener('pointercancel',event => {
+      if (studyMotion.pointer?.id !== event.pointerId) return;
+      studyMotion.pointer = null;
+      card.classList.add('is-returning');
+      resetStudyDrag();
+      window.setTimeout(() => card.classList.remove('is-returning'),520);
+    });
+    if (typeof window.interact !== 'function') return;
+    // The same self-hosted Interact.js engine powers the Atlas and Studio.
+    window.interact(card).draggable({
+      startAxis:'x',lockAxis:'x',ignoreFrom:'button,a,input,select',
+      inertia:{resistance:36,minSpeed:250,endSpeed:170,allowResume:false},
+      listeners:{
+        start() {
+          if (!study.active || studyMotion.moving || $('medlexStudyAnswer').hidden || $('medlexStudySession').hidden) return;
+          studyMotion.drag = {x:0,started:performance.now()};
+          card.classList.remove('is-returning');
+          card.classList.add('is-dragging');
+        },
+        move(event) {
+          if (!studyMotion.drag || studyMotion.moving) return;
+          const gesture = studyMotion.drag;
+          gesture.x = Math.max(-window.innerWidth,Math.min(window.innerWidth,gesture.x + event.dx));
+          paintStudyDrag(card,gesture.x);
+        },
+        end() {
+          if (!studyMotion.drag || studyMotion.moving) return;
+          const {x,started} = studyMotion.drag;
+          const elapsed = Math.max(1,performance.now()-started);
+          if (Math.abs(x)>=30 || (Math.abs(x)>24 && Math.abs(x)/elapsed>.45)) {
+            submitStudyRating(x<0?'review':'known');
+            return;
+          }
+          card.classList.add('is-returning');
+          resetStudyDrag();
+          window.setTimeout(() => card.classList.remove('is-returning'),520);
+        },
+      },
+    });
   }
 
   function rateStudyCard(rating) {
@@ -688,9 +847,9 @@
     if (!deck?.length) { resetStudy(false); return; }
     study.deck = deck.map(item => item.term);
     study.answers = deck.map(item => item.rating).filter(Boolean);
-    study.chapter = saved.chapter;
+    study.chapter = publicChapter(saved.chapter);
     study.topic = saved.topic;
-    $('medlexStudyChapter').value = saved.chapter;
+    $('medlexStudyChapter').value = study.chapter;
     updateStudyTopics(saved.topic);
     drawStudySession(false);
     if (study.active) syncWorkspaceUrl();
@@ -834,8 +993,9 @@
     });
     $('medlexStudyReveal').addEventListener('click', revealStudyCard);
     $('medlexStudyFlipBack').addEventListener('click', () => drawStudyCard());
-    $('medlexStudyKnown').addEventListener('click', () => rateStudyCard('known'));
-    $('medlexStudyReview').addEventListener('click', () => rateStudyCard('review'));
+    $('medlexStudyKnown').addEventListener('click', () => submitStudyRating('known'));
+    $('medlexStudyReview').addEventListener('click', () => submitStudyRating('review'));
+    configureStudySwipe();
     $('medlexStudyAgain').addEventListener('click', () => beginStudy(study.deck.filter((term, index) => study.answers[index] === 'review')));
     for (const id of ['medlexStudyChange','medlexStudyNew']) $(id).addEventListener('click', () => { resetStudy(); saveStudyProgress(); });
     const retry = () => {
@@ -1027,21 +1187,33 @@
           !['planned','available'].includes(term.status) || (term.status === 'available' && (!term.definition || !term.example || !imagePath(term)))) throw new Error('Term i paplotë në kapitujt e rinj.');
       plannedIds.add(term.id);
     }
-    state.categories = chapters.categories;
+    const orlMouth = chapters.categories.find(chapter => chapter.id === ORL_CHAPTER);
+    const orlEarNose = chapters.categories.find(chapter => chapter.id === ORL_EXTRA_CHAPTER);
+    if (!orlMouth || !orlEarNose) throw new Error('Kapitujt ORL nuk u gjetën.');
+    // Virtual consolidation: preserve each Sanity term, ID, image, group and
+    // underlying chapter document, while presenting one complete ORL atlas.
+    state.categories = chapters.categories.map(chapter => chapter.id !== ORL_CHAPTER ? chapter : {
+      ...chapter,
+      title:'ORL · Vesh, hundë dhe fyt',
+      heading:'Atlasi ORL — Vesh, hundë, gojë dhe faring',
+      description:'21 kartela ilustrative: otoskopia, rinoskopia, gjuha, mukoza orale, tonsilat dhe faringu, me pamje normale dhe patologjike.',
+      groups:[...orlMouth.groups,...orlEarNose.groups],
+    });
     state.terms = [...terms,...anatomyTerms,...plannedTerms];
     $('medlexHeroCount').textContent = String(state.terms.filter(term => term.status !== 'planned').length);
     const params = new URLSearchParams(location.search);
     const selected = params.get('category');
-    state.category = selected === 'all' || state.categories.some(item => item.id === selected) ? selected : '01';
+    state.category = selected === 'all' || state.categories.some(item => item.id === selected) ? publicChapter(selected) : '01';
     state.searchFrom = null;
     $('medlexStudyChapter').replaceChildren(new Option('Të gjithë kapitujt', 'all'),
-      ...state.categories.map(chapter => new Option(chapter.id + ' · ' + chapter.title, chapter.id)));
+      ...listedChapters().map(chapter => new Option(chapter.id + ' · ' + chapter.title, chapter.id)));
     $('medlexFlashcards').disabled = false;
     $('medlexStudyShortcut').disabled = false;
     drawCategories();
     drawTopics();
     if (params.get('mode') === 'flashcards') setStudyMode(true, false);
     setQuery($('medlexSearch').value);
+    if (selected === ORL_EXTRA_CHAPTER) syncWorkspaceUrl();
   }
 
   async function init() {

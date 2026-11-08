@@ -87,6 +87,15 @@ assert.ok(fs.existsSync(path.join(ROOT,'vendor/interact/interact.min.js')), 'off
 assert.ok(fs.existsSync(path.join(ROOT,'vendor/interact/LICENSE')), 'vendor license missing');
 assert.match(read('medlex.js'), /window\.interact\(surface\)\.draggable/, 'interactive card drag is backed by Interact.js');
 assert.match(read('medlex.css'), /\.medlex-dialog \.medlex-dialog-card\.is-returning/, 'spring-back animation missing');
+assert.match(html, /id="medlexStudyCard"/, 'Studio flashcard must have an interactive card surface');
+assert.match(html, /id="medlexStudyCardNumber"/, 'Studio needs a visible card counter');
+assert.match(html, /id="medlexStudySwipeHint"/, 'Studio needs gesture guidance');
+assert.match(read('medlex.js'), /function configureStudySwipe\(\)/, 'Studio must support direct touch/mouse swipe gestures');
+assert.match(read('medlex.js'), /function chapterIncludes\(category, term\)/, 'ORL must share one visible category while retaining the original assets');
+assert.match(read('medlex.js'), /groups:\[\.\.\.orlMouth\.groups,\.\.\.orlEarNose\.groups\]/, 'ORL topics must include mouth, throat, ear and nose');
+assert.match(read('medlex.js'), /ghost\.inert = true/, 'Studio swipe transition must not block accessible controls');
+assert.match(read('medlex.js'), /submitStudyRating\(x<0\?'review':'known'\)/, 'Swipe direction must map to a clinical review rating');
+assert.match(read('medlex.css'), /medlex-study-premium-flip/, 'Studio must animate the question/answer flip');
 assert.match(read('sw.js'), /'\/vendor\/interact\/interact\.min\.js'/, 'offline cache must include Interact.js');
 assert.match(html, /sidebar-taxonomy-v3\.js/);
 assert.match(read('sidebar-taxonomy-core-v3.js'), /function ensureMedLexLink\(nav\)/);

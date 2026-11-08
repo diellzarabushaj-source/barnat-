@@ -11,11 +11,11 @@
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/protokollet-v2.css?v=2-audit-20261009">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107">
-  <link rel="stylesheet" href="/medlex.css?v=20261108-interact-cards-v4">
+  <link rel="stylesheet" href="/medlex.css?v=20261108-premium-study-v6">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
   <script src="/vendor/interact/interact.min.js?v=1.10.28" defer></script>
-  <script src="/medlex.js?v=20261108-interact-cards-v4" defer></script>
+  <script src="/medlex.js?v=20261108-premium-study-v6" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#medlexContent">Kalo te terminologjia mjekësore</a>
@@ -116,7 +116,7 @@
           <div class="medlex-toolbox">
             <div class="medlex-search-wrap" role="search" aria-label="Kërko në terminologjinë mjekësore">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2"/></svg>
-              <input id="medlexSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko term ose sinonim…" aria-label="Kërko në të 20 kapitujt sipas termit, latinishtes, anglishtes ose shembullit">
+              <input id="medlexSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko term ose sinonim…" aria-label="Kërko në të 19 kapitujt sipas termit, latinishtes, anglishtes ose shembullit">
               <button type="button" id="medlexClear" class="medlex-search-clear" aria-label="Pastro kërkimin" hidden>×</button>
               <kbd class="medlex-shortcut" aria-hidden="true">Ctrl K</kbd>
             </div>
@@ -183,9 +183,10 @@
 
             <section id="medlexStudy" class="medlex-study" aria-labelledby="medlexStudyTitle" hidden>
               <header class="medlex-study-header">
-                <span class="medlex-study-kicker">DRx MedLex · Studio</span>
+                <span class="medlex-study-kicker"><span aria-hidden="true">✦</span> DRx MedLex · Studio interaktive</span>
                 <h2 id="medlexStudyTitle" tabindex="-1">Flashcards</h2>
                 <p>Përgjigju nga kujtesa, kthe kartelën dhe shëno çfarë do të përsëritësh.</p>
+                <span class="medlex-study-header-tag" aria-hidden="true">MËSO <span>•</span> KUJTO <span>•</span> PËRSËRIT</span>
               </header>
 
               <div class="medlex-study-personal" aria-label="Progresi im">
@@ -203,6 +204,7 @@
               </div>
 
               <form id="medlexStudySetup" class="medlex-study-panel" aria-label="Përgatit seancën">
+                <div class="medlex-study-setup-heading"><span class="medlex-study-setup-icon" aria-hidden="true">✦</span><div><span>HAPI I PARË</span><h3>Përgatit seancën tënde</h3></div></div>
                 <div class="medlex-study-fields">
                   <div class="medlex-study-field">
                     <label for="medlexStudyChapter">Kapitulli</label>
@@ -234,7 +236,7 @@
                 </div>
               </form>
 
-              <div id="medlexStudySession" hidden>
+              <div id="medlexStudySession" class="medlex-study-session" hidden>
                 <div class="medlex-study-progress">
                   <div>
                     <span id="medlexStudyScope"></span>
@@ -243,9 +245,15 @@
                   <progress id="medlexStudyProgress" value="0" max="1" aria-label="Përparimi i seancës"></progress>
                 </div>
 
-                <article class="medlex-study-card" aria-labelledby="medlexStudyQuestion">
+                <div class="medlex-study-card-stage" id="medlexStudyCardStage">
+                  <div class="medlex-study-card-shadow medlex-study-card-shadow-back" aria-hidden="true"></div>
+                  <div class="medlex-study-card-shadow medlex-study-card-shadow-front" aria-hidden="true"></div>
+                <article class="medlex-study-card" id="medlexStudyCard" aria-labelledby="medlexStudyQuestion">
+                  <span class="medlex-study-swipe-cue medlex-study-swipe-cue-review" aria-hidden="true">↶ PËRSËRIT</span>
+                  <span class="medlex-study-swipe-cue medlex-study-swipe-cue-known" aria-hidden="true">✓ E DIJA</span>
                   <div id="medlexStudyFront" class="medlex-study-front">
-                    <span class="medlex-section-index">Pyetja</span>
+                    <div class="medlex-study-face-head"><span class="medlex-study-face-number" id="medlexStudyCardNumber">01 / 04</span><span class="medlex-study-face-label"><span aria-hidden="true">✦</span> KUJTO NGA MEMORIA</span></div>
+                    <span class="medlex-study-question-symbol" aria-hidden="true">?</span>
                     <h3 id="medlexStudyQuestion" tabindex="-1"></h3>
                     <span class="medlex-study-flip-hint" aria-hidden="true">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M6 8a7 7 0 0 1 12-2l2 6M4 12l2 6a7 7 0 0 0 12-2"/></svg>
@@ -256,7 +264,7 @@
                   <div id="medlexStudyAnswer" hidden>
                     <div class="medlex-study-back">
                       <div class="medlex-study-answer-title">
-                        <span class="medlex-section-index">Përgjigjja</span>
+                        <div class="medlex-study-answer-head"><span class="medlex-section-index">✦ Përgjigjja</span><button type="button" id="medlexStudyFlipBack" class="medlex-study-back-action" aria-label="Kthe te pyetja" aria-controls="medlexStudyFront"><span aria-hidden="true">↶</span> Pyetja</button></div>
                         <h3 id="medlexStudyTerm" tabindex="-1"></h3>
                         <div class="medlex-dialog-translations">
                           <span class="medlex-dialog-english" id="medlexStudyLatin"></span>
@@ -264,7 +272,7 @@
                         </div>
                       </div>
                       <figure class="medlex-study-art">
-                        <img id="medlexStudyImage" alt="" width="1254" height="1254">
+                        <img id="medlexStudyImage" alt="" width="1254" height="1254" draggable="false">
                         <figcaption>Kartela origjinale e MedLex</figcaption>
                       </figure>
                       <div class="medlex-study-explanation">
@@ -273,14 +281,15 @@
                         <h4>Shembull klinik</h4>
                         <blockquote id="medlexStudyExample"></blockquote>
                       </div>
-                      <button type="button" id="medlexStudyFlipBack" class="medlex-study-hit" aria-label="Kthe te pyetja" aria-controls="medlexStudyFront"></button>
                     </div>
                     <div class="medlex-study-rating" role="group" aria-label="Si të shkoi kjo kartelë?">
-                      <button type="button" id="medlexStudyReview" class="medlex-study-secondary">Për përsëritje</button>
-                      <button type="button" id="medlexStudyKnown" class="medlex-primary-action">E dija</button>
+                      <button type="button" id="medlexStudyReview" class="medlex-study-secondary"><span aria-hidden="true">↶</span> Për përsëritje</button>
+                      <button type="button" id="medlexStudyKnown" class="medlex-primary-action"><span aria-hidden="true">✓</span> E dija</button>
                     </div>
                   </div>
                 </article>
+                </div>
+                <p class="medlex-study-swipe-help" id="medlexStudySwipeHint" hidden><span aria-hidden="true">←</span> Rrëshqit majtas për përsëritje <span class="medlex-study-swipe-divider">·</span> djathtas nëse e dije <span aria-hidden="true">→</span></p>
                 <button type="button" id="medlexStudyChange" class="medlex-study-secondary">Ndrysho përzgjedhjen</button>
               </div>
 
