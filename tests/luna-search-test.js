@@ -1,5 +1,7 @@
 'use strict';
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const Luna = require('../lib/luna-search-core.js');
 
 const ID = '8bbd248b-e46c-483a-a781-8ca0c69844b1';
@@ -44,6 +46,15 @@ async function run() {
   assert.equal(searched.length, 2);
   assert.deepEqual(await Luna.findPublishedDrugs([], mockSearch, mockRequest), []);
   assert.equal(searched.length, 2, 'no unnecessary database calls without extracted terms');
+  const root = path.resolve(__dirname, '..');
+  if (fs.existsSync(path.join(root, 'vercel.json'))) {
+    const config = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
+    assert.equal(config.rewrites.find(row => row.source === '/api/luna-search')?.destination, '/api/gemini-prescription-secure?lunaSearch=1');
+    assert.ok(!fs.existsSync(path.join(root, 'api/luna-search.js')), 'Luna must not consume another Vercel Hobby function');
+    const gateway = fs.readFileSync(path.join(root, 'api/gemini-prescription-secure.js'), 'utf8');
+    assert.match(gateway, /lunaSearch/);
+    assert.match(gateway, /lib\/luna-search-handler\.js/);
+  }
   console.log('Luna DRx contract tests passed.');
 }
 run().catch(error => { console.error(error); process.exitCode = 1; });
