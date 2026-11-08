@@ -446,8 +446,7 @@
     });
     surface.addEventListener('pointerdown', event => {
       if (deck.moving || !dialog.open || deck.terms.length < 2 || (event.pointerType === 'mouse' && event.button !== 0) || event.target.closest('button,a')) return;
-      deck.pointer = { id:event.pointerId, x:event.clientX, y:event.clientY, dx:0, dy:0, started:performance.now() };
-      try { surface.setPointerCapture(event.pointerId); } catch { /* Native touch capture is sufficient. */ }
+      deck.pointer = { id:event.pointerId, x:event.clientX, y:event.clientY, dx:0, dy:0, started:performance.now(), captured:false };
     });
     surface.addEventListener('dragstart',event => event.preventDefault());
     surface.addEventListener('pointermove', event => {
@@ -457,6 +456,10 @@
       swipe.dy = event.clientY - swipe.y;
       if (Math.abs(swipe.dy) > Math.abs(swipe.dx) * 1.4) return;
       if (Math.abs(swipe.dx) < 8) return;
+      if (!swipe.captured) {
+        try { surface.setPointerCapture(event.pointerId); swipe.captured = true; }
+        catch { /* Native touch capture is sufficient. */ }
+      }
       surface.classList.add('is-dragging');
       const offset = Math.max(-180,Math.min(180,swipe.dx));
       surface.style.setProperty('--medlex-drag-x',offset + 'px');
