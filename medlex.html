@@ -311,9 +311,21 @@
               </div>
 
               <section id="medlexStudySummary" class="medlex-study-panel medlex-study-summary" aria-labelledby="medlexStudySummaryTitle" hidden>
-                <span class="medlex-section-index">Përmbledhja</span>
-                <h3 id="medlexStudySummaryTitle" tabindex="-1">Seanca përfundoi</h3>
-                <p id="medlexStudyResult"></p>
+                <div class="medlex-study-summary-layout">
+                  <div class="medlex-study-score-ring" id="medlexStudyScoreRing" role="img" aria-label="Rezultati i seancës">
+                    <div class="medlex-study-score-core"><strong id="medlexStudyScore">0%</strong><span>TË DIJA</span></div>
+                  </div>
+                  <div class="medlex-study-summary-copy">
+                    <span class="medlex-study-summary-eyebrow">✦ DRx MEDLEX · REZULTATI YT</span>
+                    <h3 id="medlexStudySummaryTitle" tabindex="-1">Seanca përfundoi</h3>
+                    <p id="medlexStudyResult"></p>
+                    <p id="medlexStudySummaryMessage" class="medlex-study-summary-message"></p>
+                    <div class="medlex-study-summary-metrics" aria-label="Përmbledhja e vlerësimeve">
+                      <div><span aria-hidden="true">✓</span><strong id="medlexStudySummaryKnown">0</strong><small>I dije</small></div>
+                      <div><span aria-hidden="true">↶</span><strong id="medlexStudySummaryReview">0</strong><small>Për përsëritje</small></div>
+                    </div>
+                  </div>
+                </div>
                 <div class="medlex-study-actions">
                   <button type="button" id="medlexStudyUndoSummary" class="medlex-study-secondary" hidden>↶ Zhbëj kartelën e fundit</button>
                   <button type="button" id="medlexStudyAgain" class="medlex-primary-action" hidden>Përsërit të vështirat</button>
