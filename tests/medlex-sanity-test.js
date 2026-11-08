@@ -24,4 +24,21 @@ assert.equal(mergeCatalog(remote).categories[2].terms[0].status, 'planned');
 remote.cards[0].order = 999;
 assert.equal(mergeCatalog(remote).categories[2].terms.at(-1).id, 'c03-001', 'CMS card ordering must be honored');
 assert.ok(QUERY.includes('_type == "medlexCard"'));
+const orl = original.categories.find(chapter => chapter.id === '19');
+assert.equal(orl.terms.length, 13);
+assert.equal(orl.groups.length, 4);
+const orlCms = mergeCatalog({
+  chapters:[{externalId:'19', title:'ORL · Gojë dhe faring'}],
+  subchapters:[{chapter:'19', groupId:'faringu', title:'Faringu, qiellza dhe uvula', order:1}],
+  cards:[{externalId:'c19-002', term:'Faring eritematoz', definition:'Mukozë e skuqur gjatë inspektimit.',
+    example:'Skuqja nuk dallon etiologjinë virale nga ajo bakteriale.',
+    subchapter:{chapter:'19',groupId:'faringu'}, contentStatus:'available',clinicalStatus:'draft',order:1,
+    imageUrl:'https://cdn.sanity.io/images/4wdtp8cz/production/abc123-1254x1254.webp'}]
+});
+assert.equal(orlCms.categories.length, 19);
+assert.equal(orlCms.categories[18].terms.length, 13);
+assert.equal(orlCms.categories[18].terms.find(term => term.id === 'c19-002').definition, 'Mukozë e skuqur gjatë inspektimit.');
+assert.equal(orlCms.categories[18].terms.find(term => term.id === 'c19-002').clinicalStatus, 'draft');
+assert.equal(orlCms.categories[18].terms.find(term => term.id === 'c19-003').definition, orl.terms[2].definition,
+  'Unmodified Sanity ORL cards must retain illustrated local fallback.');
 console.log('MedLex Sanity merge passed: hierarchy, published content, draft review status, image origin, planned cards, fallback and unchanged chapters 01–02.');
