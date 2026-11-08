@@ -5,7 +5,9 @@
   const DATA_URL = '/data/medlex-terms.json';
   const ANATOMY_ARTWORK_VERSION = '20261104-clinical-v2';
   const ANATOMY_DATA_URL = '/data/medlex-anatomy.json?v=' + ANATOMY_ARTWORK_VERSION;
-  const CHAPTER_ARTWORK_VERSION = '20261108-orl-v5';
+  const CHAPTER_ARTWORK_VERSION = '20261109-derm-v1';
+  // Keep earlier locally published batches visible while older CMS snapshots sync.
+  const LOCAL_ARTWORK_RELEASES = new Set(['20261108-orl-v5', CHAPTER_ARTWORK_VERSION]);
   const CHAPTERS_URL = '/data/medlex-chapters.json?v=' + CHAPTER_ARTWORK_VERSION;
   const IMAGE_BASE = '/assets/medlex/';
   const ANATOMY_IMAGE_BASE = '/assets/medlex-anatomy/';
@@ -1269,16 +1271,19 @@
             const localById = new Map((local.terms || []).map(term => [term.id,term]));
             const updated = chapter.terms.map(term => {
               const localTerm = localById.get(term.id);
-              if (!localTerm || localTerm.artworkVersion !== CHAPTER_ARTWORK_VERSION ||
-                  term.artworkVersion === CHAPTER_ARTWORK_VERSION) return term;
-              return {...term,image:localTerm.image,imageUrl:'',artworkVersion:CHAPTER_ARTWORK_VERSION,
+              if (!localTerm || !LOCAL_ARTWORK_RELEASES.has(localTerm.artworkVersion) ||
+                  term.artworkVersion === localTerm.artworkVersion) return term;
+              return {...term,image:localTerm.image,imageUrl:'',artworkVersion:localTerm.artworkVersion,
                 clinicalStatus:'draft_for_clinical_review'};
             });
             const remoteIds = new Set(chapter.terms.map(term => term.id));
             const additions = (local.terms || []).filter(term => term.status === 'available' &&
-              term.artworkVersion === CHAPTER_ARTWORK_VERSION && !remoteIds.has(term.id));
-            return additions.length || updated.some((term,index) => term !== chapter.terms[index])
-              ? {...chapter,terms:[...updated,...additions]} : chapter;
+              LOCAL_ARTWORK_RELEASES.has(term.artworkVersion) && !remoteIds.has(term.id));
+            const remoteGroups = new Set((chapter.groups || []).map(group => group.id));
+            const addedGroups = (local.groups || []).filter(group => !remoteGroups.has(group.id) &&
+              additions.some(term => term.group === group.id));
+            return additions.length || addedGroups.length || updated.some((term,index) => term !== chapter.terms[index])
+              ? {...chapter,groups:[...(chapter.groups || []),...addedGroups],terms:[...updated,...additions]} : chapter;
           }),
         }
       : localChapters;
