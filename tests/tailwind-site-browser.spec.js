@@ -491,6 +491,40 @@ test('MedLex keeps a single search result swipeable within its chapter', async (
   await expect(dialog.locator('#medlexDialogTitle')).not.toHaveText(initial);
 });
 
+test('MedLex Studio presents a 3D flashcard and supports swipe-to-rate', async ({page}) => {
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('http://127.0.0.1:4173/medlex.html?category=05&mode=flashcards');
+  const study = page.locator('#medlexStudy');
+  await expect(study).toBeVisible();
+  await page.getByLabel('Nënkapitulli',{exact:true}).selectOption('ritmi');
+  await study.getByRole('button',{name:'Fillo seancën'}).click();
+  const card = study.locator('#medlexStudyCard');
+  await expect(card).toBeVisible();
+  await expect(study.locator('#medlexStudyCardNumber')).toHaveText('01 / 04');
+  await expect(study.locator('#medlexStudySwipeHint')).toBeHidden();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+  await study.getByRole('button',{name:'Zbulo kartelën'}).click();
+  await expect(study.locator('#medlexStudySwipeHint')).toBeVisible();
+  await expect(card).toHaveClass(/is-revealed/);
+  await expect(study.locator('#medlexStudyTerm')).toHaveText('Takikardi');
+  const artwork = await study.locator('#medlexStudyImage').boundingBox();
+  await page.mouse.move(artwork.x+artwork.width*.73,artwork.y+artwork.height*.4);
+  await page.mouse.down();
+  await page.mouse.move(artwork.x+artwork.width*.23,artwork.y+artwork.height*.4,{steps:9});
+  await page.mouse.up();
+  await expect(study.locator('#medlexStudyPosition')).toHaveText('Kartela 2 nga 4 · 25%');
+  await expect(study.locator('#medlexStudyRemaining')).toHaveText('1');
+  await study.getByRole('button',{name:'Zbulo kartelën'}).click();
+  await expect(study.locator('#medlexStudyTerm')).toHaveText('Bradikardi');
+  const secondArtwork = await study.locator('#medlexStudyImage').boundingBox();
+  await page.mouse.move(secondArtwork.x+secondArtwork.width*.22,secondArtwork.y+secondArtwork.height*.44);
+  await page.mouse.down();
+  await page.mouse.move(secondArtwork.x+secondArtwork.width*.74,secondArtwork.y+secondArtwork.height*.44,{steps:9});
+  await page.mouse.up();
+  await expect(study.locator('#medlexStudyPosition')).toHaveText('Kartela 3 nga 4 · 50%');
+  await expect(study.locator('#medlexStudyMastered')).toHaveText('1');
+});
+
 for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,height:700}]) {
   test(`MedLex chapter flashcards reveal the original card and retry missed terms on ${name}`, async ({page}) => {
     await page.setViewportSize({width,height});

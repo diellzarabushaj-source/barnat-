@@ -57,6 +57,7 @@
   const deck = { terms:[], index:0, moving:false, drag:null, ignoreClicksUntil:0 };
 
   const study = { active:false, deck:[], answers:[], ratings:{}, chapter:'01', topic:'all' };
+  const studyMotion = { moving:false, drag:null };
   const studySync = { account:'', revision:0, loaded:false, working:false, pending:null, conflict:null };
 
   function normalize(value) {
@@ -601,6 +602,8 @@
   }
 
   function resetStudy(focus = true) {
+    resetStudyDrag();
+    studyMotion.moving = false;
     study.deck = [];
     study.answers = [];
     $('medlexStudyImage').removeAttribute('src');
@@ -612,6 +615,11 @@
 
   function drawStudyCard(focus = true) {
     const index = study.answers.length;
+    const surface = $('medlexStudyCard');
+    surface.classList.remove('is-returning','is-dragging');
+    surface.classList.toggle('is-revealed',false);
+    $('medlexStudySwipeHint').hidden = true;
+    $('medlexStudyCardNumber').textContent = `${String(index + 1).padStart(2,'0')} / ${String(study.deck.length).padStart(2,'0')}`;
     $('medlexStudyPosition').textContent = `Kartela ${index + 1} nga ${study.deck.length} · ${Math.round(100 * index / study.deck.length)}%`;
     $('medlexStudyProgress').max = study.deck.length;
     $('medlexStudyProgress').value = index;
@@ -620,6 +628,8 @@
     $('medlexStudyImage').removeAttribute('src');
     $('medlexStudyFront').hidden = false;
     $('medlexStudyQuestion').closest('article').setAttribute('aria-labelledby', 'medlexStudyQuestion');
+    const nextArtwork = imagePath(study.deck[index]);
+    if (nextArtwork) { const preload = new Image(); preload.src = nextArtwork; }
     if (focus) $('medlexStudyQuestion').focus();
   }
 
@@ -665,8 +675,84 @@
     image.src = imagePath(term);
     $('medlexStudyFront').hidden = true;
     $('medlexStudyAnswer').hidden = false;
+    $('medlexStudyCard').classList.add('is-revealed');
+    $('medlexStudySwipeHint').hidden = false;
     $('medlexStudyTerm').closest('article').setAttribute('aria-labelledby', 'medlexStudyTerm');
     $('medlexStudyTerm').focus();
+  }
+
+  function resetStudyDrag(clearOffset = true) {
+    const card = $('medlexStudyCard');
+    card.classList.remove('is-dragging');
+    if (clearOffset) {
+      for (const variable of ['--study-drag-x','--study-drag-y','--study-drag-rotate','--study-drag-tilt','--study-cue-opacity']) card.style.removeProperty(variable);
+      delete card.dataset.studyDirection;
+    }
+    studyMotion.drag = null;
+  }
+
+  function submitStudyRating(rating) {
+    if (studyMotion.moving || $('medlexStudyAnswer').hidden || !study.deck[study.answers.length]) return;
+    studyMotion.moving = true;
+    // Swipe keeps its last finger offset until the card leaves the stack.
+    resetStudyDrag(false);
+    const card = $('medlexStudyCard');
+    card.dataset.studyExit = rating;
+    const advance = () => {
+      card.classList.add('is-resetting');
+      resetStudyDrag();
+      delete card.dataset.studyExit;
+      rateStudyCard(rating);
+      studyMotion.moving = false;
+      card.classList.remove('is-resetting');
+      card.classList.add('is-entering');
+      window.setTimeout(() => card.classList.remove('is-entering'),350);
+    };
+    window.setTimeout(advance,window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 220);
+  }
+
+  function configureStudySwipe() {
+    const card = $('medlexStudyCard');
+    card.addEventListener('dragstart',event => event.preventDefault());
+    if (typeof window.interact !== 'function') return;
+    // The same self-hosted Interact.js engine powers the Atlas and Studio.
+    window.interact(card).draggable({
+      startAxis:'x',lockAxis:'x',ignoreFrom:'button,a,input,select',
+      inertia:{resistance:36,minSpeed:250,endSpeed:170,allowResume:false},
+      listeners:{
+        start() {
+          if (!study.active || studyMotion.moving || $('medlexStudyAnswer').hidden || $('medlexStudySession').hidden) return;
+          studyMotion.drag = {x:0,started:performance.now()};
+          card.classList.remove('is-returning');
+          card.classList.add('is-dragging');
+        },
+        move(event) {
+          if (!studyMotion.drag || studyMotion.moving) return;
+          const gesture = studyMotion.drag;
+          gesture.x = Math.max(-window.innerWidth,Math.min(window.innerWidth,gesture.x + event.dx));
+          const x = gesture.x;
+          const magnitude = Math.min(1,Math.abs(x)/155);
+          card.style.setProperty('--study-drag-x',x+'px');
+          card.style.setProperty('--study-drag-y',(-11*magnitude).toFixed(2)+'px');
+          card.style.setProperty('--study-drag-rotate',Math.max(-14,Math.min(14,x/23))+'deg');
+          card.style.setProperty('--study-drag-tilt',Math.max(-7,Math.min(7,-x/29))+'deg');
+          card.style.setProperty('--study-cue-opacity',magnitude.toFixed(3));
+          card.dataset.studyDirection = x < 0 ? 'review' : 'known';
+        },
+        end() {
+          if (!studyMotion.drag || studyMotion.moving) return;
+          const {x,started} = studyMotion.drag;
+          const elapsed = Math.max(1,performance.now()-started);
+          if (Math.abs(x)>68 || (Math.abs(x)>30 && Math.abs(x)/elapsed>.45)) {
+            submitStudyRating(x<0?'review':'known');
+            return;
+          }
+          card.classList.add('is-returning');
+          resetStudyDrag();
+          window.setTimeout(() => card.classList.remove('is-returning'),520);
+        },
+      },
+    });
   }
 
   function rateStudyCard(rating) {
@@ -834,8 +920,9 @@
     });
     $('medlexStudyReveal').addEventListener('click', revealStudyCard);
     $('medlexStudyFlipBack').addEventListener('click', () => drawStudyCard());
-    $('medlexStudyKnown').addEventListener('click', () => rateStudyCard('known'));
-    $('medlexStudyReview').addEventListener('click', () => rateStudyCard('review'));
+    $('medlexStudyKnown').addEventListener('click', () => submitStudyRating('known'));
+    $('medlexStudyReview').addEventListener('click', () => submitStudyRating('review'));
+    configureStudySwipe();
     $('medlexStudyAgain').addEventListener('click', () => beginStudy(study.deck.filter((term, index) => study.answers[index] === 'review')));
     for (const id of ['medlexStudyChange','medlexStudyNew']) $(id).addEventListener('click', () => { resetStudy(); saveStudyProgress(); });
     const retry = () => {
