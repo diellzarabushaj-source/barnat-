@@ -476,6 +476,11 @@ test('MedLex atlas supports tapping, dismissing, and swipe-style navigation', as
   await expect(dialog.locator('#medlexDialogTitle')).toHaveText('Timpan normal');
   await page.keyboard.press('ArrowRight');
   await expect(dialog.locator('#medlexDialogTitle')).toHaveText('Efuzioni i veshit të mesëm');
+  await expect(dialog.getByRole('button',{name:'Kartela e mëparshme'})).toBeVisible();
+  await dialog.getByRole('button',{name:'Kartela e mëparshme'}).click();
+  await expect(dialog.locator('#medlexDialogTitle')).toHaveText('Timpan normal');
+  await page.keyboard.press('ArrowRight');
+  await expect(dialog.locator('#medlexDialogTitle')).toHaveText('Efuzioni i veshit të mesëm');
   const surface = dialog.locator('#medlexSwipeSurface');
   const rect = await surface.boundingBox();
   await page.mouse.move(rect.x + rect.width * .68,rect.y + Math.min(rect.height * .25,140));
@@ -516,6 +521,14 @@ test('MedLex Studio presents a 3D flashcard and supports swipe-to-rate', async (
   await expect(study.locator('#medlexStudySwipeHint')).toBeVisible();
   await expect(card).toHaveClass(/is-revealed/);
   await expect(study.locator('#medlexStudyTerm')).toHaveText('Takikardi');
+  const clinicalDetails = study.locator('#medlexStudyDetailsDialog');
+  await expect(clinicalDetails).toBeHidden();
+  await study.getByRole('button',{name:'Më shumë'}).click();
+  await expect(clinicalDetails).toBeVisible();
+  await expect(clinicalDetails.locator('#medlexStudyDefinition')).toBeVisible();
+  await expect(clinicalDetails.locator('#medlexStudyExample')).toBeVisible();
+  await clinicalDetails.getByRole('button',{name:'Mbyll detajet'}).click();
+  await expect(clinicalDetails).toBeHidden();
   const artwork = await study.locator('#medlexStudyImage').boundingBox();
   await page.mouse.move(artwork.x+artwork.width*.73,artwork.y+artwork.height*.4);
   await page.mouse.down();
