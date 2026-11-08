@@ -54,7 +54,7 @@
 
   const $ = id => document.getElementById(id);
   const state = { terms:[], groups:[], categories:[], category:'01', searchFrom:null, topic:'all', query:'', view:'grid', selected:null, visibleTerms:[], authenticated:false };
-  const deck = { terms:[], index:0, moving:false, pointer:null, ignoreClicksUntil:0 };
+  const deck = { terms:[], index:0, moving:false, drag:null, ignoreClicksUntil:0 };
 
   const study = { active:false, deck:[], answers:[], ratings:{}, chapter:'01', topic:'all' };
   const studySync = { account:'', revision:0, loaded:false, working:false, pending:null, conflict:null };
@@ -340,6 +340,7 @@
     const planned = term.status === 'planned';
     state.selected = term;
     $('medlexDialogTitle').textContent = term.term;
+    $('medlexDetailsTitle').textContent = term.term;
     $('medlexDialogCategory').textContent = `DRx MedLex · Kapitulli ${term.category}`;
     $('medlexDialogLatin').textContent = term.latin ? `Latinisht: ${term.latin}` : '';
     const english = term.english || ALIASES[term.id]?.[0];
@@ -365,41 +366,70 @@
     $('medlexDeckNext').disabled = deck.terms.length < 2;
     $('medlexDeckImageHit').setAttribute('aria-disabled',String(deck.terms.length < 2));
     $('medlexDeckLive').textContent = `${term.term}. Kartela ${deck.index + 1} nga ${deck.terms.length}.`;
-    $('medlexSwipeSurface').scrollTop = 0;
+    // Warm the adjacent artworks so fast flicks do not show a blank card.
+    if (!planned && deck.terms.length > 1) {
+      for (const offset of [-1,1]) {
+        const adjacent = deck.terms[(deck.index + offset + deck.terms.length) % deck.terms.length];
+        if (adjacent.status !== 'planned') { const preload = new Image(); preload.src = imagePath(adjacent); }
+      }
+    }
+  }
+
+  function setDeckDetails(open, restoreFocus = false) {
+    const sheet = $('medlexDetailsSheet');
+    const scrim = $('medlexDetailsScrim');
+    sheet.classList.toggle('is-open',open);
+    sheet.inert = !open;
+    sheet.setAttribute('aria-hidden',String(!open));
+    scrim.hidden = !open;
+    $('medlexDeckMore').setAttribute('aria-expanded',String(open));
+    if (open) $('medlexDetailsClose').focus({preventScroll:true});
+    else if (restoreFocus) $('medlexDeckMore').focus({preventScroll:true});
   }
 
   function openTerm(term) {
     const dialog = $('medlexDialog');
-    deck.terms = state.visibleTerms.length ? [...state.visibleTerms] : [term];
+    // A search for a single term must still open a swipeable chapter atlas.
+    const chapterTerms = state.terms.filter(item => item.category === term.category && item.status !== 'planned');
+    const available = state.terms.filter(item => item.status !== 'planned');
+    deck.terms = state.visibleTerms.length > 1 ? [...state.visibleTerms] :
+      chapterTerms.length > 1 ? chapterTerms : available.length > 1 ? available : [term];
     deck.index = deck.terms.findIndex(item => item === term);
     if (deck.index < 0) { deck.terms = [term]; deck.index = 0; }
     deck.moving = false;
     resetDeckDrag();
+    setDeckDetails(false);
     showDeckTerm();
     if (!dialog.open) dialog.showModal();
     document.documentElement.classList.add('medlex-deck-open');
   }
 
-  function resetDeckDrag() {
+  function resetDeckDrag(clearOffset = true) {
     const surface = $('medlexSwipeSurface');
     surface.classList.remove('is-dragging');
-    surface.style.removeProperty('--medlex-drag-x');
-    surface.style.removeProperty('--medlex-drag-turn');
-    deck.pointer = null;
+    if (clearOffset) {
+      surface.style.removeProperty('--medlex-drag-x');
+      surface.style.removeProperty('--medlex-drag-turn');
+      surface.style.removeProperty('--medlex-drag-tilt');
+      surface.style.removeProperty('--medlex-drag-y');
+      surface.style.removeProperty('--medlex-drag-scale');
+    }
+    deck.drag = null;
   }
 
   function moveDeck(direction, remove = false) {
     if (deck.moving || !$('medlexDialog').open || !deck.terms.length) return;
     if (!remove && deck.terms.length < 2) return;
     deck.moving = true;
-    deck.ignoreClicksUntil = Date.now() + 500;
-    resetDeckDrag();
+    deck.ignoreClicksUntil = Date.now() + 420;
+    setDeckDetails(false);
+    // Keep the finger's offset until the exit animation begins — no snap-back.
+    resetDeckDrag(false);
     const surface = $('medlexSwipeSurface');
     surface.dataset.exit = direction < 0 ? 'left' : 'right';
     const finish = () => {
-      // Reveal the next card from the stack, rather than pulling the dismissed
-      // card back across the screen in the opposite direction.
       surface.classList.add('is-resetting');
+      resetDeckDrag();
       if (remove) {
         deck.terms.splice(deck.index,1);
         if (!deck.terms.length) {
@@ -416,7 +446,7 @@
         window.setTimeout(() => surface.classList.remove('is-entering'),260);
       });
     };
-    window.setTimeout(finish, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 240);
+    window.setTimeout(finish, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 205);
   }
 
   function configureDeck() {
@@ -425,15 +455,25 @@
     $('medlexDeckPrev').addEventListener('click', () => moveDeck(1));
     $('medlexDeckNext').addEventListener('click', () => moveDeck(-1));
     $('medlexDeckDismiss').addEventListener('click', () => moveDeck(-1,true));
+    $('medlexDeckMore').addEventListener('click', () => setDeckDetails(true));
+    $('medlexDetailsClose').addEventListener('click', () => setDeckDetails(false,true));
+    $('medlexDetailsScrim').addEventListener('click', () => setDeckDetails(false,true));
+    dialog.addEventListener('cancel', event => {
+      if ($('medlexDetailsSheet').classList.contains('is-open')) {
+        event.preventDefault();
+        setDeckDetails(false,true);
+      }
+    });
     dialog.addEventListener('close', () => {
       document.documentElement.classList.remove('medlex-deck-open');
+      setDeckDetails(false);
       deck.terms = [];
       resetDeckDrag();
       delete surface.dataset.exit;
-      surface.classList.remove('is-entering','is-resetting');
+      surface.classList.remove('is-entering','is-resetting','is-returning');
     });
     dialog.addEventListener('keydown', event => {
-      if (event.altKey || event.ctrlKey || event.metaKey || event.target.closest('a')) return;
+      if (event.altKey || event.ctrlKey || event.metaKey || event.target.closest('a') || $('medlexDetailsSheet').classList.contains('is-open')) return;
       if (event.key === 'ArrowRight') { event.preventDefault(); moveDeck(-1); }
       else if (event.key === 'ArrowLeft') { event.preventDefault(); moveDeck(1); }
       else if (event.key.toLowerCase() === 'x' && event.target.tagName !== 'BUTTON') { event.preventDefault(); moveDeck(-1,true); }
@@ -444,41 +484,50 @@
     $('medlexDeckImageHit').addEventListener('keydown', event => {
       if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); moveDeck(-1); }
     });
-    surface.addEventListener('pointerdown', event => {
-      if (deck.moving || !dialog.open || deck.terms.length < 2 || (event.pointerType === 'mouse' && event.button !== 0) || event.target.closest('button,a')) return;
-      deck.pointer = { id:event.pointerId, x:event.clientX, y:event.clientY, dx:0, dy:0, started:performance.now(), captured:false };
-    });
     surface.addEventListener('dragstart',event => event.preventDefault());
-    surface.addEventListener('pointermove', event => {
-      if (!deck.pointer || event.pointerId !== deck.pointer.id || deck.moving) return;
-      const swipe = deck.pointer;
-      swipe.dx = event.clientX - swipe.x;
-      swipe.dy = event.clientY - swipe.y;
-      if (Math.abs(swipe.dy) > Math.abs(swipe.dx) * 1.4) return;
-      if (Math.abs(swipe.dx) < 8) return;
-      if (!swipe.captured) {
-        try { surface.setPointerCapture(event.pointerId); swipe.captured = true; }
-        catch { /* Native touch capture is sufficient. */ }
-      }
-      surface.classList.add('is-dragging');
-      const offset = Math.max(-180,Math.min(180,swipe.dx));
-      surface.style.setProperty('--medlex-drag-x',offset + 'px');
-      surface.style.setProperty('--medlex-drag-turn',Math.max(-10,Math.min(10,offset / 18)) + 'deg');
+    if (typeof window.interact !== 'function') {
+      setStatus('Animacioni i kartelave nuk u ngarkua. Rifresko faqen.');
+      return;
+    }
+    // Interact.js handles pointer and touch drag/inertia across Safari, Chrome
+    // and desktop. The card's 3D spring and exit choreography remain local CSS.
+    window.interact(surface).draggable({
+      startAxis:'x', lockAxis:'x',
+      inertia:{resistance:32,minSpeed:280,endSpeed:175,allowResume:false},
+      listeners:{
+        start() {
+          if (deck.moving || !dialog.open || deck.terms.length < 2 || $('medlexDetailsSheet').classList.contains('is-open')) return;
+          deck.drag = {x:0,started:performance.now()};
+          deck.ignoreClicksUntil = Date.now() + 520;
+          surface.classList.remove('is-returning');
+          surface.classList.add('is-dragging');
+        },
+        move(event) {
+          if (!deck.drag || deck.moving) return;
+          deck.drag.x = Math.max(-window.innerWidth,Math.min(window.innerWidth,deck.drag.x + event.dx));
+          const x = deck.drag.x;
+          surface.style.setProperty('--medlex-drag-x',x + 'px');
+          surface.style.setProperty('--medlex-drag-turn',Math.max(-17,Math.min(17,x / 15)) + 'deg');
+          surface.style.setProperty('--medlex-drag-tilt',Math.max(-8,Math.min(8,-x / 24)) + 'deg');
+          const lift = Math.min(1,Math.abs(x)/190);
+          surface.style.setProperty('--medlex-drag-y',(-8*lift).toFixed(2) + 'px');
+          surface.style.setProperty('--medlex-drag-scale',(1+.013*lift).toFixed(4));
+        },
+        end(event) {
+          if (!deck.drag || deck.moving) return;
+          const x = deck.drag.x;
+          const elapsed = Math.max(1,performance.now() - deck.drag.started);
+          // A gentle 36px gesture or a quick flick is enough to change cards.
+          if (Math.abs(x) > 36 || (Math.abs(x) > 17 && Math.abs(x)/elapsed > .35)) {
+            moveDeck(x < 0 ? -1 : 1);
+            return;
+          }
+          surface.classList.add('is-returning');
+          resetDeckDrag();
+          window.setTimeout(() => surface.classList.remove('is-returning'),500);
+        },
+      },
     });
-    surface.addEventListener('pointerup', event => {
-      if (!deck.pointer || event.pointerId !== deck.pointer.id) return;
-      const swipe = deck.pointer;
-      const dx = event.clientX - swipe.x;
-      const dy = event.clientY - swipe.y;
-      const elapsed = Math.max(1,performance.now() - swipe.started);
-      const horizontal = Math.abs(dx) > Math.abs(dy) * 1.25;
-      resetDeckDrag();
-      if (horizontal && (Math.abs(dx) > 72 || (Math.abs(dx) > 38 && Math.abs(dx)/elapsed > .65))) {
-        deck.ignoreClicksUntil = Date.now() + 500;
-        moveDeck(dx < 0 ? -1 : 1);
-      }
-    });
-    surface.addEventListener('pointercancel', resetDeckDrag);
   }
 
   function studyQuestion(term) {

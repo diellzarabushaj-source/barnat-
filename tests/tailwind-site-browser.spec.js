@@ -441,6 +441,18 @@ test('MedLex atlas supports tapping, dismissing, and swipe-style navigation', as
   await expect(dialog).toBeVisible();
   await expect(dialog.locator('#medlexDeckCount')).toHaveText('1 / 7');
   await expect(dialog.locator('#medlexDeckProgress')).toHaveAttribute('style',/14\.285/);
+  await expect(dialog.locator('#medlexDetailsSheet')).toBeHidden();
+  const artwork = dialog.locator('#medlexSwipeSurface');
+  const artRect = await artwork.boundingBox();
+  expect(artRect.width).toBeLessThanOrEqual(390);
+  expect(Math.abs(artRect.width - artRect.height)).toBeLessThan(3);
+  await expect(dialog.locator('#medlexDialogImage')).toBeVisible();
+  await dialog.getByRole('button',{name:/Më shumë/}).click();
+  await expect(dialog.locator('#medlexDetailsSheet')).toBeVisible();
+  await expect(dialog.locator('#medlexDetailsTitle')).toHaveText('Timpan normal');
+  await expect(dialog.locator('#medlexDialogExample')).toContainText('pa bombim');
+  await dialog.getByRole('button',{name:'Mbyll detajet'}).click();
+  await expect(dialog.locator('#medlexDetailsSheet')).toBeHidden();
   await dialog.locator('#medlexDeckImageHit').click();
   await expect(dialog.locator('#medlexDialogTitle')).toHaveText('Otiti i mesëm akut');
   await expect(dialog.locator('#medlexDeckCount')).toHaveText('2 / 7');
@@ -460,6 +472,19 @@ test('MedLex atlas supports tapping, dismissing, and swipe-style navigation', as
   await expect(dialog.locator('#medlexDialogTitle')).toHaveText('Hunda normale');
   await dialog.getByRole('button',{name:'Mbyll kartelën'}).click();
   await expect(dialog).toBeHidden();
+});
+
+test('MedLex keeps a single search result swipeable within its chapter', async ({page}) => {
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('http://127.0.0.1:4173/medlex.html?category=01');
+  await page.locator('#medlexSearch').fill('subakut');
+  await page.locator('#medlexGridItems .medlex-card-open').first().click();
+  const dialog = page.locator('#medlexDialog');
+  await expect(dialog).toBeVisible();
+  await expect(dialog.locator('#medlexDeckCount')).not.toHaveText('1 / 1');
+  const initial = await dialog.locator('#medlexDialogTitle').textContent();
+  await dialog.locator('#medlexDeckImageHit').click();
+  await expect(dialog.locator('#medlexDialogTitle')).not.toHaveText(initial);
 });
 
 for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,height:700}]) {
