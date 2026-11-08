@@ -244,6 +244,7 @@
                   </div>
                   <div class="medlex-study-progress-track">
                     <progress id="medlexStudyProgress" value="0" max="1" aria-label="Përparimi i seancës"></progress>
+                    <button type="button" id="medlexStudyUndo" class="medlex-study-undo" aria-label="Zhbëj vlerësimin e fundit" title="Zhbëj vlerësimin e fundit (Backspace)" aria-keyshortcuts="Backspace" hidden><span aria-hidden="true">↶</span><span>Zhbëj</span></button>
                     <button type="button" id="medlexStudyFocus" class="medlex-study-focus-toggle" aria-pressed="false" aria-label="Hap studimin në ekran të plotë"><span aria-hidden="true">⛶</span><span id="medlexStudyFocusText">Fokus</span></button>
                   </div>
                 </div>
@@ -314,6 +315,7 @@
                 <h3 id="medlexStudySummaryTitle" tabindex="-1">Seanca përfundoi</h3>
                 <p id="medlexStudyResult"></p>
                 <div class="medlex-study-actions">
+                  <button type="button" id="medlexStudyUndoSummary" class="medlex-study-secondary" hidden>↶ Zhbëj kartelën e fundit</button>
                   <button type="button" id="medlexStudyAgain" class="medlex-primary-action" hidden>Përsërit të vështirat</button>
                   <button type="button" id="medlexStudyNew" class="medlex-study-secondary">Seancë e re</button>
                 </div>

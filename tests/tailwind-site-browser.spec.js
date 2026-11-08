@@ -596,6 +596,14 @@ test('MedLex desktop study arena keeps its card centered and supports keyboard r
   await page.keyboard.press('ArrowRight');
   await expect(study.locator('#medlexStudyPosition')).toHaveText('Kartela 2 nga 4 · 25%');
   await expect(study.locator('#medlexStudyMastered')).toHaveText('1');
+  await expect(study.locator('#medlexStudyUndo')).toBeVisible();
+  await page.locator('#medlexStudyQuestion').press('Backspace');
+  await expect(study.locator('#medlexStudyPosition')).toHaveText('Kartela 1 nga 4 · 0%');
+  await expect(study.locator('#medlexStudyMastered')).toHaveText('0');
+  await expect(study.locator('#medlexStudyUndo')).toBeHidden();
+  await page.locator('#medlexStudyQuestion').press('Space');
+  await page.keyboard.press('ArrowRight');
+  await expect(study.locator('#medlexStudyPosition')).toHaveText('Kartela 2 nga 4 · 25%');
   await page.locator('#medlexStudyQuestion').press('Space');
   await expect(study.locator('#medlexStudyTerm')).toHaveText('Bradikardi');
   await page.keyboard.press('ArrowLeft');
@@ -660,6 +668,13 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
       await reveal.click();
       await study.getByRole('button',{name:'E dija',exact:true}).click();
     }
+    await expect(page.locator('#medlexStudyResult')).toHaveText('I dije 3 nga 4 kartela. Për përsëritje: 1.');
+    await expect(study.locator('#medlexStudyUndoSummary')).toBeVisible();
+    await study.locator('#medlexStudyUndoSummary').click();
+    await expect(study.locator('#medlexStudyPosition')).toHaveText('Kartela 4 nga 4 · 75%');
+    await expect(study.locator('#medlexStudyMastered')).toHaveText('2');
+    await reveal.click();
+    await study.getByRole('button',{name:'E dija',exact:true}).click();
     await expect(page.locator('#medlexStudyResult')).toHaveText('I dije 3 nga 4 kartela. Për përsëritje: 1.');
     await study.getByRole('button',{name:'Përsërit të vështirat'}).click();
     await expect(page.locator('#medlexStudyPosition')).toHaveText('Kartela 1 nga 1 · 0%');
