@@ -562,6 +562,47 @@ test('MedLex Studio presents a 3D flashcard and supports swipe-to-rate', async (
   await expect(study.locator('#medlexStudyMastered')).toHaveText('1');
 });
 
+test('MedLex desktop study arena keeps its card centered and supports keyboard ratings', async ({page}) => {
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('http://127.0.0.1:4173/medlex.html?category=05&mode=flashcards');
+  const study = page.locator('#medlexStudy');
+  await page.getByLabel('Nënkapitulli',{exact:true}).selectOption('ritmi');
+  await study.getByRole('button',{name:'Fillo seancën'}).click();
+  const card = study.locator('#medlexStudyCard');
+  const left = study.locator('.medlex-study-desktop-rail-review');
+  const right = study.locator('.medlex-study-desktop-rail-known');
+  await expect(left).toBeHidden();
+  await page.locator('#medlexStudyQuestion').press('Space');
+  await expect(study.locator('#medlexStudyTerm')).toHaveText('Takikardi');
+  await expect(left).toBeVisible();
+  await expect(right).toBeVisible();
+  await page.locator('#medlexStudyImage').evaluate(node => node.decode());
+  await page.waitForTimeout(450);
+  const cardBounds = await card.boundingBox();
+  const leftBounds = await left.boundingBox();
+  const rightBounds = await right.boundingBox();
+  expect(cardBounds.width).toBeLessThanOrEqual(575);
+  expect(leftBounds.x + leftBounds.width).toBeLessThan(cardBounds.x - 4);
+  expect(rightBounds.x).toBeGreaterThan(cardBounds.x + cardBounds.width + 4);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(1440);
+  await page.screenshot({path:path.join(OUTPUT,'tailwind-clinical-medlex-study-desktop-arena.png')});
+  await study.getByRole('button',{name:'Hap studimin në ekran të plotë'}).click();
+  await expect(study.locator('#medlexStudySession')).toHaveClass(/is-immersive/);
+  await page.waitForTimeout(450);
+  await page.screenshot({path:path.join(OUTPUT,'tailwind-clinical-medlex-study-desktop-focus.png')});
+  await study.locator('#medlexStudyTerm').focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(study.locator('#medlexStudyPosition')).toHaveText('Kartela 2 nga 4 · 25%');
+  await expect(study.locator('#medlexStudyMastered')).toHaveText('1');
+  await page.locator('#medlexStudyQuestion').press('Space');
+  await expect(study.locator('#medlexStudyTerm')).toHaveText('Bradikardi');
+  await page.keyboard.press('ArrowLeft');
+  await expect(study.locator('#medlexStudyPosition')).toHaveText('Kartela 3 nga 4 · 50%');
+  await expect(study.locator('#medlexStudyRemaining')).toHaveText('1');
+  await page.keyboard.press('Escape');
+  await expect(study.locator('#medlexStudySession')).not.toHaveClass(/is-immersive/);
+});
+
 for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,height:700}]) {
   test(`MedLex chapter flashcards reveal the original card and retry missed terms on ${name}`, async ({page}) => {
     await page.setViewportSize({width,height});

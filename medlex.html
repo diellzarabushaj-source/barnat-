@@ -249,6 +249,18 @@
                 </div>
 
                 <div class="medlex-study-card-stage" id="medlexStudyCardStage">
+                  <div class="medlex-study-desktop-rail medlex-study-desktop-rail-review" aria-hidden="true">
+                    <span class="medlex-study-rail-key">←</span>
+                    <span class="medlex-study-rail-eyebrow">MAJTAS</span>
+                    <strong>Përsërit</strong>
+                    <span class="medlex-study-rail-caption">Rishiko më vonë</span>
+                  </div>
+                  <div class="medlex-study-desktop-rail medlex-study-desktop-rail-known" aria-hidden="true">
+                    <span class="medlex-study-rail-key">→</span>
+                    <span class="medlex-study-rail-eyebrow">DJATHTAS</span>
+                    <strong>E dija</strong>
+                    <span class="medlex-study-rail-caption">Vazhdo te tjetra</span>
+                  </div>
                   <div class="medlex-study-card-shadow medlex-study-card-shadow-back" aria-hidden="true"></div>
                   <div class="medlex-study-card-shadow medlex-study-card-shadow-front" aria-hidden="true"></div>
                 <article class="medlex-study-card" id="medlexStudyCard" aria-labelledby="medlexStudyQuestion">
@@ -262,7 +274,7 @@
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M6 8a7 7 0 0 1 12-2l2 6M4 12l2 6a7 7 0 0 0 12-2"/></svg>
                       Prek kartelën për ta kthyer
                     </span>
-                    <button type="button" id="medlexStudyReveal" class="medlex-study-hit" aria-label="Zbulo kartelën" aria-describedby="medlexStudyQuestion" aria-controls="medlexStudyAnswer"></button>
+                    <button type="button" id="medlexStudyReveal" class="medlex-study-hit" aria-label="Zbulo kartelën" aria-describedby="medlexStudyQuestion" aria-controls="medlexStudyAnswer" aria-keyshortcuts="Space Enter"></button>
                   </div>
                   <div id="medlexStudyAnswer" hidden>
                     <div class="medlex-study-back">
@@ -275,10 +287,10 @@
                 </article>
                 </div>
                 <div class="medlex-study-action-dock" role="group" aria-label="Vlerëso kartelën ose hap detajet">
-                  <button type="button" id="medlexStudyReview" class="medlex-study-choice medlex-study-choice-review" aria-label="Për përsëritje" title="Për përsëritje"><span class="medlex-study-choice-symbol" aria-hidden="true">×</span><span class="medlex-study-choice-caption">Përsërit</span></button>
+                  <button type="button" id="medlexStudyReview" class="medlex-study-choice medlex-study-choice-review" aria-label="Për përsëritje" title="Për përsëritje (←)" aria-keyshortcuts="ArrowLeft"><span class="medlex-study-choice-symbol" aria-hidden="true">×</span><span class="medlex-study-choice-caption">Përsërit</span></button>
                   <button type="button" id="medlexStudyFlipBack" class="medlex-study-dock-back" aria-label="Kthe te pyetja" title="Kthe te pyetja" aria-controls="medlexStudyFront"><span aria-hidden="true">↶</span></button>
                   <button type="button" id="medlexStudyMore" class="medlex-study-dock-more" aria-haspopup="dialog" aria-controls="medlexStudyDetailsDialog">Më shumë <span aria-hidden="true">⌃</span></button>
-                  <button type="button" id="medlexStudyKnown" class="medlex-study-choice medlex-study-choice-known" aria-label="E dija" title="E dija"><span class="medlex-study-choice-symbol" aria-hidden="true">✓</span><span class="medlex-study-choice-caption">E dija</span></button>
+                  <button type="button" id="medlexStudyKnown" class="medlex-study-choice medlex-study-choice-known" aria-label="E dija" title="E dija (→)" aria-keyshortcuts="ArrowRight"><span class="medlex-study-choice-symbol" aria-hidden="true">✓</span><span class="medlex-study-choice-caption">E dija</span></button>
                 </div>
                 <dialog id="medlexStudyDetailsDialog" class="medlex-study-details-dialog" aria-labelledby="medlexStudyDetailsHeading">
                   <div class="medlex-study-details-handle" aria-hidden="true"></div>
