@@ -29,11 +29,13 @@ assert.equal(orl.terms.length, 14);
 assert.equal(orl.groups.length, 4);
 const earAndNose = original.categories.find(chapter => chapter.id === '20');
 assert.equal(earAndNose.groups.length, 2);
-assert.equal(earAndNose.terms.length, 7);
+assert.equal(earAndNose.terms.length, 9);
 assert.deepEqual(earAndNose.groups.map(group => group.id), ['veshi', 'hunda']);
 assert.ok(orl.terms.some(term => term.term === 'Orofaring normal' && term.status === 'available'));
 assert.ok(earAndNose.terms.some(term => term.term === 'Timpan normal' && term.status === 'available'));
 assert.ok(earAndNose.terms.some(term => term.term === 'Hunda normale' && term.status === 'available'));
+assert.ok(earAndNose.terms.some(term => term.term === 'Otiti i jashtëm akut' && term.status === 'available'));
+assert.ok(earAndNose.terms.some(term => term.term === 'Kolesteatoma' && term.status === 'available'));
 const orlCms = mergeCatalog({
   chapters:[{externalId:'19', title:'ORL · Gojë dhe faring'}],
   subchapters:[{chapter:'19', groupId:'faringu', title:'Faringu, qiellza dhe uvula', order:1}],
@@ -48,5 +50,5 @@ assert.equal(orlCms.categories[18].terms.find(term => term.id === 'c19-002').def
 assert.equal(orlCms.categories[18].terms.find(term => term.id === 'c19-002').clinicalStatus, 'draft');
 assert.equal(orlCms.categories[18].terms.find(term => term.id === 'c19-003').definition, orl.terms[2].definition,
   'Unmodified Sanity ORL cards must retain illustrated local fallback.');
-assert.equal(orlCms.categories[19].terms.length, 7, 'A partially synced Sanity dataset must retain the chapter 20 fallback.');
+assert.equal(orlCms.categories[19].terms.length, 9, 'A partially synced Sanity dataset must retain the chapter 20 fallback.');
 console.log('MedLex Sanity merge passed: hierarchy, published content, draft review status, image origin, planned cards, fallback and unchanged chapters 01–02.');

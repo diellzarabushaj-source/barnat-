@@ -9,7 +9,7 @@ const {rank,normalize,imagePath} = require('../medlex.js');
 assert.deepEqual(catalog.categories.map(x=>x.id),Array.from({length:20},(_,i)=>String(i+1).padStart(2,'0')));
 assert.deepEqual(catalog.artworkPolicy.preserveExistingChapters,['01','02']);
 assert.equal(catalog.artworkPolicy.mascot,false);
-const counts=[20,21,18,17,19,18,18,18,18,17,17,19,17,18,18,26,14,7];
+const counts=[20,21,18,17,19,18,18,18,18,17,17,19,17,18,18,26,14,9];
 const planned = catalog.categories.slice(2).flatMap(chapter=>{
   assert.equal(chapter.terms.length,counts[Number(chapter.id)-3],chapter.title);
   assert.ok(['planned','partial','available'].includes(chapter.status));
@@ -44,8 +44,8 @@ const planned = catalog.categories.slice(2).flatMap(chapter=>{
   }
   return chapter.terms;
 });
-assert.equal(planned.length,320);
-assert.equal(new Set(planned.map(x=>x.id)).size,320);
+assert.equal(planned.length,322);
+assert.equal(new Set(planned.map(x=>x.id)).size,322);
 assert.equal(planned.filter(x=>normalize(x.term)==='takipne').length,2,'A term shared by specialties keeps both chapter locations.');
 assert.ok(planned.some(x=>x.category==='04' && rank(x,'agnozi')===120));
 assert.ok(planned.some(x=>x.category==='03' && rank(x,'hemoptize')===120));
@@ -55,4 +55,4 @@ assert.ok(available.length>=157);
 assert.equal(available.length,artwork.cards.length);
 assert.equal(artwork.mascot,false);
 assert.equal(artwork.status,'draft_for_clinical_review');
-console.log(`MedLex: 20 chapters, 320 new slots, ${available.length} illustrated cards with matching content and checksums.`);
+console.log(`MedLex: 20 chapters, 322 new slots, ${available.length} illustrated cards with matching content and checksums.`);
