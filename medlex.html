@@ -242,7 +242,10 @@
                     <span id="medlexStudyScope"></span>
                     <strong id="medlexStudyPosition"></strong>
                   </div>
-                  <progress id="medlexStudyProgress" value="0" max="1" aria-label="Përparimi i seancës"></progress>
+                  <div class="medlex-study-progress-track">
+                    <progress id="medlexStudyProgress" value="0" max="1" aria-label="Përparimi i seancës"></progress>
+                    <button type="button" id="medlexStudyFocus" class="medlex-study-focus-toggle" aria-pressed="false" aria-label="Hap studimin në ekran të plotë"><span aria-hidden="true">⛶</span><span id="medlexStudyFocusText">Fokus</span></button>
+                  </div>
                 </div>
 
                 <div class="medlex-study-card-stage" id="medlexStudyCardStage">
@@ -267,14 +270,15 @@
                       <figure class="medlex-study-art">
                         <img id="medlexStudyImage" alt="" width="1254" height="1254" draggable="false">
                       </figure>
-                      <button type="button" id="medlexStudyMore" class="medlex-study-more" aria-haspopup="dialog" aria-controls="medlexStudyDetailsDialog">Më shumë <span aria-hidden="true">⌃</span></button>
-                    </div>
-                    <div class="medlex-study-rating" role="group" aria-label="Si të shkoi kjo kartelë?">
-                      <button type="button" id="medlexStudyReview" class="medlex-study-secondary"><span aria-hidden="true">↶</span> Për përsëritje</button>
-                      <button type="button" id="medlexStudyKnown" class="medlex-primary-action"><span aria-hidden="true">✓</span> E dija</button>
                     </div>
                   </div>
                 </article>
+                </div>
+                <div class="medlex-study-action-dock" role="group" aria-label="Vlerëso kartelën ose hap detajet">
+                  <button type="button" id="medlexStudyReview" class="medlex-study-choice medlex-study-choice-review" aria-label="Për përsëritje" title="Për përsëritje"><span class="medlex-study-choice-symbol" aria-hidden="true">×</span><span class="medlex-study-choice-caption">Përsërit</span></button>
+                  <button type="button" id="medlexStudyFlipBack" class="medlex-study-dock-back" aria-label="Kthe te pyetja" title="Kthe te pyetja" aria-controls="medlexStudyFront"><span aria-hidden="true">↶</span></button>
+                  <button type="button" id="medlexStudyMore" class="medlex-study-dock-more" aria-haspopup="dialog" aria-controls="medlexStudyDetailsDialog">Më shumë <span aria-hidden="true">⌃</span></button>
+                  <button type="button" id="medlexStudyKnown" class="medlex-study-choice medlex-study-choice-known" aria-label="E dija" title="E dija"><span class="medlex-study-choice-symbol" aria-hidden="true">✓</span><span class="medlex-study-choice-caption">E dija</span></button>
                 </div>
                 <dialog id="medlexStudyDetailsDialog" class="medlex-study-details-dialog" aria-labelledby="medlexStudyDetailsHeading">
                   <div class="medlex-study-details-handle" aria-hidden="true"></div>
@@ -287,7 +291,6 @@
                     </div>
                     <section class="medlex-study-keypoint"><h4>Përkufizimi</h4><p id="medlexStudyDefinition"></p></section>
                     <section class="medlex-study-clinical-content"><h4>Shembull klinik</h4><blockquote id="medlexStudyExample"></blockquote></section>
-                    <button type="button" id="medlexStudyFlipBack" class="medlex-study-back-action" aria-label="Kthe te pyetja" aria-controls="medlexStudyFront"><span aria-hidden="true">↶</span> Kthehu te pyetja</button>
                   </div>
                 </dialog>
                 <p class="medlex-study-swipe-help" id="medlexStudySwipeHint" hidden><span aria-hidden="true">←</span> Rrëshqit majtas për përsëritje <span class="medlex-study-swipe-divider">·</span> djathtas nëse e dije <span aria-hidden="true">→</span></p>
