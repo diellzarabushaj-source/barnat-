@@ -1694,9 +1694,11 @@ html.medlex-deck-open { overflow: hidden; }
   inset:24px 30px 27px;border-radius:33px;
   border:1px solid #d4daf0;background:linear-gradient(155deg,#fff,#eef3ff 65%,#d4f2ea);
   box-shadow:0 20px 39px #1a19492b;
+  transition:transform .52s cubic-bezier(.18,1.32,.28,1);
 }
-.medlex-study-card-shadow-back { transform:translateY(22px) scale(.91) rotate(5.4deg);opacity:.53; }
-.medlex-study-card-shadow-front { transform:translateY(12px) scale(.958) rotate(-3.2deg);opacity:.8; }
+.medlex-study-card-shadow-back { transform:translateY(var(--study-back-y,22px)) scale(var(--study-back-scale,.91)) rotate(5.4deg);opacity:.53; }
+.medlex-study-card-shadow-front { transform:translateY(var(--study-front-y,12px)) scale(var(--study-front-scale,.958)) rotate(-3.2deg);opacity:.8; }
+.medlex-study-card-stage.is-scrubbing .medlex-study-card-shadow { transition:none; }
 .medlex-study-card {
   width:min(100%,630px);border:2px solid #fff;border-radius:28px;
   box-shadow:0 27px 72px #15173e34,0 4px 13px #1b1e4518;
@@ -1801,6 +1803,12 @@ html.medlex-deck-open { overflow: hidden; }
 }
 #medlexStudyReview.medlex-study-choice {color:#e9567b;}
 #medlexStudyKnown.medlex-study-choice {color:#119d84;}
+.medlex-study-session:has(.medlex-study-card.is-dragging[data-study-direction="review"]) .medlex-study-choice-review .medlex-study-choice-symbol {
+  transform:scale(1.1);box-shadow:0 0 0 8px #ff739a2b,0 18px 30px #ec527247;
+}
+.medlex-study-session:has(.medlex-study-card.is-dragging[data-study-direction="known"]) .medlex-study-choice-known .medlex-study-choice-symbol {
+  transform:scale(1.1);box-shadow:0 0 0 8px #2bd4aa2d,0 18px 30px #12a38940;
+}
 .medlex-study-card-stage:has(.medlex-study-card.is-dragging[data-study-direction="review"])::before {
   background:radial-gradient(ellipse at 38% 50%,#ff759b4a,transparent 70%);
 }
@@ -1819,6 +1827,17 @@ html.medlex-deck-open { overflow: hidden; }
 .medlex-study-focus-toggle span:first-child {font-size:17px;line-height:1;}
 .medlex-study-focus-toggle:hover {background:#ebe8ff;transform:translateY(-2px);}
 .medlex-study-focus-toggle:focus-visible {outline:3px solid #8371e8;outline-offset:3px;}
+.medlex-study-undo {
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:37px;
+  padding:6px 12px;border:1px solid #f3d79d;border-radius:12px;
+  background:linear-gradient(145deg,#fffdf6,#fff3d6);color:#936119;
+  font:inherit;font-size:11px;font-weight:850;white-space:nowrap;cursor:pointer;
+  box-shadow:0 4px 15px #86601518;transition:transform .18s ease,background .18s ease;
+}
+.medlex-study-undo span:first-child {font-size:20px;line-height:1;}
+.medlex-study-undo:hover {background:#ffefc5;transform:translateY(-2px);}
+.medlex-study-undo:focus-visible {outline:3px solid #e5ae47;outline-offset:3px;}
+.medlex-study-undo[hidden] {display:none!important;}
 html.medlex-study-immersive-open {overflow:hidden;}
 .medlex-study-session.is-immersive {
   position:fixed;z-index:2100;inset:0;display:flex;flex-direction:column;
@@ -1851,6 +1870,11 @@ html.medlex-study-immersive-open {overflow:hidden;}
   box-shadow:0 7px 19px #04082230;backdrop-filter:blur(15px);
 }
 .medlex-study-session.is-immersive .medlex-study-focus-toggle:hover {background:#ffffff30;}
+.medlex-study-session.is-immersive .medlex-study-undo {
+  border-color:#f5ca7c80;background:#b47a2d34;color:#fff1cb;
+  box-shadow:0 7px 19px #04082230;backdrop-filter:blur(15px);
+}
+.medlex-study-session.is-immersive .medlex-study-undo:hover {background:#ba8e4a5c;}
 .medlex-study-session.is-immersive .medlex-study-card-stage {
   flex:1 1 auto;min-height:0;width:min(100%,740px);max-height:none;
   margin:0 auto;padding:12px 8px 15px;align-content:center;
@@ -1879,6 +1903,8 @@ html.medlex-study-immersive-open {overflow:hidden;}
 .medlex-study-session.is-immersive #medlexStudyChange {display:none;}
 @media(max-width:700px) {
   .medlex-study-progress-track {gap:8px;}
+  .medlex-study-undo {min-width:35px;min-height:35px;padding:6px 8px;}
+  .medlex-study-undo span:last-child {display:none;}
   .medlex-study-focus-toggle {min-height:35px;padding:6px 9px;font-size:10px;}
   .medlex-study-session.is-immersive {gap:4px;padding-inline:12px;}
   .medlex-study-session.is-immersive .medlex-study-card-stage {padding:7px 4px 11px;}
@@ -1893,7 +1919,9 @@ html.medlex-study-immersive-open {overflow:hidden;}
   .medlex-study-session.is-immersive .medlex-study-art img {max-height:43dvh;}
   .medlex-study-session.is-immersive .medlex-study-action-dock {min-height:72px;}
 }
-@media(prefers-reduced-motion:reduce) { .medlex-study-focus-toggle {transition:none;} }
+@media(prefers-reduced-motion:reduce) {
+  .medlex-study-focus-toggle,.medlex-study-undo,.medlex-study-card-shadow {transition:none;}
+}
 
 /* Desktop study arena — a spacious, focused composition without duplicating
    clinical prose on the illustrated flashcard face. */
@@ -1941,8 +1969,8 @@ html.medlex-study-immersive-open {overflow:hidden;}
   .medlex-study-session:not(.is-immersive) .medlex-study-card-shadow {
     width:min(74%,clamp(410px,calc(100dvh - 460px),570px));inset-block:10px 14px;
   }
-  .medlex-study-card-shadow-back { transform:translateX(-50%) translateY(23px) scale(.92) rotate(5deg); }
-  .medlex-study-card-shadow-front { transform:translateX(-50%) translateY(12px) scale(.97) rotate(-3deg); }
+  .medlex-study-card-shadow-back { transform:translateX(-50%) translateY(var(--study-back-y,23px)) scale(var(--study-back-scale,.92)) rotate(5deg); }
+  .medlex-study-card-shadow-front { transform:translateX(-50%) translateY(var(--study-front-y,12px)) scale(var(--study-front-scale,.97)) rotate(-3deg); }
   .medlex-study-card-stage:has(#medlexStudyAnswer:not([hidden])) .medlex-study-desktop-rail {
     position:absolute;z-index:1;top:50%;display:flex;flex-direction:column;
     align-items:center;justify-content:center;gap:8px;

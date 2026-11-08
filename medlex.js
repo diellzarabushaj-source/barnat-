@@ -56,7 +56,7 @@
   const state = { terms:[], groups:[], categories:[], category:'01', searchFrom:null, topic:'all', query:'', view:'grid', selected:null, visibleTerms:[], authenticated:false };
   const deck = { terms:[], index:0, moving:false, drag:null, ignoreClicksUntil:0 };
 
-  const study = { active:false, deck:[], answers:[], ratings:{}, chapter:'01', topic:'all' };
+  const study = { active:false, deck:[], answers:[], undoStack:[], ratings:{}, chapter:'01', topic:'all' };
   const studyMotion = { moving:false, drag:null, pointer:null };
   const studySync = { account:'', revision:0, loaded:false, working:false, pending:null, conflict:null };
   const ORL_CHAPTER = '19';
@@ -629,6 +629,7 @@
     studyMotion.pointer = null;
     study.deck = [];
     study.answers = [];
+    study.undoStack = [];
     $('medlexStudyImage').removeAttribute('src');
     $('medlexStudySession').hidden = true;
     $('medlexStudySummary').hidden = true;
@@ -666,6 +667,8 @@
   function drawStudySession(focus = true) {
     const complete = study.answers.length === study.deck.length;
     if (complete) setStudyFocus(false);
+    $('medlexStudyUndo').hidden = study.undoStack.length === 0;
+    $('medlexStudyUndoSummary').hidden = !complete || study.undoStack.length === 0;
     $('medlexStudyScope').textContent = studyScope();
     $('medlexStudySetup').hidden = true;
     $('medlexStudySession').hidden = complete;
@@ -681,6 +684,7 @@
   function beginStudy(deck) {
     study.deck = deck;
     study.answers = [];
+    study.undoStack = [];
     study.chapter = $('medlexStudyChapter').value;
     study.topic = $('medlexStudyTopic').value;
     drawStudySession();
@@ -709,9 +713,12 @@
 
   function resetStudyDrag(clearOffset = true) {
     const card = $('medlexStudyCard');
+    const stage = $('medlexStudyCardStage');
     card.classList.remove('is-dragging');
     if (clearOffset) {
       for (const variable of ['--study-drag-x','--study-drag-y','--study-drag-rotate','--study-drag-tilt','--study-cue-opacity']) card.style.removeProperty(variable);
+      for (const variable of ['--study-front-y','--study-front-scale','--study-back-y','--study-back-scale']) stage.style.removeProperty(variable);
+      stage.classList.remove('is-scrubbing');
       delete card.dataset.studyDirection;
     }
     studyMotion.drag = null;
@@ -719,6 +726,16 @@
 
   function paintStudyDrag(card, x) {
     const magnitude = Math.min(1,Math.abs(x)/155);
+    const stage = $('medlexStudyCardStage');
+    const desktop = window.matchMedia('(min-width: 1024px)').matches;
+    const frontScale = desktop ? .97 : .958;
+    const backY = desktop ? 23 : 22;
+    const backScale = desktop ? .92 : .91;
+    stage.classList.add('is-scrubbing');
+    stage.style.setProperty('--study-front-y',(12-8*magnitude).toFixed(2)+'px');
+    stage.style.setProperty('--study-front-scale',(frontScale+.032*magnitude).toFixed(3));
+    stage.style.setProperty('--study-back-y',(backY-8*magnitude).toFixed(2)+'px');
+    stage.style.setProperty('--study-back-scale',(backScale+.032*magnitude).toFixed(3));
     card.style.setProperty('--study-drag-x',x+'px');
     card.style.setProperty('--study-drag-y',(-11*magnitude).toFixed(2)+'px');
     card.style.setProperty('--study-drag-rotate',Math.max(-14,Math.min(14,x/23))+'deg');
@@ -847,14 +864,29 @@
   function rateStudyCard(rating) {
     const term = study.deck[study.answers.length];
     if ($('medlexStudyAnswer').hidden || !term) return;
+    const id = String(term.id);
+    study.undoStack.push({id,previousRating:study.ratings[id]});
     study.answers.push(rating);
-    study.ratings[String(term.id)] = rating;
+    study.ratings[id] = rating;
+    updateStudyStats();
+    drawStudySession();
+    saveStudyProgress();
+  }
+
+  function undoStudyRating() {
+    if (!study.undoStack.length || !study.answers.length || studyMotion.moving) return;
+    const previous = study.undoStack.pop();
+    study.answers.pop();
+    if (previous.previousRating === undefined) delete study.ratings[previous.id];
+    else study.ratings[previous.id] = previous.previousRating;
+    resetStudyDrag();
     updateStudyStats();
     drawStudySession();
     saveStudyProgress();
   }
 
   function applyStudyProgress(snapshot) {
+    study.undoStack = [];
     const available = new Map(state.terms.filter(term => term.status !== 'planned').map(term => [String(term.id), term]));
     study.ratings = Object.fromEntries(Object.entries(snapshot.ratings).filter(([id]) => available.has(id)));
     updateStudyStats();
@@ -1008,6 +1040,8 @@
       beginStudy(deck.slice(0, limit));
     });
     $('medlexStudyReveal').addEventListener('click', revealStudyCard);
+    $('medlexStudyUndo').addEventListener('click', undoStudyRating);
+    $('medlexStudyUndoSummary').addEventListener('click', undoStudyRating);
     $('medlexStudyFocus').addEventListener('click', () => setStudyFocus(!$('medlexStudySession').classList.contains('is-immersive')));
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape' && $('medlexStudySession').classList.contains('is-immersive') && !$('medlexStudyDetailsDialog').open) {
@@ -1022,7 +1056,10 @@
       if (event.defaultPrevented || event.repeat || event.altKey || event.ctrlKey || event.metaKey ||
           !study.active || $('medlexStudySession').hidden || $('medlexStudyDetailsDialog').open || $('medlexDialog').open) return;
       if (event.target instanceof Element && event.target.closest('button,a,input,select,textarea,[contenteditable="true"],[role="button"]')) return;
-      if ((event.key === ' ' || event.key === 'Enter') && $('medlexStudyAnswer').hidden) {
+      if (event.key === 'Backspace' && study.undoStack.length) {
+        event.preventDefault();
+        undoStudyRating();
+      } else if ((event.key === ' ' || event.key === 'Enter') && $('medlexStudyAnswer').hidden) {
         event.preventDefault();
         revealStudyCard();
       } else if (event.key === 'ArrowLeft' && !$('medlexStudyAnswer').hidden) {
