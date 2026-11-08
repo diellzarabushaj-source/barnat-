@@ -458,6 +458,7 @@ test('MedLex adds new illustrated ORL cards beside existing Sanity content', asy
   await page.getByRole('button',{name:'Hap kartelën Timpan normal'}).click();
   await page.locator('#medlexDialog').getByRole('button',{name:/Më shumë/}).click();
   await expect(page.locator('#medlexDialogDefinition')).toHaveText('Përkufizim i ruajtur nga Sanity.');
+  await page.getByRole('button',{name:'Mbyll detajet'}).click();
   await page.getByRole('button',{name:'Mbyll kartelën'}).click();
   await page.getByRole('button',{name:'Hap kartelën Otiti i jashtëm akut'}).click();
   await expect(page.locator('#medlexDialogImage')).toHaveAttribute('src',/c20-008\.webp/);
