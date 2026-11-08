@@ -548,8 +548,11 @@ test('MedLex Studio presents a 3D flashcard and supports swipe-to-rate', async (
   await page.mouse.move(artwork.x+artwork.width*.73,artwork.y+artwork.height*.4);
   await page.mouse.down();
   await page.mouse.move(artwork.x+artwork.width*.23,artwork.y+artwork.height*.4,{steps:9});
+  await expect(study.locator('#medlexStudyCardStage')).toHaveClass(/is-swipe-ready/);
+  expect(await study.locator('#medlexStudyCardStage').evaluate(node => node.style.getPropertyValue('--study-front-rotate'))).toMatch(/deg$/);
   await page.mouse.up();
   await expect(study.locator('#medlexStudyPosition')).toHaveText('Kartela 2 nga 4 · 25%');
+  await expect(study.locator('#medlexStudyCardStage')).not.toHaveClass(/is-scrubbing/);
   await expect(study.locator('#medlexStudyRemaining')).toHaveText('1');
   await study.getByRole('button',{name:'Zbulo kartelën'}).click();
   await expect(study.locator('#medlexStudyTerm')).toHaveText('Bradikardi');
@@ -669,6 +672,11 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
       await study.getByRole('button',{name:'E dija',exact:true}).click();
     }
     await expect(page.locator('#medlexStudyResult')).toHaveText('I dije 3 nga 4 kartela. Për përsëritje: 1.');
+    await expect(study.locator('#medlexStudyScore')).toHaveText('75%');
+    await expect(study.locator('#medlexStudyScoreRing')).toHaveAttribute('aria-label','75% të kartelave i dije');
+    await expect(study.locator('#medlexStudySummaryKnown')).toHaveText('3');
+    await expect(study.locator('#medlexStudySummaryReview')).toHaveText('1');
+    await page.screenshot({path:path.join(OUTPUT, `tailwind-clinical-medlex-study-summary-${name}.png`)});
     await expect(study.locator('#medlexStudyUndoSummary')).toBeVisible();
     await study.locator('#medlexStudyUndoSummary').click();
     await expect(study.locator('#medlexStudyPosition')).toHaveText('Kartela 4 nga 4 · 75%');
@@ -681,6 +689,7 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
     await expect(question).toBeFocused();
     await reveal.click();
     await study.getByRole('button',{name:'E dija',exact:true}).click();
+    await expect(study.locator('#medlexStudyScore')).toHaveText('100%');
     await expect(study.getByRole('button',{name:'Përsërit të vështirat'})).toBeHidden();
 
     await page.goto('http://127.0.0.1:4173/medlex.html?category=02&mode=flashcards');

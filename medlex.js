@@ -676,6 +676,17 @@
     if (!complete) { drawStudyCard(focus); return; }
     const known = study.answers.filter(answer => answer === 'known').length;
     const remaining = study.deck.length - known;
+    const percentage = Math.round(100 * known / study.deck.length);
+    $('medlexStudyScore').textContent = `${percentage}%`;
+    $('medlexStudyScoreRing').style.setProperty('--study-score-deg',`${percentage * 3.6}deg`);
+    $('medlexStudyScoreRing').setAttribute('aria-label',`${percentage}% të kartelave i dije`);
+    $('medlexStudySummaryKnown').textContent = known;
+    $('medlexStudySummaryReview').textContent = remaining;
+    $('medlexStudySummaryMessage').textContent = !remaining
+      ? 'Të gjitha kartelat i dije. Je gati për kapitullin tjetër.'
+      : !known
+        ? 'Çdo përsëritje ndihmon. Provo sërish kartelat që nuk i dije.'
+        : 'Shumë mirë! Përsëriti kartelat e vështira për ta forcuar kujtesën.';
     $('medlexStudyResult').textContent = `I dije ${known} nga ${study.deck.length} kartela. Për përsëritje: ${remaining}.`;
     $('medlexStudyAgain').hidden = !remaining;
     if (focus) $('medlexStudySummaryTitle').focus();
@@ -717,8 +728,8 @@
     card.classList.remove('is-dragging');
     if (clearOffset) {
       for (const variable of ['--study-drag-x','--study-drag-y','--study-drag-rotate','--study-drag-tilt','--study-cue-opacity']) card.style.removeProperty(variable);
-      for (const variable of ['--study-front-y','--study-front-scale','--study-back-y','--study-back-scale']) stage.style.removeProperty(variable);
-      stage.classList.remove('is-scrubbing');
+      for (const variable of ['--study-front-y','--study-front-scale','--study-front-rotate','--study-back-y','--study-back-scale','--study-back-rotate']) stage.style.removeProperty(variable);
+      stage.classList.remove('is-scrubbing','is-swipe-ready');
       delete card.dataset.studyDirection;
     }
     studyMotion.drag = null;
@@ -731,16 +742,20 @@
     const frontScale = desktop ? .97 : .958;
     const backY = desktop ? 23 : 22;
     const backScale = desktop ? .92 : .91;
+    const direction = Math.sign(x);
     stage.classList.add('is-scrubbing');
+    stage.classList.toggle('is-swipe-ready',Math.abs(x)>=30);
     stage.style.setProperty('--study-front-y',(12-8*magnitude).toFixed(2)+'px');
     stage.style.setProperty('--study-front-scale',(frontScale+.032*magnitude).toFixed(3));
+    stage.style.setProperty('--study-front-rotate',((desktop?-3:-3.2)+direction*2.2*magnitude).toFixed(2)+'deg');
     stage.style.setProperty('--study-back-y',(backY-8*magnitude).toFixed(2)+'px');
     stage.style.setProperty('--study-back-scale',(backScale+.032*magnitude).toFixed(3));
+    stage.style.setProperty('--study-back-rotate',((desktop?5:5.4)+direction*2.7*magnitude).toFixed(2)+'deg');
     card.style.setProperty('--study-drag-x',x+'px');
     card.style.setProperty('--study-drag-y',(-11*magnitude).toFixed(2)+'px');
     card.style.setProperty('--study-drag-rotate',Math.max(-14,Math.min(14,x/23))+'deg');
     card.style.setProperty('--study-drag-tilt',Math.max(-7,Math.min(7,-x/29))+'deg');
-    card.style.setProperty('--study-cue-opacity',magnitude.toFixed(3));
+    card.style.setProperty('--study-cue-opacity',Math.min(1,Math.abs(x)/55).toFixed(3));
     card.dataset.studyDirection = x < 0 ? 'review' : 'known';
   }
 
