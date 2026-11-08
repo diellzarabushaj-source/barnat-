@@ -1016,6 +1016,23 @@
         $('medlexStudyFocus').focus({preventScroll:true});
       }
     });
+    // Desktop study can be completed with the keyboard without reaching for
+    // the floating action dock. Ignore all editable and interactive targets.
+    document.addEventListener('keydown', event => {
+      if (event.defaultPrevented || event.repeat || event.altKey || event.ctrlKey || event.metaKey ||
+          !study.active || $('medlexStudySession').hidden || $('medlexStudyDetailsDialog').open || $('medlexDialog').open) return;
+      if (event.target instanceof Element && event.target.closest('button,a,input,select,textarea,[contenteditable="true"],[role="button"]')) return;
+      if ((event.key === ' ' || event.key === 'Enter') && $('medlexStudyAnswer').hidden) {
+        event.preventDefault();
+        revealStudyCard();
+      } else if (event.key === 'ArrowLeft' && !$('medlexStudyAnswer').hidden) {
+        event.preventDefault();
+        submitStudyRating('review');
+      } else if (event.key === 'ArrowRight' && !$('medlexStudyAnswer').hidden) {
+        event.preventDefault();
+        submitStudyRating('known');
+      }
+    });
     const studyDetailsDialog = $('medlexStudyDetailsDialog');
     $('medlexStudyMore').addEventListener('click', () => {
       if (!studyDetailsDialog.open) studyDetailsDialog.showModal();
