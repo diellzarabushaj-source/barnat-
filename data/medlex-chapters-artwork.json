@@ -1,5 +1,5 @@
 {
-  "version": "20261108-orl-v4",
+  "version": "20261108-orl-v5",
   "status": "draft_for_clinical_review",
   "generator": "imagegen built-in",
   "mascot": false,
@@ -2119,10 +2119,10 @@
       "id": "c19-001",
       "category": "19",
       "file": "c19-001.webp",
-      "width": 1254,
-      "height": 1254,
-      "sha256": "ac7d5d012c1843b86c096cc25fcf7722bff8d95a8c120e16a8d35ec8aa686418",
-      "sourceSha256": "62bf582544610fdd2d42e342255a64eb6bf01525f15b3c110a27a84e4eaa9031",
+      "width": 769,
+      "height": 775,
+      "sha256": "ec68e4c74ade39b28e6269bcbb681253faf4d735d772bc133aea98e3c3d76c46",
+      "sourceSha256": "7d43b7a95a83383f6fb6bac59a80c7e54f21360236a8ca6da8882397e9f3e43b",
       "definitionSha256": "a2662180208ee72e9bc5b9719ef37e4add3b113eb9e1eb92c17d06792dd59eac",
       "exampleSha256": "c2d6823fa45d738c5809ebefba8c3f4c3c5fe457d97e69a0c8658cc9608070e8",
       "references": [
@@ -2307,6 +2307,12 @@
     {"id":"c20-006","category":"20","file":"c20-006.webp","width":1254,"height":1254,"sha256":"827714a30b928350d498bfa9abbde2ff14c0d09d2eaa28200e46c6a7a93c6f13","sourceSha256":"5a1b681be09d689705460b2930768427aca1fc4ee9ebc8966ebdb325fe1b3577","definitionSha256":"66a96e4bf20f2765cd4afe8b150be9106a0c50a6dffe96bd3284a8b77ac5c9e3","exampleSha256":"045f8e512471f285190f96d27e560276649c4ae4e46907adaac32042e15f70a0","references":["https://www.merckmanuals.com/professional/ear-nose-and-throat-disorders/approach-to-the-patient-with-nasal-and-pharyngeal-symptoms/evaluation-of-the-patient-with-nasal-and-pharyngeal-symptoms"]},
     {"id":"c20-007","category":"20","file":"c20-007.webp","width":1254,"height":1254,"sha256":"4898268687205b67fdd09a501bd3395b37997713f32882dc9f47b1ff8823e228","sourceSha256":"a03a11eeb4329e3ac23def6d94bb4acbb3c96cfcea92d1a323f055952fa6c177","definitionSha256":"9d1a651e6f70efb95919e8af322d5e9b4ba0af1b02fb2bb177fb1e5016cfb46b","exampleSha256":"ed4e7b562513a1e7242c1d0da775b591265f450b7d537f8a65dc8213c9a17005","references":["https://www.merckmanuals.com/professional/multimedia/table/some-causes-of-nasal-congestion-and-rhinorrhea"]},
     {"id":"c20-008","category":"20","file":"c20-008.webp","width":1254,"height":1254,"sha256":"65006f4f83b13b7dcfb7a6b38bde79c6a4433c1dc7de9468927c8afe56cd2e1e","sourceSha256":"2d53944ae4dc1e1ed6ae594d91a2c1e3875725a135bf80ca4f4ba6227d85a140","definitionSha256":"1b48aecf74de150a17e0a5b8d72651c140fa07779022782a398fc0af78b52761","exampleSha256":"eb9b1446bd1b1ebf2f4ff0eb6dd9983acbe4dc551c3d3a3306bbb8e1a9c56b84","references":["https://www.merckmanuals.com/professional/ear-nose-and-throat-disorders/external-ear-disorders/external-otitis-acute"]},
-    {"id":"c20-009","category":"20","file":"c20-009.webp","width":1254,"height":1254,"sha256":"347523487c2945ecd334a42f79236e9fde78756ac9f84d220b932fc722586b32","sourceSha256":"0c50668fcc85d810accf464fb6c1e0563ce40e12cd4077bda09b0fef3909a6e6","definitionSha256":"ee34096c5e6c39cef9617de8a9b1ee4e7103ef31426f757d19b92aaab8d5f9a3","exampleSha256":"7cc13f8a89c50667c00b40a7aaa333f7f5eb797b2671d65ac3554f0f2cf2e6bc","references":["https://www.merckmanuals.com/professional/ear-nose-and-throat-disorders/middle-ear-and-tympanic-membrane-disorders/cholesteatoma"]}
+    {"id":"c20-009","category":"20","file":"c20-009.webp","width":1254,"height":1254,"sha256":"d485821ab462ade94a411de081a10da83e94e178d34b365a06cb4491c5b7939e","sourceSha256":"0b2e8843a03b13f7acf3984d8762799a93cfb0d3f1ad0de64cbab91e08866812","definitionSha256":"ee34096c5e6c39cef9617de8a9b1ee4e7103ef31426f757d19b92aaab8d5f9a3","exampleSha256":"7cc13f8a89c50667c00b40a7aaa333f7f5eb797b2671d65ac3554f0f2cf2e6bc","references":["https://www.merckmanuals.com/professional/ear-nose-and-throat-disorders/middle-ear-and-tympanic-membrane-disorders/cholesteatoma"]},
+    {"id":"c20-010","category":"20","file":"c20-010.webp","width":1254,"height":1254,"sha256":"7e97deba1b3d958605200cdfc544087965a96563593e4ef1baa21dfb026af176","sourceSha256":"276217da0722769e694f59186e57094196173909439a01775d20ad8e230ad1ec","definitionSha256":"7e2a5443c7a11022240eb89f4a255da42ddceb937d1073c5d21006298f1acc2f","exampleSha256":"f1b7e61ad3f4959d53b3bbd627b60c5a2272e34a8ff01e5f640d9d7ed5e475bd","references":["https://www.merckmanuals.com/professional/ear-nose-and-throat-disorders/external-ear-disorders/external-ear-obstructions"]},
+    {"id":"c20-011","category":"20","file":"c20-011.webp","width":1254,"height":1254,"sha256":"a8425e841a7596175044c6996ae3a534296fecc16d33298ee1745bd1ac437aee","sourceSha256":"76f164314258e3089840f694d56423656604f33be49ee9738a4964829eb6d4c4","definitionSha256":"111a0ecc822c42ae5f6b4eac244a4f017e5c8cafd5137b8cc20446f35808c95d","exampleSha256":"3ac72ec00d8829cb7d317ab82c2adb85698151c827f7365d0944b18cf7df4c67","references":["https://pmc.ncbi.nlm.nih.gov/articles/PMC6081288/"]},
+    {"id":"c20-012","category":"20","file":"c20-012.webp","width":1254,"height":1254,"sha256":"599c445d52d16bcb5567bba6f3b445f68df6ec5685e5c343e7ba8416ba053c64","sourceSha256":"d974f4efdeda4db84e82e501ee979b90a46d44fa2547aec1145fd0e68e00c3fb","definitionSha256":"25a32d575a98341f0170430cdb11cbf65dbbd4ad24bc90a00f27573a887a613c","exampleSha256":"8c085c9612f0b632c2d77a9e3f0a38a1c4a40537b8c0250354bea0ff8bf396e7","references":["https://www.merckmanuals.com/professional/ear-nose-and-throat-disorders/middle-ear-and-tympanic-membrane-disorders/mastoiditis"]},
+    {"id":"c20-013","category":"20","file":"c20-013.webp","width":1254,"height":1254,"sha256":"8d7dc319a4bdcd4b3b92cceb301d74203fad56c779e85fab77046ff828b2ff07","sourceSha256":"19aeecf647fecce0da3619dc872f6d3b0536ab025574fe838dfe92dc9656c7c7","definitionSha256":"a8871aab6622c1ebb45a4249907aa264355401fbd54eae25c791eef001bf921b","exampleSha256":"e4d70263d7d3dd937e6e0755ee0b5553466b5533d97414f50c0425af9634784e","references":["https://www.merckmanuals.com/professional/ear-nose-and-throat-disorders/approach-to-the-patient-with-nasal-and-pharyngeal-symptoms/epistaxis"]},
+    {"id":"c20-014","category":"20","file":"c20-014.webp","width":1254,"height":1254,"sha256":"3c5f5b12890a9912dc7cec748b69e64cf5530e241dd5652fcac780733b96c6c5","sourceSha256":"20eba2f0dab926ea6cb344aa0719d87afe62ea1ef3e0f283313d36ce2c55a649","definitionSha256":"8df0f04c9c2ce1878f8142905b1ea20a27933592610efd416bbfff985c6c32f3","exampleSha256":"01ad949982de836ea2575adf4c12bb5cc88f019bb4b20e1f745e2324ecbe4e8a","references":["https://www.merckmanuals.com/professional/ear-nose-and-throat-disorders/nose-and-paranasal-sinus-disorders/septal-deviation-and-perforation"]},
+    {"id":"c20-015","category":"20","file":"c20-015.webp","width":1254,"height":1254,"sha256":"fa3a23ce8ef1a69b7e697e34f941f387475f5fa8e40a162a34a97f526653f20c","sourceSha256":"a84e31027da28ba055f6a23cd34f51f00a047b06cfebf3ff10448817d4e212db","definitionSha256":"d2fb6ace1b741b5f4ced61f8df338353ace785e557f8108d6e84d9cda610536d","exampleSha256":"566dcf297b899c3bd7bc316123072eb2a8b85ca2a08c33df7da9a2fab85936e6","references":["https://www.merckmanuals.com/en-ca/professional/ear-nose-and-throat-disorders/nose-and-paranasal-sinus-disorders/nasal-foreign-bodies"]}
   ]
 }

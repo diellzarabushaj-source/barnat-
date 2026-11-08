@@ -407,15 +407,15 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
   });
 }
 
-test('MedLex unifies the 23 ORL findings into one chapter with six groups', async ({page}) => {
+test('MedLex unifies the 29 ORL findings into one chapter with six groups', async ({page}) => {
   await page.goto('http://127.0.0.1:4173/medlex.html?category=19');
   const cards = page.locator('#medlexGridItems .medlex-card');
   await expect(page.locator('#medlexCollectionTitle')).toHaveText('Atlasi ORL — Vesh, hundë, gojë dhe faring');
-  await expect(cards).toHaveCount(23);
+  await expect(cards).toHaveCount(29);
   await expect(page.locator('.medlex-subchapter')).toHaveCount(6);
-  await expect(cards.locator('img')).toHaveCount(23);
-  await expect(page.locator('#medlexTotal')).toHaveText('23');
-  await expect(page.locator('#medlexCategories [data-category="19"]')).toContainText('23 kartela');
+  await expect(cards.locator('img')).toHaveCount(29);
+  await expect(page.locator('#medlexTotal')).toHaveText('29');
+  await expect(page.locator('#medlexCategories [data-category="19"]')).toContainText('29 kartela');
   await expect(page.locator('#medlexCategories [data-category="20"]')).toHaveCount(0);
   await expect(cards.locator('img').first()).toHaveAttribute('src',/\/assets\/medlex-chapters\/c19-001\.webp/);
   await expect.poll(() => cards.locator('img').first().evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
@@ -426,18 +426,18 @@ test('MedLex unifies the 23 ORL findings into one chapter with six groups', asyn
   await expect(dialog.locator('#medlexDialogImage')).toHaveAttribute('src',/c19-010\.webp/);
 });
 
-test('MedLex old ORL ear/nose link redirects into the merged 23-card atlas', async ({page}) => {
+test('MedLex old ORL ear/nose link redirects into the merged 29-card atlas', async ({page}) => {
   await page.goto('http://127.0.0.1:4173/medlex.html?category=20');
   const cards = page.locator('#medlexGridItems .medlex-card');
   await expect(page).toHaveURL(/category=19$/);
   await expect(page.locator('#medlexCollectionTitle')).toHaveText('Atlasi ORL — Vesh, hundë, gojë dhe faring');
-  await expect(cards).toHaveCount(23);
+  await expect(cards).toHaveCount(29);
   await expect(page.locator('.medlex-subchapter')).toHaveCount(6);
-  await expect(cards.locator('img')).toHaveCount(23);
+  await expect(cards.locator('img')).toHaveCount(29);
   await page.getByRole('button',{name:'Studio me flashcards'}).click();
   await expect(page.getByLabel('Kapitulli',{exact:true})).toHaveValue('19');
   await expect(page.getByLabel('Kapitulli',{exact:true}).locator('option')).toHaveCount(20);
-  await expect(page.locator('#medlexStudyAvailability')).toHaveText('23 kartela të gatshme për studim.');
+  await expect(page.locator('#medlexStudyAvailability')).toHaveText('29 kartela të gatshme për studim.');
   await page.getByRole('button',{name:'Listë',exact:true}).click();
   await page.getByRole('button',{name:'Hap kartelën Timpan normal'}).click();
   const dialog = page.getByRole('dialog',{name:'Timpan normal'});
@@ -448,13 +448,25 @@ test('MedLex old ORL ear/nose link redirects into the merged 23-card atlas', asy
 test('MedLex adds new illustrated ORL cards beside existing Sanity content', async ({page}) => {
   const remoteCatalog = structuredClone(require('../data/medlex-chapters.json'));
   const ears = remoteCatalog.categories.find(chapter => chapter.id === '20');
-  ears.terms = ears.terms.filter(term => !['c20-008','c20-009'].includes(term.id));
+  ears.terms = ears.terms.filter(term => !/^c20-0(?:08|09|1[0-5])$/.test(term.id));
   ears.terms[0].definition = 'Përkufizim i ruajtur nga Sanity.';
+  const mouth = remoteCatalog.categories.find(chapter => chapter.id === '19');
+  const glossitis = mouth.terms.find(term => term.id === 'c19-001');
+  glossitis.artworkVersion = '20261108-orl-v1';
+  glossitis.imageUrl = 'https://cdn.sanity.io/images/4wdtp8cz/production/abc123-1254x1254.webp';
+  glossitis.definition = 'Përkufizimi i glositit i ruajtur nga Sanity.';
+  glossitis.clinicalStatus = 'verified';
   await page.route(/\/api\/medical-hub\?_route=medlex/, route => route.fulfill({
     status:200, contentType:'application/json', body:JSON.stringify({ok:true,catalog:remoteCatalog}),
   }));
   await page.goto('http://127.0.0.1:4173/medlex.html?category=19');
-  await expect(page.locator('#medlexGridItems .medlex-card')).toHaveCount(23);
+  await expect(page.locator('#medlexGridItems .medlex-card')).toHaveCount(29);
+  await page.getByRole('button',{name:'Hap kartelën Glositi atrofik'}).click();
+  await expect(page.locator('#medlexDialogImage')).toHaveAttribute('src',/c19-001\.webp\?v=20261108-orl-v5/);
+  await page.locator('#medlexDialog').getByRole('button',{name:/Më shumë/}).click();
+  await expect(page.locator('#medlexDialogDefinition')).toHaveText('Përkufizimi i glositit i ruajtur nga Sanity.');
+  await page.getByRole('button',{name:'Mbyll detajet'}).click();
+  await page.getByRole('button',{name:'Mbyll kartelën'}).click();
   await page.getByRole('button',{name:'Hap kartelën Timpan normal'}).click();
   await page.locator('#medlexDialog').getByRole('button',{name:/Më shumë/}).click();
   await expect(page.locator('#medlexDialogDefinition')).toHaveText('Përkufizim i ruajtur nga Sanity.');
@@ -462,6 +474,10 @@ test('MedLex adds new illustrated ORL cards beside existing Sanity content', asy
   await page.getByRole('button',{name:'Mbyll kartelën'}).click();
   await page.getByRole('button',{name:'Hap kartelën Otiti i jashtëm akut'}).click();
   await expect(page.locator('#medlexDialogImage')).toHaveAttribute('src',/c20-008\.webp/);
+  await expect.poll(()=>page.locator('#medlexDialogImage').evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
+  await page.getByRole('button',{name:'Mbyll kartelën'}).click();
+  await page.getByRole('button',{name:'Hap kartelën Otomikoza'}).click();
+  await expect(page.locator('#medlexDialogImage')).toHaveAttribute('src',/c20-011\.webp/);
   await expect.poll(()=>page.locator('#medlexDialogImage').evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
 });
 
@@ -472,8 +488,8 @@ test('MedLex atlas supports tapping, dismissing, and swipe-style navigation', as
   // The dialog's accessible name intentionally changes as the active card changes.
   const dialog = page.locator('#medlexDialog');
   await expect(dialog).toBeVisible();
-  await expect(dialog.locator('#medlexDeckCount')).toHaveText('15 / 23');
-  await expect(dialog.locator('#medlexDeckProgress')).toHaveAttribute('style',/65\.217/);
+  await expect(dialog.locator('#medlexDeckCount')).toHaveText('15 / 29');
+  await expect(dialog.locator('#medlexDeckProgress')).toHaveAttribute('style',/51\.724/);
   await expect(dialog.locator('#medlexDetailsSheet')).toBeHidden();
   const artwork = dialog.locator('#medlexSwipeSurface');
   const artRect = await artwork.boundingBox();
@@ -488,10 +504,10 @@ test('MedLex atlas supports tapping, dismissing, and swipe-style navigation', as
   await expect(dialog.locator('#medlexDetailsSheet')).toBeHidden();
   await dialog.locator('#medlexDeckImageHit').click();
   await expect(dialog.locator('#medlexDialogTitle')).toHaveText('Otiti i mesëm akut');
-  await expect(dialog.locator('#medlexDeckCount')).toHaveText('16 / 23');
+  await expect(dialog.locator('#medlexDeckCount')).toHaveText('16 / 29');
   await dialog.getByRole('button',{name:'Hiqe këtë kartelë nga prezantimi'}).click();
   await expect(dialog.locator('#medlexDialogTitle')).toHaveText('Efuzioni i veshit të mesëm');
-  await expect(dialog.locator('#medlexDeckCount')).toHaveText('16 / 22');
+  await expect(dialog.locator('#medlexDeckCount')).toHaveText('16 / 28');
   await page.keyboard.press('ArrowLeft');
   await expect(dialog.locator('#medlexDialogTitle')).toHaveText('Timpan normal');
   await page.keyboard.press('ArrowRight');
