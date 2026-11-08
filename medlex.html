@@ -300,38 +300,60 @@
       </section>
 
       <dialog id="medlexDialog" class="medlex-dialog" aria-labelledby="medlexDialogTitle">
-        <header class="medlex-dialog-bar">
-          <span class="medlex-section-index" id="medlexDialogCategory">DRx MedLex · Kapitulli 01</span>
-          <button type="button" class="medlex-dialog-close" id="medlexClose" aria-label="Mbyll kartelën" autofocus>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
-          </button>
-        </header>
-        <div class="medlex-dialog-layout">
-          <div class="medlex-dialog-details">
-            <h2 id="medlexDialogTitle"></h2>
-            <div class="medlex-dialog-translations">
-              <span class="medlex-dialog-english" id="medlexDialogLatin"></span>
-              <span class="medlex-dialog-english" id="medlexDialogEnglish"></span>
-            </div>
-            <section aria-labelledby="medlexDefinitionLabel">
-              <h3 class="medlex-dialog-label" id="medlexDefinitionLabel">Përkufizimi</h3>
-              <p id="medlexDialogDefinition"></p>
-            </section>
-            <section aria-labelledby="medlexExampleLabel">
-              <h3 class="medlex-dialog-label" id="medlexExampleLabel">Shembull klinik</h3>
-              <blockquote id="medlexDialogExample"></blockquote>
-            </section>
-            <div class="medlex-dialog-actions"><a id="medlexDownload" download class="medlex-primary-action">Shkarko kartelën ↓</a><button type="button" id="medlexCopy">Kopjo termin</button></div>
-            <small>Material ilustrues për mësim dhe orientim terminologjik.</small>
+        <div class="medlex-deck-shell">
+          <header class="medlex-dialog-bar">
+            <button type="button" class="medlex-deck-back" id="medlexClose" aria-label="Mbyll kartelën" autofocus>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="m14.5 5-7 7 7 7"/></svg>
+              <span>Kthehu</span>
+            </button>
+            <span class="medlex-deck-brand">DR<span>×</span> MEDLEX <span class="medlex-deck-brand-dot"></span> ATLAS</span>
+            <span class="medlex-deck-count" id="medlexDeckCount" aria-live="off">1 / 1</span>
+          </header>
+          <div class="medlex-deck-progress" aria-hidden="true"><span id="medlexDeckProgress"></span></div>
+          <div class="medlex-deck-stage" id="medlexDeckStage">
+            <div class="medlex-deck-stack medlex-deck-stack-back" aria-hidden="true"></div>
+            <div class="medlex-deck-stack medlex-deck-stack-front" aria-hidden="true"></div>
+            <article class="medlex-dialog-card" id="medlexSwipeSurface">
+              <div class="medlex-dialog-layout">
+                <div class="medlex-dialog-details">
+                  <span class="medlex-section-index" id="medlexDialogCategory">DRx MedLex · Kapitulli 01</span>
+                  <h2 id="medlexDialogTitle"></h2>
+                  <div class="medlex-dialog-translations">
+                    <span class="medlex-dialog-english" id="medlexDialogLatin"></span>
+                    <span class="medlex-dialog-english" id="medlexDialogEnglish"></span>
+                  </div>
+                  <section aria-labelledby="medlexDefinitionLabel">
+                    <h3 class="medlex-dialog-label" id="medlexDefinitionLabel">Përkufizimi</h3>
+                    <p id="medlexDialogDefinition"></p>
+                  </section>
+                  <section aria-labelledby="medlexExampleLabel">
+                    <h3 class="medlex-dialog-label" id="medlexExampleLabel">Shembull klinik</h3>
+                    <blockquote id="medlexDialogExample"></blockquote>
+                  </section>
+                  <div class="medlex-dialog-actions"><a id="medlexDownload" download class="medlex-primary-action">Shkarko kartelën ↓</a><button type="button" id="medlexCopy">Kopjo termin</button></div>
+                  <small>Ilustrim edukativ · Jo kriter i vetëm diagnostik.</small>
+                </div>
+                <div class="medlex-dialog-art" id="medlexDeckImageHit" role="button" tabindex="0" aria-label="Shfaq kartelën tjetër">
+                  <img id="medlexDialogImage" alt="" width="1254" height="1254">
+                  <div class="medlex-dialog-placeholder" id="medlexDialogPlaceholder" hidden>
+                    <span class="medlex-section-index">Në përgatitje</span>
+                    <strong id="medlexDialogPlaceholderTerm"></strong>
+                    <p>Ilustrimi do të shpjegojë termin dhe shenjat kryesore.</p>
+                  </div>
+                  <span class="medlex-deck-image-hint">Preke për tjetrën <span aria-hidden="true">↗</span></span>
+                </div>
+              </div>
+            </article>
           </div>
-          <div class="medlex-dialog-art">
-            <img id="medlexDialogImage" alt="" width="1254" height="1254">
-            <div class="medlex-dialog-placeholder" id="medlexDialogPlaceholder" hidden>
-              <span class="medlex-section-index">Në përgatitje</span>
-              <strong id="medlexDialogPlaceholderTerm"></strong>
-              <p>Ilustrimi do të shpjegojë termin dhe shenjat kryesore.</p>
-            </div>
-          </div>
+          <footer class="medlex-deck-footer">
+            <span class="medlex-deck-tip">Rrëshqit për të eksploruar <span aria-hidden="true">↔</span></span>
+            <nav class="medlex-deck-controls" aria-label="Navigimi i kartelave">
+              <button type="button" class="medlex-deck-nav medlex-deck-prev" id="medlexDeckPrev" aria-label="Kartela e mëparshme" title="Kartela e mëparshme"><span aria-hidden="true">←</span></button>
+              <button type="button" class="medlex-deck-nav medlex-deck-dismiss" id="medlexDeckDismiss" aria-label="Hiqe këtë kartelë nga prezantimi" title="Hiqe këtë kartelë"><span aria-hidden="true">×</span></button>
+              <button type="button" class="medlex-deck-nav medlex-deck-next" id="medlexDeckNext" aria-label="Kartela tjetër" title="Kartela tjetër"><span aria-hidden="true">→</span></button>
+            </nav>
+            <span class="medlex-deck-live" id="medlexDeckLive" aria-live="polite" aria-atomic="true"></span>
+          </footer>
         </div>
       </dialog>
     </main>

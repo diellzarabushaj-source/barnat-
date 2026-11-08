@@ -53,7 +53,8 @@
   };
 
   const $ = id => document.getElementById(id);
-  const state = { terms:[], groups:[], categories:[], category:'01', searchFrom:null, topic:'all', query:'', view:'grid', selected:null, authenticated:false };
+  const state = { terms:[], groups:[], categories:[], category:'01', searchFrom:null, topic:'all', query:'', view:'grid', selected:null, visibleTerms:[], authenticated:false };
+  const deck = { terms:[], index:0, moving:false, pointer:null, ignoreClicksUntil:0 };
 
   const study = { active:false, deck:[], answers:[], ratings:{}, chapter:'01', topic:'all' };
   const studySync = { account:'', revision:0, loaded:false, working:false, pending:null, conflict:null };
@@ -256,11 +257,12 @@
       .filter(item => item.score > 0)
       .sort((a,b) => query ? b.score - a.score || String(a.term.id).localeCompare(String(b.term.id)) :
         a.term.category.localeCompare(b.term.category) || String(a.term.id).localeCompare(String(b.term.id),undefined,{numeric:true}));
+    state.visibleTerms = matches.map(item => item.term);
 
     const grid = $('medlexGridItems');
     grid.dataset.view = state.view;
     const fragment = document.createDocumentFragment();
-    const grouped = !query && /^(?:0[3-9]|1[0-9])$/.test(state.category);
+    const grouped = !query && /^(?:0[3-9]|1[0-9]|20)$/.test(state.category);
     grid.dataset.grouped = String(grouped);
     if (grouped) {
       const groups = topicsForCategory().filter(item => item.id !== 'all' && (state.topic === 'all' || item.id === state.topic));
@@ -332,8 +334,9 @@
     host.replaceChildren(fragment);
   }
 
-  function openTerm(term) {
-    const dialog = $('medlexDialog');
+  function showDeckTerm() {
+    const term = deck.terms[deck.index];
+    if (!term) return;
     const planned = term.status === 'planned';
     state.selected = term;
     $('medlexDialogTitle').textContent = term.term;
@@ -356,10 +359,111 @@
       $('medlexDownload').href = term.imageUrl + '?fm=webp&q=95&dl=' + encodeURIComponent($('medlexDownload').download);
     }
     $('medlexCopy').textContent = 'Kopjo termin';
-    if (!dialog.open) {
-      dialog.showModal();
-      dialog.scrollTop = 0;
-    }
+    $('medlexDeckCount').textContent = `${deck.index + 1} / ${deck.terms.length}`;
+    $('medlexDeckProgress').style.width = `${(deck.index + 1) / deck.terms.length * 100}%`;
+    $('medlexDeckPrev').disabled = deck.terms.length < 2;
+    $('medlexDeckNext').disabled = deck.terms.length < 2;
+    $('medlexDeckImageHit').setAttribute('aria-disabled',String(deck.terms.length < 2));
+    $('medlexDeckLive').textContent = `${term.term}. Kartela ${deck.index + 1} nga ${deck.terms.length}.`;
+    $('medlexSwipeSurface').scrollTop = 0;
+  }
+
+  function openTerm(term) {
+    const dialog = $('medlexDialog');
+    deck.terms = state.visibleTerms.length ? [...state.visibleTerms] : [term];
+    deck.index = deck.terms.findIndex(item => item === term);
+    if (deck.index < 0) { deck.terms = [term]; deck.index = 0; }
+    deck.moving = false;
+    resetDeckDrag();
+    showDeckTerm();
+    if (!dialog.open) dialog.showModal();
+    document.documentElement.classList.add('medlex-deck-open');
+  }
+
+  function resetDeckDrag() {
+    const surface = $('medlexSwipeSurface');
+    surface.classList.remove('is-dragging');
+    surface.style.removeProperty('--medlex-drag-x');
+    surface.style.removeProperty('--medlex-drag-turn');
+    deck.pointer = null;
+  }
+
+  function moveDeck(direction, remove = false) {
+    if (deck.moving || !$('medlexDialog').open || !deck.terms.length) return;
+    if (!remove && deck.terms.length < 2) return;
+    deck.moving = true;
+    deck.ignoreClicksUntil = Date.now() + 500;
+    resetDeckDrag();
+    const surface = $('medlexSwipeSurface');
+    surface.dataset.exit = direction < 0 ? 'left' : 'right';
+    const finish = () => {
+      if (remove) {
+        deck.terms.splice(deck.index,1);
+        if (!deck.terms.length) {
+          $('medlexDialog').close();
+        } else if (deck.index >= deck.terms.length) deck.index = 0;
+      } else deck.index = (deck.index + (direction < 0 ? 1 : -1) + deck.terms.length) % deck.terms.length;
+      if ($('medlexDialog').open && deck.terms.length) showDeckTerm();
+      delete surface.dataset.exit;
+      deck.moving = false;
+    };
+    window.setTimeout(finish, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 240);
+  }
+
+  function configureDeck() {
+    const dialog = $('medlexDialog');
+    const surface = $('medlexSwipeSurface');
+    $('medlexDeckPrev').addEventListener('click', () => moveDeck(1));
+    $('medlexDeckNext').addEventListener('click', () => moveDeck(-1));
+    $('medlexDeckDismiss').addEventListener('click', () => moveDeck(-1,true));
+    dialog.addEventListener('close', () => {
+      document.documentElement.classList.remove('medlex-deck-open');
+      deck.terms = [];
+      resetDeckDrag();
+      delete surface.dataset.exit;
+    });
+    dialog.addEventListener('keydown', event => {
+      if (event.altKey || event.ctrlKey || event.metaKey || event.target.closest('a')) return;
+      if (event.key === 'ArrowRight') { event.preventDefault(); moveDeck(-1); }
+      else if (event.key === 'ArrowLeft') { event.preventDefault(); moveDeck(1); }
+      else if (event.key.toLowerCase() === 'x' && event.target.tagName !== 'BUTTON') { event.preventDefault(); moveDeck(-1,true); }
+    });
+    $('medlexDeckImageHit').addEventListener('click', () => {
+      if (Date.now() >= deck.ignoreClicksUntil) moveDeck(-1);
+    });
+    $('medlexDeckImageHit').addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); moveDeck(-1); }
+    });
+    surface.addEventListener('pointerdown', event => {
+      if (deck.moving || !dialog.open || deck.terms.length < 2 || (event.pointerType === 'mouse' && event.button !== 0) || event.target.closest('button,a')) return;
+      deck.pointer = { id:event.pointerId, x:event.clientX, y:event.clientY, dx:0, dy:0, started:performance.now() };
+    });
+    surface.addEventListener('pointermove', event => {
+      if (!deck.pointer || event.pointerId !== deck.pointer.id || deck.moving) return;
+      const swipe = deck.pointer;
+      swipe.dx = event.clientX - swipe.x;
+      swipe.dy = event.clientY - swipe.y;
+      if (Math.abs(swipe.dy) > Math.abs(swipe.dx) * 1.4) return;
+      if (Math.abs(swipe.dx) < 8) return;
+      surface.classList.add('is-dragging');
+      const offset = Math.max(-180,Math.min(180,swipe.dx));
+      surface.style.setProperty('--medlex-drag-x',offset + 'px');
+      surface.style.setProperty('--medlex-drag-turn',Math.max(-10,Math.min(10,offset / 18)) + 'deg');
+    });
+    surface.addEventListener('pointerup', event => {
+      if (!deck.pointer || event.pointerId !== deck.pointer.id) return;
+      const swipe = deck.pointer;
+      const dx = event.clientX - swipe.x;
+      const dy = event.clientY - swipe.y;
+      const elapsed = Math.max(1,performance.now() - swipe.started);
+      const horizontal = Math.abs(dx) > Math.abs(dy) * 1.25;
+      resetDeckDrag();
+      if (horizontal && (Math.abs(dx) > 72 || (Math.abs(dx) > 38 && Math.abs(dx)/elapsed > .65))) {
+        deck.ignoreClicksUntil = Date.now() + 500;
+        moveDeck(dx < 0 ? -1 : 1);
+      }
+    });
+    surface.addEventListener('pointercancel', resetDeckDrag);
   }
 
   function studyQuestion(term) {
@@ -739,6 +843,7 @@
     $('medlexDialog').addEventListener('click', event => {
       if (event.target === $('medlexDialog')) event.target.close();
     });
+    configureDeck();
     $('medlexCopy').addEventListener('click', async () => {
       if (!state.selected) return;
       try {

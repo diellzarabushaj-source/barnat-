@@ -432,6 +432,35 @@ test('MedLex ear and nose shows normal and pathological reference cards', async 
   await expect(dialog.locator('#medlexDialogExample')).toContainText('pa bombim');
 });
 
+test('MedLex atlas supports tapping, dismissing, and swipe-style navigation', async ({page}) => {
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('http://127.0.0.1:4173/medlex.html?category=20');
+  await page.getByRole('button',{name:'Hap kartelën Timpan normal'}).click();
+  const dialog = page.getByRole('dialog',{name:'Timpan normal'});
+  await expect(dialog).toBeVisible();
+  await expect(dialog.locator('#medlexDeckCount')).toHaveText('1 / 7');
+  await expect(dialog.locator('#medlexDeckProgress')).toHaveAttribute('style',/14\.285/);
+  await dialog.locator('#medlexDeckImageHit').click();
+  await expect(dialog.locator('#medlexDialogTitle')).toHaveText('Otiti i mesëm akut');
+  await expect(dialog.locator('#medlexDeckCount')).toHaveText('2 / 7');
+  await dialog.getByRole('button',{name:'Hiqe këtë kartelë nga prezantimi'}).click();
+  await expect(dialog.locator('#medlexDialogTitle')).toHaveText('Efuzioni i veshit të mesëm');
+  await expect(dialog.locator('#medlexDeckCount')).toHaveText('2 / 6');
+  await page.keyboard.press('ArrowLeft');
+  await expect(dialog.locator('#medlexDialogTitle')).toHaveText('Timpan normal');
+  await page.keyboard.press('ArrowRight');
+  await expect(dialog.locator('#medlexDialogTitle')).toHaveText('Efuzioni i veshit të mesëm');
+  const surface = dialog.locator('#medlexSwipeSurface');
+  const rect = await surface.boundingBox();
+  await page.mouse.move(rect.x + rect.width * .68,rect.y + Math.min(rect.height * .25,140));
+  await page.mouse.down();
+  await page.mouse.move(rect.x + rect.width * .30,rect.y + Math.min(rect.height * .25,140),{steps:7});
+  await page.mouse.up();
+  await expect(dialog.locator('#medlexDialogTitle')).toHaveText('Hunda normale');
+  await dialog.getByRole('button',{name:'Mbyll kartelën'}).click();
+  await expect(dialog).toBeHidden();
+});
+
 for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,height:700}]) {
   test(`MedLex chapter flashcards reveal the original card and retry missed terms on ${name}`, async ({page}) => {
     await page.setViewportSize({width,height});
