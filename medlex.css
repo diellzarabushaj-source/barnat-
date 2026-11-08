@@ -1928,11 +1928,18 @@ html.medlex-study-immersive-open {overflow:hidden;}
   .medlex-study-session.is-immersive .medlex-study-card-stage {
     width:100%;max-width:1050px;padding:18px 18px 22px;
   }
+  .medlex-study-session:not(.is-immersive) .medlex-study-card-stage { padding-block:4px; }
   .medlex-study-card,
   .medlex-study-session.is-immersive .medlex-study-card { width:min(100%,570px); }
+  .medlex-study-session:not(.is-immersive) .medlex-study-card {
+    width:min(100%,clamp(395px,calc(100dvh - 480px),550px));
+  }
   .medlex-study-card-shadow,
   .medlex-study-session.is-immersive .medlex-study-card-shadow {
     left:50%;right:auto;width:min(76%,590px);inset-block:24px 27px;
+  }
+  .medlex-study-session:not(.is-immersive) .medlex-study-card-shadow {
+    width:min(74%,clamp(410px,calc(100dvh - 460px),570px));inset-block:10px 14px;
   }
   .medlex-study-card-shadow-back { transform:translateX(-50%) translateY(23px) scale(.92) rotate(5deg); }
   .medlex-study-card-shadow-front { transform:translateX(-50%) translateY(12px) scale(.97) rotate(-3deg); }
@@ -1960,6 +1967,7 @@ html.medlex-study-immersive-open {overflow:hidden;}
   }
   .medlex-study-session:not(.is-immersive) .medlex-study-art img { max-height:min(53dvh,530px); }
   .medlex-study-action-dock { gap:15px;width:min(100%,580px);margin-top:3px; }
+  .medlex-study-session:not(.is-immersive) .medlex-study-action-dock { min-height:88px;margin-top:0; }
   .medlex-study-choice-symbol { width:72px;height:72px; }
   .medlex-study-dock-more { min-height:55px; }
   .medlex-study-session.is-immersive { gap:7px;padding-block:clamp(20px,3.4vh,42px); }

@@ -581,9 +581,11 @@ test('MedLex desktop study arena keeps its card centered and supports keyboard r
   const cardBounds = await card.boundingBox();
   const leftBounds = await left.boundingBox();
   const rightBounds = await right.boundingBox();
+  const dockBounds = await study.locator('.medlex-study-action-dock').boundingBox();
   expect(cardBounds.width).toBeLessThanOrEqual(575);
   expect(leftBounds.x + leftBounds.width).toBeLessThan(cardBounds.x - 4);
   expect(rightBounds.x).toBeGreaterThan(cardBounds.x + cardBounds.width + 4);
+  expect(dockBounds.y + dockBounds.height).toBeLessThanOrEqual(900);
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(1440);
   await page.screenshot({path:path.join(OUTPUT,'tailwind-clinical-medlex-study-desktop-arena.png')});
   await study.getByRole('button',{name:'Hap studimin në ekran të plotë'}).click();
