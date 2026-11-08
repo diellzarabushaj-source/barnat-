@@ -516,18 +516,11 @@ test('MedLex Studio presents a 3D flashcard and supports swipe-to-rate', async (
   await expect(study.locator('#medlexStudySwipeHint')).toBeVisible();
   await expect(card).toHaveClass(/is-revealed/);
   await expect(study.locator('#medlexStudyTerm')).toHaveText('Takikardi');
-  await page.evaluate(() => {
-    window.__medlexGestureTrace = [];
-    for (const type of ['pointerdown','pointermove','pointerup','pointercancel','mousedown','mouseup']) {
-      document.addEventListener(type, event => window.__medlexGestureTrace.push({type,target:event.target.id || event.target.tagName,x:Math.round(event.clientX),y:Math.round(event.clientY),answerHidden:document.querySelector('#medlexStudyAnswer').hidden,cardActive:document.querySelector('#medlexStudyCard').className}),true);
-    }
-  });
   const artwork = await study.locator('#medlexStudyImage').boundingBox();
   await page.mouse.move(artwork.x+artwork.width*.73,artwork.y+artwork.height*.4);
   await page.mouse.down();
   await page.mouse.move(artwork.x+artwork.width*.23,artwork.y+artwork.height*.4,{steps:9});
   await page.mouse.up();
-  console.log('MEDLEX_GESTURE_TRACE',JSON.stringify(await page.evaluate(() => window.__medlexGestureTrace)));
   await expect(study.locator('#medlexStudyPosition')).toHaveText('Kartela 2 nga 4 · 25%');
   await expect(study.locator('#medlexStudyRemaining')).toHaveText('1');
   await study.getByRole('button',{name:'Zbulo kartelën'}).click();

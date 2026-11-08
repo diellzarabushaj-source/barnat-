@@ -777,9 +777,9 @@
       if (studyMotion.moving || $('medlexStudyAnswer').hidden) return;
       const x = event.clientX-start.x;
       const y = event.clientY-start.y;
-      const elapsed = Math.max(1,performance.now()-start.started);
-      if (Math.abs(x)>68 && Math.abs(x)>Math.abs(y)*1.1 ||
-          (Math.abs(x)>30 && Math.abs(x)>Math.abs(y)*1.35 && Math.abs(x)/elapsed>.45)) {
+      // A short, intentional horizontal flick should count even when the
+      // artwork is narrow on a small phone or inside a compact grid.
+      if (Math.abs(x)>=30 && Math.abs(x)>Math.abs(y)*1.25) {
         submitStudyRating(x<0?'review':'known');
       } else {
         card.classList.add('is-returning');
@@ -816,7 +816,7 @@
           if (!studyMotion.drag || studyMotion.moving) return;
           const {x,started} = studyMotion.drag;
           const elapsed = Math.max(1,performance.now()-started);
-          if (Math.abs(x)>68 || (Math.abs(x)>30 && Math.abs(x)/elapsed>.45)) {
+          if (Math.abs(x)>=30 || (Math.abs(x)>24 && Math.abs(x)/elapsed>.45)) {
             submitStudyRating(x<0?'review':'known');
             return;
           }
