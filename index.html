@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="/registry-v2.css?v=registry-smooth-20261103">
   <link rel="stylesheet" href="/registry-atc-filter.css?v=20261006">
   <link rel="stylesheet" href="/registry-column-filter.css?v=registry-smooth-20261103">
+  <link rel="stylesheet" href="/luna-search.css?v=20261108-luna-beta">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/dose-core.js?v=drx-dose-core-v1" defer></script>
@@ -24,6 +25,7 @@
   <script src="/registry-column-model.js?v=20261006-substances" defer></script>
   <script src="/registry-column-filter.js?v=registry-smooth-20261103" defer></script>
 <script src="/registry-v2.js?v=registry-smooth-20261103&amp;registryUpdates=20261005" defer></script>
+  <script src="/luna-search.js?v=20261108-luna-beta" defer></script>
 </head>
 <body>
   <div class="app-shell" id="appShell" aria-busy="true">
@@ -161,6 +163,22 @@
             <p id="personalEmptyText">Te një bar, hap menynë me tri pika dhe zgjidh “Shëno si favorit”.</p>
             <button class="button button-secondary" id="personalBackToRegistry" type="button">Kthehu te barnat</button>
           </div>
+        </section>
+
+        <section class="luna-panel" id="lunaPanel" hidden aria-label="Kërkim i barnave me GPT-6 Luna">
+          <div class="luna-head">
+            <div>
+              <h2>Pyet DRx Luna</h2>
+              <p>Kërko barna ose substanca me gjuhë natyrale, vetëm në regjistrin e publikuar.</p>
+            </div>
+            <span class="luna-tag">GPT-6 Luna · Beta</span>
+          </div>
+          <form class="luna-form" id="lunaSearchForm">
+            <input id="lunaQuestion" type="search" maxlength="220" autocomplete="off" placeholder="P.sh. kërko amoxicillin ose ceftriaxone…" aria-label="Kërkimi me Luna" required>
+            <button class="button button-primary" type="submit" id="lunaSubmit">Kërko me AI</button>
+          </form>
+          <p class="luna-status" id="lunaStatus" role="status" aria-live="polite">Mos vendos emra ose të dhëna identifikuese të pacientëve. Luna nuk jep doza apo rekomandime mjekimi.</p>
+          <ul class="luna-results" id="lunaResults" aria-label="Barnat e gjetura"></ul>
         </section>
 
         <div class="metrics-row" aria-label="Përmbledhje e regjistrit">

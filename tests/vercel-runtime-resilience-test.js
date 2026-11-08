@@ -38,4 +38,27 @@ assert.match(
   'middleware public-path decision must include the static-asset guard',
 );
 
+
+const homepageAuthSource = fs.readFileSync('homepage-auth.js', 'utf8');
+assert.match(
+  homepageAuthSource,
+  /const pageRequest = next === 'login' \? page \+ '\?reauth=1' : page;/,
+  'login template must request reauth=1 to avoid middleware redirect with an existing DRx session',
+);
+assert.match(
+  homepageAuthSource,
+  /fetch\(pageRequest, \{ credentials:'same-origin', signal:request\.signal \}\)/,
+  'modal template fetch must retain same-origin Vercel Preview authentication cookies',
+);
+assert.doesNotMatch(
+  homepageAuthSource,
+  /fetch\(page, \{ credentials:'omit'/,
+  'modal must not strip deployment protection cookies from preview requests',
+);
+assert.match(
+  homepageAuthSource,
+  /fallbackParams\.set\('reauth', '1'\)/,
+  'fallback standalone login should also allow explicit account switching',
+);
+
 console.log('Vercel runtime resilience contract passed: transient reads retry safely, expected 4xx states stay out of error logs, and shell assets cannot be redirected to HTML by auth.');

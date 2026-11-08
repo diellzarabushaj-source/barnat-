@@ -82,6 +82,10 @@
       "destination": "/api/drug-search?view=atc-counts"
     },
     {
+      "source": "/api/luna-search",
+      "destination": "/api/gemini-prescription-secure?lunaSearch=1"
+    },
+    {
       "source": "/api/gemini-prescription",
       "destination": "/api/gemini-prescription-secure"
     },

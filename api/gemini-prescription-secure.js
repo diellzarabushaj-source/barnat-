@@ -48,6 +48,11 @@ function bodySize(req) {
 }
 
 module.exports = async function secureGeminiPrescription(req, res) {
+  // Share one Vercel function (Hobby budget) while preserving a separate
+  // authenticated, rate-limited Luna route and the existing Gemini contract.
+  const lunaView = String(req.query?.lunaSearch || new URL(req.url || '/api/gemini-prescription-secure', 'https://drx.local').searchParams.get('lunaSearch') || '');
+  if (lunaView === '1') return require('../lib/luna-search-handler.js')(req, res);
+
   res.setHeader('Cache-Control', 'private, no-store, max-age=0');
   res.setHeader('Vary', 'Cookie');
   res.setHeader('X-Content-Type-Options', 'nosniff');

@@ -193,9 +193,9 @@ test('Unavailable modal assets preserve a working standalone login link',async({
  await page.route('**/login.js?*',route=>route.abort());
  await page.goto(BASE+'/landing.html');
  await page.locator('.lp-hero__cta a[href="login.html"]').click();
- await expect(page.locator('[data-auth-fallback]')).toHaveAttribute('href','/login.html');
+ await expect(page.locator('[data-auth-fallback]')).toHaveAttribute('href','/login.html?reauth=1');
  await page.locator('[data-auth-fallback]').click();
- await expect(page).toHaveURL(/\/login\.html$/);
+ await expect(page).toHaveURL(/\/login\.html\?reauth=1$/);
 });
 
 

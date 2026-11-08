@@ -56,9 +56,13 @@
     loading.textContent = 'Po hapet…';
     content.replaceChildren(loading);
     const page = next === 'login' ? '/login.html' : '/regjistrimi.html';
+    // Keep the Vercel Preview authentication cookie on same-origin requests.
+    // reauth=1 prevents an already signed-in user from being redirected away
+    // from the login markup when explicitly switching accounts.
+    const pageRequest = next === 'login' ? page + '?reauth=1' : page;
     try {
       const [response] = await Promise.all([
-        fetch(page, { credentials:'omit', signal:request.signal }),
+        fetch(pageRequest, { credentials:'same-origin', signal:request.signal }),
         script(next === 'login' ? '/login.js?v=home-dialog-20261031b' : '/regjistrimi.js?v=home-dialog-20261031b'),
       ]);
       if (!response.ok || new URL(response.url).pathname !== page) throw new Error('Ngarkimi dështoi.');
@@ -84,7 +88,9 @@
       note.setAttribute('role', 'alert');
       note.textContent = 'Formulari nuk u hap. Mund të vazhdosh në faqen e hyrjes.';
       const fallback = document.createElement('a');
-      fallback.href = page + currentSearch;
+      const fallbackParams = new URLSearchParams(currentSearch);
+      if (next === 'login') fallbackParams.set('reauth', '1');
+      fallback.href = page + (fallbackParams.size ? '?' + fallbackParams.toString() : '');
       fallback.dataset.authFallback = 'true';
       fallback.textContent = next === 'login' ? 'Hap faqen e hyrjes →' : 'Hap faqen e regjistrimit →';
       content.replaceChildren(note, fallback);
