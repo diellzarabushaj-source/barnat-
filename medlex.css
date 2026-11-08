@@ -1321,6 +1321,8 @@ html.medlex-deck-open { overflow: hidden; }
 .medlex-study-card.is-dragging { transition:none;cursor:grabbing; }
 .medlex-study-card.is-resetting { transition:none; }
 .medlex-study-card.is-returning { transition:transform .51s cubic-bezier(.19,1.38,.35,1); }
+.medlex-study-card.is-study-ghost { position:absolute;z-index:6;min-width:0;pointer-events:none;user-select:none;transition:transform .32s cubic-bezier(.26,.82,.27,1),opacity .3s ease; }
+.medlex-study-card.is-study-ghost .medlex-study-rating button { pointer-events:none; }
 .medlex-study-card[data-study-exit="known"] { transform:translate3d(120vw,-20px,0) rotate(19deg);opacity:0; }
 .medlex-study-card[data-study-exit="review"] { transform:translate3d(-120vw,-20px,0) rotate(-19deg);opacity:0; }
 .medlex-study-card.is-entering { animation:medlex-study-pop-in .33s cubic-bezier(.19,.99,.25,1) both; }

@@ -59,6 +59,15 @@
   const study = { active:false, deck:[], answers:[], ratings:{}, chapter:'01', topic:'all' };
   const studyMotion = { moving:false, drag:null };
   const studySync = { account:'', revision:0, loaded:false, working:false, pending:null, conflict:null };
+  const ORL_CHAPTER = '19';
+  const ORL_EXTRA_CHAPTER = '20';
+
+  function publicChapter(category) { return category === ORL_EXTRA_CHAPTER ? ORL_CHAPTER : category; }
+  function chapterIncludes(category, term) {
+    return category === 'all' || term.category === category ||
+      (category === ORL_CHAPTER && term.category === ORL_EXTRA_CHAPTER);
+  }
+  function listedChapters() { return state.categories.filter(chapter => chapter.id !== ORL_EXTRA_CHAPTER); }
 
   function normalize(value) {
     return String(value || '').toLocaleLowerCase('sq')
@@ -121,8 +130,8 @@
     const chapter = state.categories.find(item => item.id === state.category);
     $('medlexCollectionEyebrow').textContent = chapter ? chapter.id + ' / ' + chapter.title.toLocaleUpperCase('sq') : 'DRX MEDLEX / 19 KAPITUJ';
     $('medlexCollectionTitle').textContent = state.query.trim() ? 'Rezultatet e kërkimit' : chapter?.heading || 'Fjalori i përbashkët';
-    $('medlexCollectionDescription').textContent = chapter?.description || 'Kartelat e plotësuara dhe termat e planifikuar nga të 20 kapitujt, në një kërkim të vetëm.';
-    const number = state.category === 'all' ? state.terms.length : state.terms.filter(term => term.category === state.category).length;
+    $('medlexCollectionDescription').textContent = chapter?.description || 'Kartelat e plotësuara dhe termat e planifikuar nga të 19 kapitujt, në një kërkim të vetëm.';
+    const number = state.terms.filter(term => chapterIncludes(state.category, term)).length;
     $('medlexTotal').textContent = String(number);
     $('medlexCountLabel').textContent = chapter?.status === 'planned' || state.category === 'all' ? 'terma' : 'kartela';
     $('medlexSelectedChapter').textContent = chapter ? chapter.id + ' · ' + chapter.title : 'Të gjithë kapitujt';
@@ -138,8 +147,8 @@
     all.dataset.category = 'all';
     all.append(create('span','medlex-category-number','⌕'),create('span','medlex-category-title','Të gjithë kapitujt'));
     fragment.append(all);
-    for (const chapter of state.categories) {
-      const count = state.terms.filter(term => term.category === chapter.id).length;
+    for (const chapter of listedChapters()) {
+      const count = state.terms.filter(term => chapterIncludes(chapter.id, term)).length;
       const button = create('button', 'medlex-category');
       button.type = 'button';
       button.dataset.category = chapter.id;
@@ -210,7 +219,7 @@
     art.append(img);
 
     const body = create('span', 'medlex-card-body');
-    body.append(create('span', 'medlex-card-index', `Kapitulli ${term.category}`));
+    body.append(create('span', 'medlex-card-index', `Kapitulli ${publicChapter(term.category)}`));
     body.append(create('span', 'medlex-card-title', term.term));
     body.append(create('span', 'medlex-card-description', term.definition));
     const footer = create('span', 'medlex-card-footer');
@@ -244,7 +253,7 @@
   }
 
   function matchesScope(term, category, topic) {
-    return (category === 'all' || term.category === category) &&
+    return chapterIncludes(category, term) &&
       (topic.id === 'all' || (term.category === '01' ? topic.ids.includes(term.id) : term.group === topic.id));
   }
 
@@ -288,7 +297,7 @@
     }
     grid.replaceChildren(fragment);
     $('medlexEmpty').hidden = matches.length !== 0 || !state.terms.length;
-    const available = state.terms.filter(term => state.category === 'all' || term.category === state.category).length;
+    const available = state.terms.filter(term => chapterIncludes(state.category, term)).length;
     const pending = matches.filter(item => item.term.status === 'planned').length;
     setStatus(`${matches.length} nga ${available} terma${pending ? ` · ${pending} në përgatitje` : ''}${query ? ` · Kërkim: “${state.query.trim()}”` : ''}`);
     $('medlexClear').hidden = !state.query;
@@ -342,7 +351,7 @@
     state.selected = term;
     $('medlexDialogTitle').textContent = term.term;
     $('medlexDetailsTitle').textContent = term.term;
-    $('medlexDialogCategory').textContent = `DRx MedLex · Kapitulli ${term.category}`;
+    $('medlexDialogCategory').textContent = `DRx MedLex · Kapitulli ${publicChapter(term.category)}`;
     $('medlexDialogLatin').textContent = term.latin ? `Latinisht: ${term.latin}` : '';
     const english = term.english || ALIASES[term.id]?.[0];
     $('medlexDialogEnglish').textContent = english ? `Anglisht: ${english}` : '';
@@ -391,7 +400,7 @@
   function openTerm(term) {
     const dialog = $('medlexDialog');
     // A search for a single term must still open a swipeable chapter atlas.
-    const chapterTerms = state.terms.filter(item => item.category === term.category && item.status !== 'planned');
+    const chapterTerms = state.terms.filter(item => chapterIncludes(publicChapter(term.category), item) && item.status !== 'planned');
     const available = state.terms.filter(item => item.status !== 'planned');
     deck.terms = state.visibleTerms.length > 1 ? [...state.visibleTerms] :
       chapterTerms.length > 1 ? chapterTerms : available.length > 1 ? available : [term];
@@ -694,21 +703,38 @@
   function submitStudyRating(rating) {
     if (studyMotion.moving || $('medlexStudyAnswer').hidden || !study.deck[study.answers.length]) return;
     studyMotion.moving = true;
-    // Swipe keeps its last finger offset until the card leaves the stack.
-    resetStudyDrag(false);
     const card = $('medlexStudyCard');
-    card.dataset.studyExit = rating;
-    const advance = () => {
-      card.classList.add('is-resetting');
-      resetStudyDrag();
-      delete card.dataset.studyExit;
-      rateStudyCard(rating);
-      studyMotion.moving = false;
-      card.classList.remove('is-resetting');
+    const stage = $('medlexStudyCardStage');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // The outgoing artwork flies away as an inert visual copy. Ratings and
+    // account sync update immediately, independently of animation timing.
+    if (!reducedMotion) {
+      const ghost = card.cloneNode(true);
+      ghost.removeAttribute('id');
+      ghost.querySelectorAll('[id]').forEach(node => node.removeAttribute('id'));
+      ghost.inert = true;
+      ghost.setAttribute('aria-hidden','true');
+      ghost.classList.remove('is-dragging','is-returning','is-entering');
+      ghost.classList.add('is-study-ghost');
+      ghost.style.left = card.offsetLeft + 'px';
+      ghost.style.top = card.offsetTop + 'px';
+      ghost.style.width = card.offsetWidth + 'px';
+      ghost.style.height = card.offsetHeight + 'px';
+      stage.append(ghost);
+      window.requestAnimationFrame(() => { ghost.dataset.studyExit = rating; });
+      window.setTimeout(() => ghost.remove(),370);
+    }
+    card.classList.add('is-resetting');
+    resetStudyDrag();
+    rateStudyCard(rating);
+    studyMotion.moving = false;
+    card.classList.remove('is-resetting');
+    if (!reducedMotion && !$('medlexStudySession').hidden) {
+      card.classList.remove('is-entering');
+      void card.offsetWidth;
       card.classList.add('is-entering');
       window.setTimeout(() => card.classList.remove('is-entering'),350);
-    };
-    window.setTimeout(advance,window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 220);
+    }
   }
 
   function configureStudySwipe() {
@@ -774,9 +800,9 @@
     if (!deck?.length) { resetStudy(false); return; }
     study.deck = deck.map(item => item.term);
     study.answers = deck.map(item => item.rating).filter(Boolean);
-    study.chapter = saved.chapter;
+    study.chapter = publicChapter(saved.chapter);
     study.topic = saved.topic;
-    $('medlexStudyChapter').value = saved.chapter;
+    $('medlexStudyChapter').value = study.chapter;
     updateStudyTopics(saved.topic);
     drawStudySession(false);
     if (study.active) syncWorkspaceUrl();
@@ -1114,21 +1140,33 @@
           !['planned','available'].includes(term.status) || (term.status === 'available' && (!term.definition || !term.example || !imagePath(term)))) throw new Error('Term i paplotë në kapitujt e rinj.');
       plannedIds.add(term.id);
     }
-    state.categories = chapters.categories;
+    const orlMouth = chapters.categories.find(chapter => chapter.id === ORL_CHAPTER);
+    const orlEarNose = chapters.categories.find(chapter => chapter.id === ORL_EXTRA_CHAPTER);
+    if (!orlMouth || !orlEarNose) throw new Error('Kapitujt ORL nuk u gjetën.');
+    // Virtual consolidation: preserve each Sanity term, ID, image, group and
+    // underlying chapter document, while presenting one complete ORL atlas.
+    state.categories = chapters.categories.map(chapter => chapter.id !== ORL_CHAPTER ? chapter : {
+      ...chapter,
+      title:'ORL · Vesh, hundë dhe fyt',
+      heading:'Atlasi ORL — Vesh, hundë, gojë dhe faring',
+      description:'21 kartela ilustrative: otoskopia, rinoskopia, gjuha, mukoza orale, tonsilat dhe faringu, me pamje normale dhe patologjike.',
+      groups:[...orlMouth.groups,...orlEarNose.groups],
+    });
     state.terms = [...terms,...anatomyTerms,...plannedTerms];
     $('medlexHeroCount').textContent = String(state.terms.filter(term => term.status !== 'planned').length);
     const params = new URLSearchParams(location.search);
     const selected = params.get('category');
-    state.category = selected === 'all' || state.categories.some(item => item.id === selected) ? selected : '01';
+    state.category = selected === 'all' || state.categories.some(item => item.id === selected) ? publicChapter(selected) : '01';
     state.searchFrom = null;
     $('medlexStudyChapter').replaceChildren(new Option('Të gjithë kapitujt', 'all'),
-      ...state.categories.map(chapter => new Option(chapter.id + ' · ' + chapter.title, chapter.id)));
+      ...listedChapters().map(chapter => new Option(chapter.id + ' · ' + chapter.title, chapter.id)));
     $('medlexFlashcards').disabled = false;
     $('medlexStudyShortcut').disabled = false;
     drawCategories();
     drawTopics();
     if (params.get('mode') === 'flashcards') setStudyMode(true, false);
     setQuery($('medlexSearch').value);
+    if (selected === ORL_EXTRA_CHAPTER) syncWorkspaceUrl();
   }
 
   async function init() {

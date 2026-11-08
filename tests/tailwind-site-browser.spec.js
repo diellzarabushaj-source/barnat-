@@ -357,12 +357,12 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
       await expect(chapterPicker.locator('.medlex-category').first()).toBeHidden();
       await chapterPicker.locator('summary').click();
     }
-    await expect(chapterPicker.getByRole('button')).toHaveCount(21);
+    await expect(chapterPicker.getByRole('button')).toHaveCount(20);
     const chapterFilter = chapterPicker.getByRole('searchbox',{name:'Filtro kapitujt'});
     await chapterFilter.fill('pa rezultat 999');
     await expect(chapterPicker.getByRole('status')).toBeVisible();
     await chapterFilter.press('Escape');
-    await expect(chapterPicker.getByRole('button')).toHaveCount(21);
+    await expect(chapterPicker.getByRole('button')).toHaveCount(20);
     await chapterFilter.fill('01 terminologji');
     await expect(chapterPicker.getByRole('button')).toHaveCount(1);
     await chapterPicker.locator('[data-category="01"]').click();
@@ -407,13 +407,16 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
   });
 }
 
-test('MedLex ORL mouth and pharynx renders 14 illustrated findings including normal throat', async ({page}) => {
+test('MedLex unifies the 21 ORL findings into one chapter with six groups', async ({page}) => {
   await page.goto('http://127.0.0.1:4173/medlex.html?category=19');
   const cards = page.locator('#medlexGridItems .medlex-card');
-  await expect(page.locator('#medlexCollectionTitle')).toHaveText('Inspektimi i gojës dhe faringut');
-  await expect(cards).toHaveCount(14);
-  await expect(page.locator('.medlex-subchapter')).toHaveCount(4);
-  await expect(cards.locator('img')).toHaveCount(14);
+  await expect(page.locator('#medlexCollectionTitle')).toHaveText('Atlasi ORL — Vesh, hundë, gojë dhe faring');
+  await expect(cards).toHaveCount(21);
+  await expect(page.locator('.medlex-subchapter')).toHaveCount(6);
+  await expect(cards.locator('img')).toHaveCount(21);
+  await expect(page.locator('#medlexTotal')).toHaveText('21');
+  await expect(page.locator('#medlexCategories [data-category="19"]')).toContainText('21 kartela');
+  await expect(page.locator('#medlexCategories [data-category="20"]')).toHaveCount(0);
   await expect(cards.locator('img').first()).toHaveAttribute('src',/\/assets\/medlex-chapters\/c19-001\.webp/);
   await expect.poll(() => cards.locator('img').first().evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
   await page.getByRole('button',{name:'Hap kartelën Abscesi peritonsilar'}).click();
@@ -423,13 +426,19 @@ test('MedLex ORL mouth and pharynx renders 14 illustrated findings including nor
   await expect(dialog.locator('#medlexDialogImage')).toHaveAttribute('src',/c19-010\.webp/);
 });
 
-test('MedLex ear and nose shows normal and pathological reference cards', async ({page}) => {
+test('MedLex old ORL ear/nose link redirects into the merged 21-card atlas', async ({page}) => {
   await page.goto('http://127.0.0.1:4173/medlex.html?category=20');
   const cards = page.locator('#medlexGridItems .medlex-card');
-  await expect(page.locator('#medlexCollectionTitle')).toHaveText('Otoskopia dhe rinoskopia');
-  await expect(cards).toHaveCount(7);
-  await expect(page.locator('.medlex-subchapter')).toHaveCount(2);
-  await expect(cards.locator('img')).toHaveCount(7);
+  await expect(page).toHaveURL(/category=19$/);
+  await expect(page.locator('#medlexCollectionTitle')).toHaveText('Atlasi ORL — Vesh, hundë, gojë dhe faring');
+  await expect(cards).toHaveCount(21);
+  await expect(page.locator('.medlex-subchapter')).toHaveCount(6);
+  await expect(cards.locator('img')).toHaveCount(21);
+  await page.getByRole('button',{name:'Studio me flashcards'}).click();
+  await expect(page.getByLabel('Kapitulli',{exact:true})).toHaveValue('19');
+  await expect(page.getByLabel('Kapitulli',{exact:true}).locator('option')).toHaveCount(20);
+  await expect(page.locator('#medlexStudyAvailability')).toHaveText('21 kartela të gatshme për studim.');
+  await page.getByRole('button',{name:'Listë',exact:true}).click();
   await page.getByRole('button',{name:'Hap kartelën Timpan normal'}).click();
   const dialog = page.getByRole('dialog',{name:'Timpan normal'});
   await expect(dialog.locator('#medlexDialogImage')).toHaveAttribute('src',/c20-001\.webp/);
@@ -443,8 +452,8 @@ test('MedLex atlas supports tapping, dismissing, and swipe-style navigation', as
   // The dialog's accessible name intentionally changes as the active card changes.
   const dialog = page.locator('#medlexDialog');
   await expect(dialog).toBeVisible();
-  await expect(dialog.locator('#medlexDeckCount')).toHaveText('1 / 7');
-  await expect(dialog.locator('#medlexDeckProgress')).toHaveAttribute('style',/14\.285/);
+  await expect(dialog.locator('#medlexDeckCount')).toHaveText('15 / 21');
+  await expect(dialog.locator('#medlexDeckProgress')).toHaveAttribute('style',/71\.428/);
   await expect(dialog.locator('#medlexDetailsSheet')).toBeHidden();
   const artwork = dialog.locator('#medlexSwipeSurface');
   const artRect = await artwork.boundingBox();
@@ -459,10 +468,10 @@ test('MedLex atlas supports tapping, dismissing, and swipe-style navigation', as
   await expect(dialog.locator('#medlexDetailsSheet')).toBeHidden();
   await dialog.locator('#medlexDeckImageHit').click();
   await expect(dialog.locator('#medlexDialogTitle')).toHaveText('Otiti i mesëm akut');
-  await expect(dialog.locator('#medlexDeckCount')).toHaveText('2 / 7');
+  await expect(dialog.locator('#medlexDeckCount')).toHaveText('16 / 21');
   await dialog.getByRole('button',{name:'Hiqe këtë kartelë nga prezantimi'}).click();
   await expect(dialog.locator('#medlexDialogTitle')).toHaveText('Efuzioni i veshit të mesëm');
-  await expect(dialog.locator('#medlexDeckCount')).toHaveText('2 / 6');
+  await expect(dialog.locator('#medlexDeckCount')).toHaveText('16 / 20');
   await page.keyboard.press('ArrowLeft');
   await expect(dialog.locator('#medlexDialogTitle')).toHaveText('Timpan normal');
   await page.keyboard.press('ArrowRight');
@@ -537,7 +546,7 @@ for (const {name, width, height} of [...viewports, {name:'small-dark',width:320,
     const start = study.getByRole('button',{name:'Fillo seancën'});
     const answer = page.locator('#medlexStudyAnswer');
     const image = page.locator('#medlexStudyImage');
-    await expect(chapter.locator('option')).toHaveCount(21);
+    await expect(chapter.locator('option')).toHaveCount(20);
     await expect(chapter).toHaveValue('01');
     await chapter.selectOption('11');
     await expect(start).toBeDisabled();
