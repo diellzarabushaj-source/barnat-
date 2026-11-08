@@ -118,7 +118,11 @@
     if (/^https:\/\/cdn\.sanity\.io\/images\/4wdtp8cz\/production\/[a-z0-9]+-\d+x\d+\.(?:webp|png|jpg|jpeg)$/.test(term.imageUrl || '')) return term.imageUrl + '?auto=format&w=1254&q=95';
     const name = String(term.image || '').replace(/\.png$/i,'.webp');
     if (term.category === '02') return /^(?:or|ab|th|up|lo|he|ne|ba|pe)\d{2}\.webp$/.test(name) ? ANATOMY_IMAGE_BASE + name + '?v=' + ANATOMY_ARTWORK_VERSION : '';
-    if (/^(?:0[3-9]|1[0-9]|20)$/.test(term.category)) return new RegExp('^c' + term.category + '-\\d{3}\\.webp$').test(name) ? '/assets/medlex-chapters/' + name + '?v=' + CHAPTER_ARTWORK_VERSION : '';
+    if (/^(?:0[3-9]|1[0-9]|20)$/.test(term.category)) {
+      const version = /^\d{8}-[a-z0-9-]+$/.test(term.artworkVersion || '') ? term.artworkVersion : CHAPTER_ARTWORK_VERSION;
+      return new RegExp('^c' + term.category + '-\\d{3}\\.webp$').test(name)
+        ? '/assets/medlex-chapters/' + name + '?v=' + version : '';
+    }
     return /^\d{2}-[a-z-]+\.webp$/.test(name) ? IMAGE_BASE + name : '';
   }
 
