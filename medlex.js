@@ -5,7 +5,7 @@
   const DATA_URL = '/data/medlex-terms.json';
   const ANATOMY_ARTWORK_VERSION = '20261104-clinical-v2';
   const ANATOMY_DATA_URL = '/data/medlex-anatomy.json?v=' + ANATOMY_ARTWORK_VERSION;
-  const CHAPTER_ARTWORK_VERSION = '20261108-orl-v2';
+  const CHAPTER_ARTWORK_VERSION = '20261108-orl-v5';
   const CHAPTERS_URL = '/data/medlex-chapters.json?v=' + CHAPTER_ARTWORK_VERSION;
   const IMAGE_BASE = '/assets/medlex/';
   const ANATOMY_IMAGE_BASE = '/assets/medlex-anatomy/';
@@ -1258,7 +1258,30 @@
     const [response, anatomyResponse, chaptersResponse] = await Promise.all([DATA_URL,ANATOMY_DATA_URL,CHAPTERS_URL].map(url => fetch(url, {credentials:'same-origin',cache:'force-cache'})));
     if (!response.ok || !anatomyResponse.ok || !chaptersResponse.ok) throw new Error('Fjalori nuk u ngarkua. Provo përsëri.');
     const [data,anatomy,localChapters,remote] = await Promise.all([response.json(),anatomyResponse.json(),chaptersResponse.json(),cms]);
-    const chapters = remote?.ok && remote.catalog?.categories?.length === 20 ? remote.catalog : localChapters;
+    // Preserve CMS-authored text, but show newer local artwork as a review draft
+    // while Sanity catches up with the current image batch.
+    const chapters = remote?.ok && remote.catalog?.categories?.length === 20
+      ? {
+          ...remote.catalog,
+          categories: remote.catalog.categories.map(chapter => {
+            const local = localChapters.categories?.find(entry => entry.id === chapter.id);
+            if (!local || !Array.isArray(chapter.terms)) return chapter;
+            const localById = new Map((local.terms || []).map(term => [term.id,term]));
+            const updated = chapter.terms.map(term => {
+              const localTerm = localById.get(term.id);
+              if (!localTerm || localTerm.artworkVersion !== CHAPTER_ARTWORK_VERSION ||
+                  term.artworkVersion === CHAPTER_ARTWORK_VERSION) return term;
+              return {...term,image:localTerm.image,imageUrl:'',artworkVersion:CHAPTER_ARTWORK_VERSION,
+                clinicalStatus:'draft_for_clinical_review'};
+            });
+            const remoteIds = new Set(chapter.terms.map(term => term.id));
+            const additions = (local.terms || []).filter(term => term.status === 'available' &&
+              term.artworkVersion === CHAPTER_ARTWORK_VERSION && !remoteIds.has(term.id));
+            return additions.length || updated.some((term,index) => term !== chapter.terms[index])
+              ? {...chapter,terms:[...updated,...additions]} : chapter;
+          }),
+        }
+      : localChapters;
     if (!Array.isArray(data.terms)) throw new Error('Struktura e fjalorit nuk është e vlefshme.');
     const terms = data.terms.map(term => ({...term,category:'01'})).filter(term => Number.isInteger(term.id) && term.id >= 1 &&
       typeof term.term === 'string' && typeof term.definition === 'string' &&
@@ -1298,7 +1321,7 @@
       ...chapter,
       title:'ORL · Vesh, hundë dhe fyt',
       heading:'Atlasi ORL — Vesh, hundë, gojë dhe faring',
-      description:'21 kartela ilustrative: otoskopia, rinoskopia, gjuha, mukoza orale, tonsilat dhe faringu, me pamje normale dhe patologjike.',
+      description:`${orlMouth.terms.length + orlEarNose.terms.length} kartela ilustrative: otoskopia, rinoskopia, gjuha, mukoza orale, tonsilat dhe faringu, me pamje normale dhe patologjike.`,
       groups:[...orlMouth.groups,...orlEarNose.groups],
     });
     state.terms = [...terms,...anatomyTerms,...plannedTerms];
