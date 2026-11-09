@@ -30,6 +30,14 @@ assert.equal(orl.groups.length, 4);
 const earAndNose = original.categories.find(chapter => chapter.id === '20');
 assert.equal(earAndNose.groups.length, 2);
 assert.equal(earAndNose.terms.length, 15);
+const dermatology = original.categories.find(chapter => chapter.id === '10');
+assert.equal(dermatology.groups.length, 4);
+assert.equal(dermatology.terms.length, 26);
+assert.equal(dermatology.groups.at(-1).id, 'semundje');
+assert.ok(dermatology.terms.some(term => term.term === 'Herpes zoster' && term.status === 'available'));
+assert.ok(dermatology.terms.some(term => term.term === 'Dermatiti atopik' && term.status === 'available'));
+assert.ok(dermatology.terms.slice(-8).every(term => term.clinicalStatus === 'draft_for_clinical_review'),
+  'AI-generated dermatology study materials must remain flagged for clinical review.');
 assert.deepEqual(earAndNose.groups.map(group => group.id), ['veshi', 'hunda']);
 assert.ok(orl.terms.some(term => term.term === 'Orofaring normal' && term.status === 'available'));
 assert.ok(earAndNose.terms.some(term => term.term === 'Timpan normal' && term.status === 'available'));

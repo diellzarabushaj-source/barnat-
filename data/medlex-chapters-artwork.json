@@ -1,5 +1,5 @@
 {
-  "version": "20261108-orl-v5",
+  "version": "20261109-derm-v1",
   "status": "draft_for_clinical_review",
   "generator": "imagegen built-in",
   "mascot": false,
@@ -2113,6 +2113,118 @@
       "references": [
         "https://dermnetnz.org/topics/terminology",
         "https://dermnetnz.org/glossary.html"
+      ]
+    },
+    {
+      "id": "c10-019",
+      "category": "10",
+      "file": "c10-019.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "9e0723e47a9629c85b59e3edb0c94d84c94f82d6380b0258b72e465a2088842d",
+      "sourceSha256": "48c6673a1d656bf8b0522c01539b32e7df672ff313b800fcf99419963f131d44",
+      "definitionSha256": "31a3ad554c4dd856a25bdfa6c4580731618a51bab88a65ce811d0689e6054af8",
+      "exampleSha256": "02a95108f07ff3f15b2df07302adae3f90e9a5b6fdc4b85375aac8d9eaa3f91c",
+      "references": [
+        "https://dermnetnz.org/topics/impetigo"
+      ]
+    },
+    {
+      "id": "c10-020",
+      "category": "10",
+      "file": "c10-020.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "dd91d60d8581fa35aea1ad96b9cb30d04ba27bb13cb88554b1436d8e575982b9",
+      "sourceSha256": "d7b63cc50d51b1f44f8187d913e53a8114f33400a3c9c960415788ac7a46a038",
+      "definitionSha256": "ffd9de57fde6aef3bb60e37aaeb98f95598163e41a1ed99d438663ed69bcc6f7",
+      "exampleSha256": "09735e8f69e861615acd1b5f2de15c4bc9dff5c640e89d9f4a8b514c22c51635",
+      "references": [
+        "https://dermnetnz.org/topics/cellulitis"
+      ]
+    },
+    {
+      "id": "c10-021",
+      "category": "10",
+      "file": "c10-021.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "045b47844fef03e3c29659cbf227ea0403ce9fff8b1509032f047d795ba51e1b",
+      "sourceSha256": "10d54f355005d239e6bf6261cced0c19cf61070775cb8cb9eff491c192f24682",
+      "definitionSha256": "4e4ea46d6b0c66e21a4bd0a78782cff9acfb314bb3a42bbb6ef86e94e0cf93b9",
+      "exampleSha256": "a5ae372d53837c1cce1e1b72a73d8e2340fb434fa80a0be89e7f18c4cbe66366",
+      "references": [
+        "https://dermnetnz.org/topics/herpes-zoster"
+      ]
+    },
+    {
+      "id": "c10-022",
+      "category": "10",
+      "file": "c10-022.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "a1b7d2033011da0f62e9fa544ef963ada281429f99752b4b516df5cc1e67e8e1",
+      "sourceSha256": "903acf36e55e140d8b15f692496be9037a0baf712aebdc01ae6977982f386a63",
+      "definitionSha256": "b3594bb1c60a33062ff3d6510ccabc1aa35cb79611668d8c85f90c4d108e6872",
+      "exampleSha256": "25d21a6d7146bbaf01767cb26a3a0182e374a39796e7020cf63ecb3691f9b090",
+      "references": [
+        "https://dermnetnz.org/topics/tinea-corporis"
+      ]
+    },
+    {
+      "id": "c10-023",
+      "category": "10",
+      "file": "c10-023.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "5e3f942542aebf25e439b2225d8212ec741c95995f1e1b8dd1ebd22deb140cb5",
+      "sourceSha256": "6d30999c910a1d1ee7a7667481d3a89d40d5b195eef7fdfcf7845b97590e559a",
+      "definitionSha256": "700517202c807df15a3ff9fc1364bc075f060fcaab3c0b6cd3ecb5234daa19c1",
+      "exampleSha256": "7fea1761514e93d5eecfc43e6bf6cdade61877fed1d403daf68824f6f584bdda",
+      "references": [
+        "https://dermnetnz.org/topics/scabies"
+      ]
+    },
+    {
+      "id": "c10-024",
+      "category": "10",
+      "file": "c10-024.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "fbd2a582803df7049bd31605aa369776919214dc726b96ba7778d04f83737872",
+      "sourceSha256": "8cf758fa391845e80420f99a6949411e1891869f3410af7b49f18b97d1c4b0f9",
+      "definitionSha256": "46bd615f5689e4d1769abe1323bb30340a74a9fabb6f468a46ef8a8cfc1e92ee",
+      "exampleSha256": "129f4c6b41f3f4ae0adfbfbf81e653d3418e7e72a2b320db77611a26a9b4f819",
+      "references": [
+        "https://dermnetnz.org/topics/chronic-plaque-psoriasis"
+      ]
+    },
+    {
+      "id": "c10-025",
+      "category": "10",
+      "file": "c10-025.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "79d0fd885deb5fb2043216836f0a79c9fa6815eeaa69153a9bf3fbf24ee4ec46",
+      "sourceSha256": "8728636bc16d7c25e8c6320a5aedeb6060a06e3ba895e3c66c939c6b36a86f58",
+      "definitionSha256": "11a7d1ec7e4ab1c17376c46827510d97c9eb17e9daee9f145260fa3e622610ae",
+      "exampleSha256": "d7cc832b87b9a7285ff4722c30ee84dfea97e0a07a0a34849c17fc3ac4349827",
+      "references": [
+        "https://dermnetnz.org/topics/atopic-dermatitis"
+      ]
+    },
+    {
+      "id": "c10-026",
+      "category": "10",
+      "file": "c10-026.webp",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "fc984dca1f300ddc2a7dd47bbd4e23f913d067e29adbeafd12d6db6c0454d215",
+      "sourceSha256": "c37af0efc4c59e56b813c0060c3c8a787adec75733f09c9df173ae0e90e106b3",
+      "definitionSha256": "9c28880ffafd60738ad40f7274adc8784a2ffb129a94d234ff339d6d458dd357",
+      "exampleSha256": "c849c8c0d2aa25eff213d43a944fceaa8a7092e3d3e680faaa7c3f1cb14d87da",
+      "references": [
+        "https://dermnetnz.org/topics/allergic-contact-dermatitis"
       ]
     },
     {

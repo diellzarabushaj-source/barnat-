@@ -481,6 +481,36 @@ test('MedLex adds new illustrated ORL cards beside existing Sanity content', asy
   await expect.poll(()=>page.locator('#medlexDialogImage').evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
 });
 
+test('MedLex preserves eight illustrated dermatology disease cards alongside older Sanity content', async ({page}) => {
+  const remoteCatalog = structuredClone(require('../data/medlex-chapters.json'));
+  const skin = remoteCatalog.categories.find(chapter => chapter.id === '10');
+  skin.terms = skin.terms.filter(term => !/^c10-0(?:19|2[0-6])$/.test(term.id));
+  skin.groups = skin.groups.filter(group => group.id !== 'semundje');
+  skin.terms[0].definition = 'Përkufizim i ruajtur nga Sanity.';
+  await page.route(/\/api\/medical-hub\?_route=medlex/, route => route.fulfill({
+    status:200, contentType:'application/json', body:JSON.stringify({ok:true,catalog:remoteCatalog}),
+  }));
+  await page.goto('http://127.0.0.1:4173/medlex.html?category=10');
+  const cards = page.locator('#medlexGridItems .medlex-card');
+  await expect(cards).toHaveCount(26);
+  await expect(page.locator('.medlex-subchapter')).toHaveCount(4);
+  await expect(cards.locator('img')).toHaveCount(26);
+  await expect(page.locator('#medlexCategories [data-category="10"]')).toContainText('26 kartela');
+  await page.getByRole('button',{name:'Hap kartelën Impetigo'}).click();
+  await expect(page.locator('#medlexDialogImage')).toHaveAttribute('src',/c10-019\.webp\?v=20261109-derm-v1/);
+  await expect.poll(() => page.locator('#medlexDialogImage').evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
+  await page.getByRole('button',{name:'Mbyll kartelën'}).click();
+  await page.getByRole('button',{name:'Hap kartelën Dermatiti alergjik i kontaktit'}).click();
+  await expect(page.locator('#medlexDialogImage')).toHaveAttribute('src',/c10-026\.webp/);
+  await page.locator('#medlexDialog').getByRole('button',{name:/Më shumë/}).click();
+  await expect(page.locator('#medlexDialogDefinition')).toContainText('Reaksion inflamator i vonuar');
+  await page.getByRole('button',{name:'Mbyll detajet'}).click();
+  await page.getByRole('button',{name:'Mbyll kartelën'}).click();
+  await page.getByRole('button',{name:'Hap kartelën Makulë'}).click();
+  await page.locator('#medlexDialog').getByRole('button',{name:/Më shumë/}).click();
+  await expect(page.locator('#medlexDialogDefinition')).toHaveText('Përkufizim i ruajtur nga Sanity.');
+});
+
 test('MedLex atlas supports tapping, dismissing, and swipe-style navigation', async ({page}) => {
   await page.setViewportSize({width:390,height:844});
   await page.goto('http://127.0.0.1:4173/medlex.html?category=20');

@@ -1,5 +1,5 @@
 {
-  "version": "20261108-orl-v5",
+  "version": "20261109-derm-v1",
   "status": "partially_illustrated",
   "artworkPolicy": {
     "chapters": [
@@ -2844,7 +2844,7 @@
       "id": "10",
       "title": "Dermatologji",
       "heading": "Dermatologji",
-      "description": "Lezionet primare, Ngjyra dhe lezionet hemorragjike, Lezionet sekondare.",
+      "description": "Morfologjia e lezioneve dhe pamjet e sëmundjeve të zakonshme të lëkurës, me ilustrime edukative.",
       "status": "available",
       "groups": [
         {
@@ -2858,6 +2858,10 @@
         {
           "id": "sekondare",
           "label": "Lezionet sekondare"
+        },
+        {
+          "id": "semundje",
+          "label": "Sëmundjet e zakonshme të lëkurës"
         }
       ],
       "terms": [
@@ -3220,7 +3224,15 @@
           ],
           "clinicalStatus": "draft_for_clinical_review",
           "artworkVersion": "20261105-content-03-10-v1"
-        }
+        },
+        {"id":"c10-019","category":"10","group":"semundje","term":"Impetigo","latin":"Impetigo contagiosa","english":"Nonbullous impetigo","aliases":"krusta ngjyrë mjalti; infeksion sipërfaqësor bakterial; impetigo jo-buloze","definition":"Infeksion bakterial sipërfaqësor i lëkurës, me erozione që mund të mbulohen nga krusta karakteristike të verdha, ngjyrë mjalti.","example":"Krusta të verdha rreth hundës ose gojës, sidomos te fëmijët, sugjerojnë impetigo; vlerëso përhapjen dhe diagnozat diferenciale.","image":"c10-019.webp","status":"available","illustrationBrief":"Infografik sintetik DRx MedLex i impetigos jo-buloze me krusta ngjyrë mjalti periorale, zmadhim dhe tekst edukativ në shqip; jo fotografi pacienti.","references":["https://dermnetnz.org/topics/impetigo"],"clinicalStatus":"draft_for_clinical_review","artworkVersion":"20261109-derm-v1"},
+        {"id":"c10-020","category":"10","group":"semundje","term":"Celuliti","latin":"Cellulitis","english":"Cellulitis","aliases":"infeksion bakterial i lëkurës; eritemë dhe edemë difuze","definition":"Infeksion bakterial i dermës së thellë dhe indit nënlëkuror, që shpesh shkakton eritemë, ngrohtësi, edemë dhe dhimbje.","example":"Këmba e skuqur, e ngrohtë dhe e dhimbshme mund të sugjerojë celulit, por duhen përjashtuar shkaqe të tjera të inflamacionit.","image":"c10-020.webp","status":"available","illustrationBrief":"Infografik sintetik DRx MedLex i eritemës dhe edemës difuze të kërcirit, me pamje të zmadhuar; jo fotografi pacienti.","references":["https://dermnetnz.org/topics/cellulitis"],"clinicalStatus":"draft_for_clinical_review","artworkVersion":"20261109-derm-v1"},
+        {"id":"c10-021","category":"10","group":"semundje","term":"Herpes zoster","latin":"Herpes zoster","english":"Shingles (herpes zoster)","aliases":"zona; zoster; vezikula dermatomale","definition":"Reaktivizim i virusit varicella-zoster që zakonisht shfaqet me vezikula të grupuara dhe dhimbje në shpërndarje dermatomale njëanshme.","example":"Një brez vezikulash të dhimbshme në njërën anë të trungut sugjeron herpes zoster; prekja okulare kërkon vlerësim urgjent.","image":"c10-021.webp","status":"available","illustrationBrief":"Infografik sintetik DRx MedLex i vezikulave të grupuara në një dermatome të trungut, me zmadhim të flluskave; jo fotografi pacienti.","references":["https://dermnetnz.org/topics/herpes-zoster"],"clinicalStatus":"draft_for_clinical_review","artworkVersion":"20261109-derm-v1"},
+        {"id":"c10-022","category":"10","group":"semundje","term":"Tinea corporis","latin":"Tinea corporis","english":"Ringworm of the body","aliases":"dermatofitozë e trupit; lezione unazore kërpudhore","definition":"Infeksion dermatofitik sipërfaqësor i lëkurës, shpesh me pllakë unazore dhe buzë aktive me luspa, ndonjëherë me qendër më të pastër.","example":"Lezioni rrethor me buzë të ngritur dhe me luspa mund të jetë tinea corporis; diagnoza mund të kërkojë ekzaminim mikologjik.","image":"c10-022.webp","status":"available","illustrationBrief":"Infografik sintetik DRx MedLex i lezionit unazor me buzë aktive me luspa, me zmadhim; jo fotografi pacienti.","references":["https://dermnetnz.org/topics/tinea-corporis"],"clinicalStatus":"draft_for_clinical_review","artworkVersion":"20261109-derm-v1"},
+        {"id":"c10-023","category":"10","group":"semundje","term":"Skabies","latin":"Scabies","english":"Scabies","aliases":"zgjebe; Sarcoptes scabiei; tunele ndërmjet gishtërinjve","definition":"Infestim i lëkurës nga marimanga Sarcoptes scabiei, me kruarje shpesh më të fortë natën dhe papula ose tunele të holla.","example":"Kruarja e natës dhe lezionet mes gishtërinjve ose në kyçe sugjerojnë skabies, sidomos kur kruhen edhe kontaktet e afërta.","image":"c10-023.webp","status":"available","illustrationBrief":"Infografik sintetik DRx MedLex i papulave dhe tunelit të hollë ndërmjet gishtërinjve, me zmadhim; jo fotografi pacienti.","references":["https://dermnetnz.org/topics/scabies"],"clinicalStatus":"draft_for_clinical_review","artworkVersion":"20261109-derm-v1"},
+        {"id":"c10-024","category":"10","group":"semundje","term":"Psoriaza në pllaka","latin":"Psoriasis vulgaris","english":"Plaque psoriasis","aliases":"psoriasis kronike në pllaka; luspa të argjendta","definition":"Sëmundje inflamatore kronike me pllaka të kufizuara mirë, të trasha, shpesh eritematoze dhe me luspa të bardha ose të argjendta.","example":"Pllakat me luspa në sipërfaqet ekstensore të bërrylave ose gjunjëve janë tipike, por pamja ndryshon sipas fototipit.","image":"c10-024.webp","status":"available","illustrationBrief":"Infografik sintetik DRx MedLex i pllakave psoriatike të bërrylit me luspa të argjendta dhe zmadhim; jo fotografi pacienti.","references":["https://dermnetnz.org/topics/chronic-plaque-psoriasis"],"clinicalStatus":"draft_for_clinical_review","artworkVersion":"20261109-derm-v1"},
+        {"id":"c10-025","category":"10","group":"semundje","term":"Dermatiti atopik","latin":"Dermatitis atopica","english":"Atopic dermatitis","aliases":"ekzemë atopike; ekzemë fleksurale","definition":"Sëmundje inflamatore kronike e lëkurës me kruarje dhe thatësi, shpesh me ekzemë në palat e bërrylave ose gjunjëve.","example":"Skuqja, luspat e holla dhe ekskoriacionet në palën e bërrylit mund të jenë shenja të dermatitit atopik.","image":"c10-025.webp","status":"available","illustrationBrief":"Infografik sintetik DRx MedLex i ekzemës së thatë në palën e bërrylit dhe zmadhimit të lëkurës; jo fotografi pacienti.","references":["https://dermnetnz.org/topics/atopic-dermatitis"],"clinicalStatus":"draft_for_clinical_review","artworkVersion":"20261109-derm-v1"},
+        {"id":"c10-026","category":"10","group":"semundje","term":"Dermatiti alergjik i kontaktit","latin":"Dermatitis contactus allergica","english":"Allergic contact dermatitis","aliases":"alergji nga kontakti; dermatit nga nikeli; ekzemë kontakti","definition":"Reaksion inflamator i vonuar i lëkurës pas kontaktit me një alergjen, shpesh i kufizuar në zonën e ekspozimit.","example":"Skuqja dhe vezikulat nën një rrip ore me nikel sugjerojnë dermatit alergjik kontakti, që mund të konfirmohet me patch test.","image":"c10-026.webp","status":"available","illustrationBrief":"Infografik sintetik DRx MedLex i ekzemës së kufizuar nën rripin metalik të orës, me zmadhim; jo fotografi pacienti.","references":["https://dermnetnz.org/topics/allergic-contact-dermatitis"],"clinicalStatus":"draft_for_clinical_review","artworkVersion":"20261109-derm-v1"}
       ]
     },
     {
