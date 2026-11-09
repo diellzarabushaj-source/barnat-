@@ -3269,7 +3269,6 @@ html.drx-unified-sidebar :is(.toast,.rx-toast){pointer-events:none}
   /* Keep two columns even on a narrow iPhone, avoiding one field per row. */
   html[data-drx-app="registry-v2"][data-registry-row-view="table"] .registry-table td[data-col="registry"],
   html[data-drx-app="registry-v2"][data-registry-row-view="table"] .registry-table td[data-col="strength"],
-  html[data-drx-app="registry-v2"][data-registry-row-view="table"] .registry-table td[data-col="drugClass"],
   html[data-drx-app="registry-v2"][data-registry-row-view="table"] .registry-table td[data-col="population"],
   html[data-drx-app="registry-v2"][data-registry-row-view="table"] .registry-table td[data-col="status"] {
     grid-column: 1;
@@ -3277,7 +3276,6 @@ html.drx-unified-sidebar :is(.toast,.rx-toast){pointer-events:none}
 
   html[data-drx-app="registry-v2"][data-registry-row-view="table"] .registry-table td[data-col="substance"],
   html[data-drx-app="registry-v2"][data-registry-row-view="table"] .registry-table td[data-col="form"],
-  html[data-drx-app="registry-v2"][data-registry-row-view="table"] .registry-table td[data-col="use"],
   html[data-drx-app="registry-v2"][data-registry-row-view="table"] .registry-table td[data-col="atc"],
   html[data-drx-app="registry-v2"][data-registry-row-view="table"] .registry-table td[data-col="price"] {
     grid-column: 2;
@@ -3290,6 +3288,11 @@ html.drx-unified-sidebar :is(.toast,.rx-toast){pointer-events:none}
 
   html[data-drx-app="registry-v2"][data-registry-row-view="table"] .registry-table td[data-col="substance"]::before {
     margin: 0 0 2px;
+  }
+
+  html[data-drx-app="registry-v2"][data-registry-row-view="table"] .registry-table td[data-col="drugClass"],
+  html[data-drx-app="registry-v2"][data-registry-row-view="table"] .registry-table td[data-col="use"] {
+    grid-column: 1 / -1;
   }
 
   html[data-drx-app="registry-v2"][data-registry-row-view="table"] .registry-table td[data-col="prescription"],
