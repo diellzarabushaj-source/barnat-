@@ -59,7 +59,7 @@ assert(/src="\/registry-v2\.js\?(?:v|build)=[^"]+"/.test(html), 'Registry v2 run
 const stylesheetLinks = [...html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*href="([^"]+)"/g)].map(match => match[1]);
 const scriptSources = [...html.matchAll(/<script\b[^>]*src="([^"]+)"/g)].map(match => match[1]);
 
-const registryStyles = ['/registry-v2.css','/registry-atc-filter.css','/registry-column-filter.css','/luna-search.css','/drx-dashboard-stripe.css'];
+const registryStyles = ['/registry-v2.css','/registry-atc-filter.css','/registry-column-filter.css','/luna-search.css','/registry-phone-compact-table.css','/drx-dashboard-stripe.css'];
 const registryScripts = ['/drx-runtime-telemetry.js','/dose-core.js','/drx-modal-focus.js','/dose-runtime-browser.js','/sidebar-taxonomy-v3.js','/classification-data.js','/registry-atc-filter.js','/registry-substance-data.js','/registry-substance-normalization.js','/registry-column-model.js','/registry-column-filter.js','/registry-v2.js','/luna-search.js'];
 assert(stylesheetLinks.length === registryStyles.length, `Registry v2 stylesheet inventory differs; found ${stylesheetLinks.length}.`);
 assert(scriptSources.length === registryScripts.length, `Registry v2 script inventory differs; found ${scriptSources.length}.`);
