@@ -3222,8 +3222,8 @@ html.drx-unified-sidebar :is(.toast,.rx-toast){pointer-events:none}
   }
 
   html[data-drx-app="registry-v2"][data-registry-row-view="table"] .registry-table td:first-child input {
-    width: 21px;
-    height: 21px;
+    width: 28px;
+    height: 28px;
   }
 
   html[data-drx-app="registry-v2"][data-registry-row-view="table"] .registry-table .registry-actions-cell {
