@@ -14,7 +14,7 @@
   <link rel="preload" as="style" href="/medical-hub-rx-source-v1.css?v=4">
   <link rel="preload" as="style" href="/medical-hub-accessibility-v1.css?v=1">
   <link rel="preload" as="style" href="/medical-hub-professional-reader.css?v=20261008-p2">
-  <link rel="stylesheet" href="/medical-hub-v2.css?v=38-p2">
+  <link rel="stylesheet" href="/medical-hub-v2.css?v=38-p2-ui-20261110">
   <style>
     html[data-drx-app="medical-hub-v2"] .hub-navigation-toggle,
     html[data-drx-app="medical-hub-v2"] .hub-drawer-head,
@@ -73,7 +73,7 @@
       html[data-drx-app="medical-hub-v2"] .hub-search-result-main>p{font-size:11px;-webkit-line-clamp:2}
     }
   </style>
-  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107">
+  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-workspace-polish-20261110">
 </head>
 <body>
   <a class="hub-skip-link" href="#learningDetail">Kalo te përmbajtja</a>
@@ -157,7 +157,7 @@
         <header class="page-heading">
           <div>
             <h1>Medical Hub</h1>
-            <p class="page-subtitle">Lexo librin kapitull pas kapitulli, ose kërko drejt temën që të duhet.</p>
+            <p class="page-subtitle">Shfleto librin sipas kapitujve ose kërko një temë klinike.</p>
           </div>
         </header>
 
@@ -165,21 +165,21 @@
           <div class="hub-search" id="learningSearchField">
             <label class="sr-only" for="learningSearch">Kërko temën klinike</label>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="11" cy="11" r="6.7"/><path d="m16 16 4.2 4.2"/></svg>
-            <input id="learningSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko diagnozë, tekst, ICD, procedurë, bar…" aria-label="Kërko në të gjithë përmbajtjen e Medical Hub" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="hubSearchResults" aria-expanded="false">
+            <input id="learningSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko diagnozë, procedurë ose kod ICD…" aria-label="Kërko në të gjithë përmbajtjen e Medical Hub" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="hubSearchResults" aria-expanded="false">
             <kbd id="learningShortcut">Ctrl K</kbd>
             <button class="hub-search-clear" id="learningSearchClear" type="button" aria-label="Pastro kërkimin">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>
             </button>
           </div>
           <div class="hub-command-footer">
-            <span class="hub-result-status" id="learningResultStatus" role="status" aria-live="polite">Duke ngarkuar temat…</span>
+            <span class="hub-result-status" id="learningResultStatus" role="status" aria-live="polite"></span>
             <div class="hub-topic-nav" aria-label="Navigimi mes temave">
               <button id="previousTopicButton" type="button" aria-label="Tema e kaluar">← <span>E kaluara</span></button>
               <span id="learningTopicPosition" aria-live="polite">—</span>
               <button id="nextTopicButton" type="button" aria-label="Tema tjetër"><span>Tjetra</span> →</button>
             </div>
           </div>
-          <div class="hub-search-results" id="hubSearchResults" role="listbox" aria-label="Rezultatet e kërkimit global" hidden></div>
+          <div class="hub-search-results" id="hubSearchResults" role="listbox" aria-label="Rezultatet e kërkimit" hidden></div>
         </section>
 
         <div class="hub-workspace" id="hubWorkspace">
@@ -229,7 +229,7 @@
 
           <div class="hub-reader-pane">
             <article class="hub-document ck-detail" id="learningDetail" tabindex="-1">
-              <div class="ck-empty"><strong>Duke ngarkuar Medical Hub…</strong><span>Përmbajtja po merret nga burimi i publikuar.</span></div>
+              <div class="ck-empty"><strong>Duke ngarkuar mësimet…</strong></div>
             </article>
           </div>
         </div>
@@ -238,7 +238,7 @@
   </div>
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
-<script src="/medical-hub-v2.js?v=38-p2" defer></script>
+<script src="/medical-hub-v2.js?v=38-p2-ui-20261110" defer></script>
 <script>
 (() => {
   'use strict';

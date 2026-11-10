@@ -3183,3 +3183,37 @@ html.drx-unified-sidebar :is(.toast,.rx-toast){pointer-events:none}
  html[data-drx-app="registry-v2"] .compact-select{padding:0;border:0;background:transparent}
  html[data-drx-app="registry-v2"] .compact-select select{padding-left:8px;padding-right:20px;border:1px solid #d4dce7;border-radius:8px;background:#fff}
 }
+
+/* The shared connection indicator replaces per-page provider labels. */
+html.drx-unified-sidebar .topbar .sync-pill{display:none!important}
+
+html[data-drx-app="registry-v2"] .pagination-bar{justify-content:flex-end}
+html[data-drx-app="registry-v2"] .pagination-bar[hidden]{display:none}
+
+.drx-unified-sidebar .workspace-details>summary{
+  min-block-size:44px;
+  align-content:center;
+  padding-inline:8px;
+  border-radius:6px;
+  color:inherit;
+  font-size:.875rem;
+  font-weight:600;
+  cursor:pointer;
+}
+.drx-unified-sidebar .workspace-details>summary:focus-visible{
+  outline:2px solid #5346db;
+  outline-offset:2px;
+}
+.drx-unified-sidebar .atc-overview{
+  margin-block-start:12px;
+  padding-inline:8px;
+  border:1px solid var(--drx-shell-line,#e3e8ee);
+  border-radius:10px;
+}
+.drx-unified-sidebar .atc-overview[open]{padding-block-end:8px}
+.drx-unified-sidebar .atc-overview .metrics-row{margin:4px 0 0}
+.drx-unified-sidebar .system-diagnostics{
+  margin-block-start:12px;
+  border-block-start:1px solid var(--drx-shell-line,#e3e8ee);
+}
+.drx-unified-sidebar .system-diagnostics[open]>summary{margin-block-end:8px}

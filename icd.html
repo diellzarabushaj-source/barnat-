@@ -9,11 +9,11 @@
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/icd-v2.css?v=icd-minimal-20261110">
-  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107">
+  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-workspace-polish-20261110">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
 <script src="/icd-search-lexical.js?v=icd-resilience-20261103" defer></script>
-  <script src="/icd-v2.js?v=icd-minimal-20261110" defer></script>
+  <script src="/icd-v2.js?v=workspace-polish-20261110" defer></script>
 </head>
 <body>
   <div class="app-shell" id="appShell" aria-busy="true">
@@ -97,7 +97,7 @@
       <section class="page-wrap" aria-labelledby="pageTitle">
         <div class="page-heading">
           <div>
-            <p class="eyebrow">International Classification of Diseases</p>
+            <p class="eyebrow">Klasifikimi i sëmundjeve</p>
             <h1 id="pageTitle">ICD‑10</h1>
             <p class="page-subtitle">Shfleto kapitujt, blloqet dhe kodet ICD‑10. Kërkim në shqip, anglisht dhe latinisht, edhe me gabime shkrimi.</p>
           </div>
@@ -308,13 +308,6 @@
             <p class="icd-status" id="icdStatusText" role="status" aria-live="polite">Duke ngarkuar ICD-10…</p>
           </div>
         </section>
-
-        <div class="metrics-row" aria-label="Përmbledhje ICD-10">
-          <article class="metric-card"><span>Nyje të ngarkuara</span><strong id="metricNodes">—</strong><small>Kapituj dhe blloqe në këtë pamje</small></article>
-          <article class="metric-card"><span>Kapituj</span><strong id="metricChapters">—</strong><small>Niveli kryesor</small></article>
-          <article class="metric-card"><span>Kategori</span><strong id="metricCategories">—</strong><small>Kode me tre karaktere</small></article>
-          <article class="metric-card"><span>Në shqip</span><strong id="metricCoverage">—</strong><small id="metricCoverageNote">Mbulimi i përkthimit</small></article>
-        </div>
 
         <section class="icd-card">
           <nav class="icd-path" id="icdPath" aria-label="Rruga aktive ICD-10" hidden>

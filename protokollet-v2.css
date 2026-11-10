@@ -2921,8 +2921,12 @@ html.drx-unified-sidebar body{background:#fff!important}
   box-shadow:0 1px 3px rgba(0,55,112,.035);
 }
 .protocol-metric{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:8px;
   min-width:0;
-  padding:12px 14px;
+  padding:9px 12px;
   border-right:1px solid var(--protocol-doc-line);
 }
 .protocol-metric:last-child{border-right:0}
@@ -2932,15 +2936,15 @@ html.drx-unified-sidebar body{background:#fff!important}
   color:var(--protocol-doc-muted-2);
 }
 .protocol-metric span{
-  font-size:9.5px;
-  font-weight:400;
+  font-size:12px;
+  font-weight:500;
 }
 .protocol-metric strong{
   display:block;
-  margin:5px 0 3px;
+  margin:0;
   color:var(--protocol-doc-ink);
-  font-size:18px;
-  font-weight:450;
+  font-size:15px;
+  font-weight:650;
   line-height:1.05;
   font-variant-numeric:tabular-nums;
 }

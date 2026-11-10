@@ -1,7 +1,7 @@
 {
   "index.html": {
     "registry-v2.css": "registry-smooth-20261103",
-    "registry-v2.js": "registry-smooth-20261103",
+    "registry-v2.js": "workspace-polish-20261110",
     "registry-column-filter.css": "registry-smooth-20261103",
     "registry-column-filter.js": "registry-smooth-20261103",
     "drx-modal-focus.js": "p1-20261008",
@@ -9,7 +9,7 @@
     "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v9-worker-ready-20261012"
   },
   "recetat.html": {
-    "recetat-v2.css": "42-direct-prescription-20261103",
+    "recetat-v2.css": "42-workspace-polish-20261110",
     "recetat-v2.js": "42-direct-prescription-20261103",
     "drx-modal-focus.js": "p1-20261008",
     "drx-runtime-telemetry.js": "20261009-rum-v1",
@@ -23,15 +23,15 @@
     "drx-runtime-telemetry.js": "20261009-rum-v1",
     "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v9-worker-ready-20261012",
     "icd-v2.css": "icd-minimal-20261110",
-    "icd-v2.js": "icd-minimal-20261110",
+    "icd-v2.js": "workspace-polish-20261110",
     "icd-search-lexical.js": "icd-resilience-20261103"
   },
   "dozologjia.html": {
     "drx-runtime-telemetry.js": "20261009-rum-v1",
     "phase9-personal-entities-client.js": "drx-phase9-personal-v4",
     "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v9-worker-ready-20261012",
-    "dozologjia-v2.css": "67-market-dose-clarity-20261017",
-    "dozologjia-v2.js": "67-market-dose-clarity-20261017"
+    "dozologjia-v2.css": "68-workspace-polish-20261110",
+    "dozologjia-v2.js": "68-workspace-polish-20261110"
   },
   "antibiotiket.html": {
     "phase9-personal-entities-client.js": "drx-phase9-personal-v4",
@@ -57,6 +57,6 @@
     "drx-runtime-telemetry.js": "20261009-rum-v1",
     "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v9-worker-ready-20261012",
     "sistemi-v2.css": "2-admin-20261014",
-    "sistemi-v2.js": "2-admin-20261014"
+    "sistemi-v2.js": "2-workspace-polish-20261110"
   }
 }

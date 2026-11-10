@@ -85,7 +85,6 @@
   const state = {
     chapters: [],
     blocks: [],
-    meta: null,
     chapter: '',
     filterChapter:'', filterBlock:'', filterLevel:'',
     path: [],          // nyjet e hapura nën kapitull
@@ -154,7 +153,6 @@
   function bindElements() {
     [
       'appShell','sidebar','sidebarBackdrop','menuButton','sidebarClose','logoutButton','avatarInitials','sourceStatus','syncText',
-      'metricNodes','metricChapters','metricCategories','metricCoverage','metricCoverageNote',
       'icdPath','icdPathItems','icdPathReset','icdSearch','icdSearchBox','icdSearchClear','icdSuggestions','icdStatusText',
       'icdFilterChapter','icdFilterBlock','icdFilterLevel','icdFilterReset','icdChapterBrowser','chapterList','chapterCount','chapterSummaryCount','clinicalQuickHub','nodeHero','clinicalActionPanel','nodeList','nodeSectionTitle','nodeCount','toast',
     ].forEach(id => { el[id] = document.getElementById(id); });
@@ -240,22 +238,6 @@
       english && english !== shown ? `EN · ${english}` : '',
       latin && latin !== shown && latin !== english ? `LA · ${latin}` : '',
     ].filter(Boolean).join(' · ');
-  }
-
-  function renderMetrics() {
-    const meta = state.meta || {};
-    el.metricNodes.textContent = meta.total ? formatNumber(meta.total) : formatNumber(state.chapters.length + state.blocks.length);
-    el.metricChapters.textContent = formatNumber(state.chapters.length);
-    el.metricCategories.textContent = meta.categories ? formatNumber(meta.categories) : '—';
-    const translated = Number(meta.translated || 0);
-    const total = Number(meta.total || 0);
-    if (total > 0) {
-      el.metricCoverage.textContent = `${Math.round((translated / total) * 100)}%`;
-      el.metricCoverageNote.textContent = `${formatNumber(translated)} nyje në shqip`;
-    } else {
-      el.metricCoverage.textContent = '—';
-      el.metricCoverageNote.textContent = 'Mbulimi i përkthimit';
-    }
   }
 
   function renderChapters() {
@@ -1257,20 +1239,8 @@
   }
 
   function matchSourceLabel(node) {
-    const field = clean(node?.searchMatch?.field);
     const type = clean(node?.searchMatch?.type);
-    const source = field === 'sq' ? 'SQ'
-      : field === 'en' ? 'EN'
-        : field === 'la' ? 'LA'
-          : field === 'code' ? 'Kodi'
-            : field === 'hierarchy' ? 'Hierarki'
-              : field === 'local' ? 'Instant'
-                : field === 'hot' ? 'QKMF'
-                  : field === 'symptom' ? 'Simptomë'
-                  : field === 'alias' ? 'Term klinik'
-                    : '';
-    if (!source) return '';
-    return type.startsWith('fuzzy-') || type === 'code-fuzzy' ? `Typo · ${source}` : source;
+    return type.startsWith('fuzzy-') || type === 'code-fuzzy' ? 'Përputhje e përafërt' : '';
   }
 
   function suggestionTranslationHtml(node, query) {
@@ -1359,7 +1329,6 @@
       const isAiDescription=Boolean(node.aiDescription);
       const isReviewedContext=Boolean(node.descriptionContext);
       const best = index === 0 && !isDifferential && !isAiDescription && !isReviewedContext;
-      const match = clean(node?.searchMatch?.label) || 'Përputhje';
       const source = matchSourceLabel(node);
       const translations = suggestionTranslationHtml(node, query);
       const parent = node.level === 'subcategory' ? clean(node.parentCode) : '';
@@ -1393,8 +1362,7 @@
           ${hierarchyHint}
         </span>
         <span class="icd-suggestion-meta">
-          <span class="icd-match-chip">${escapeHtml(match)}</span>
-          <span class="icd-match-context">${source ? `<span class="icd-match-source ${isDifferential ? 'is-symptom' : ''}">${escapeHtml(source)}</span> · ` : ''}${escapeHtml(levelLabel(node.level))}</span>
+          <span class="icd-match-context">${source ? `<span class="icd-match-source ${isDifferential ? 'is-symptom' : ''}">${escapeHtml(source)}</span>` : ''}${escapeHtml(levelLabel(node.level))}</span>
         </span>
         <span class="icd-suggestion-open" aria-hidden="true">${CHEVRON_RIGHT}</span>
       </button>`;
@@ -1411,7 +1379,6 @@
 
   function render() {
     updateScopeSummary();
-    renderMetrics();
     renderChapters();
     renderClinicalQuickHub();
     renderHero();
@@ -1439,7 +1406,6 @@
     const data = payload.data || {};
     state.chapters = Array.isArray(data.chapters) ? data.chapters : [];
     state.blocks = Array.isArray(data.blocks) ? data.blocks : [];
-    state.meta = data.meta || null;
     const source = response.headers.get('X-MedIndex-Data-Source') || 'Supabase';
     el.sourceStatus.textContent = `${source} · aktiv`;
     el.syncText.textContent = source;
@@ -1490,7 +1456,7 @@
     if (instant) {
       state.rows = instant;
       state.loading = false;
-      setStatus(`${formatNumber(instant.length)} nyje nën ${key}`);
+      setStatus(`${formatNumber(instant.length)} nënndarje për ${key}`);
       render();
       if (state.reveal) { state.reveal = false; revealNodePanel(); }
       return;
@@ -1503,7 +1469,7 @@
       const rows = await fetchChildrenRows(key);
       if (requestId !== state.requestId) return;
       state.rows = rows;
-      setStatus(`${formatNumber(state.rows.length)} nyje nën ${key}`);
+      setStatus(`${formatNumber(state.rows.length)} nënndarje për ${key}`);
     } catch (error) {
       if (requestId !== state.requestId) return;
       state.rows = [];
@@ -1703,7 +1669,7 @@
     });
   }
 
-  function applySuggestionData(query, data, { fromCache = false, open = true } = {}) {
+  function applySuggestionData(query, data, { open = true } = {}) {
     state.searching = true;
     state.query = query;
     state.suggestions = Array.isArray(data?.rows) ? data.rows : (Array.isArray(data?.suggestions) ? data.suggestions : []);
@@ -1715,7 +1681,7 @@
     const top = state.suggestions[0];
     prefetchChildren(top);
     const corrected = top?.searchMatch?.type?.startsWith('fuzzy-') || top?.searchMatch?.type === 'code-fuzzy';
-    const suffix = corrected ? ' · typo i korrigjuar' : fromCache ? ' · instant' : '';
+    const suffix = corrected ? ' · përputhje e përafërt' : '';
     setStatus(`${suggestionCountLabel()} për «${query}»${suffix}`);
   }
 
@@ -1730,7 +1696,7 @@
     const cached = cachedSuggestions(value);
     if (cached) {
       state.suggestionLoading = false;
-      applySuggestionData(value, cached, { fromCache:true });
+      applySuggestionData(value, cached);
       return;
     }
 
@@ -1751,7 +1717,7 @@
       state.suggestions = preview.rows;
       state.suggestionMeta = preview.meta;
       state.activeSuggestion = 0;
-      setStatus(`${formatNumber(preview.rows.length)} rezultate instant · duke rafinuar…`, 'busy');
+      setStatus(`${formatNumber(preview.rows.length)} rezultate · duke kërkuar…`, 'busy');
     } else {
       setStatus(`Duke kërkuar «${value}»…`, 'busy');
     }
