@@ -258,12 +258,12 @@
         : source.status || '—';
     elements.icdProbeScore.textContent = `${Number(search.passed) || 0}/${Number(search.total) || 0}`;
     elements.icdSummary.textContent = icd.error
-      ? 'Burimi publik ICD nuk u lexua; Supabase dhe shërbimet e tjera vazhdojnë të kontrollohen veçmas.'
+      ? 'Burimi ICD-10 nuk u hap. Shërbimet e tjera po kontrollohen veçmas.'
       : complete && search.healthy
         ? 'Hierarkia e plotë dhe kërkimi clinical-ranking-v3 kaluan auditin operacional.'
         : complete
           ? 'Hierarkia është e plotë, por një ose më shumë kërkime klinike kërkojnë kontroll.'
-          : 'Numrat e hierarkisë nuk përputhen me baseline-in 22 / 274 / 2,050 / 10,196 / 12,542.';
+          : 'Numri i kodeve ICD-10 nuk përputhet me burimin e pritur.';
 
     elements.icdProbeList.innerHTML = probes.length ? probes.map(probe => `
       <article class="system-probe ${probe.passed ? 'is-ok' : 'is-failed'}">
@@ -273,7 +273,7 @@
           ${probe.error ? `<small class="system-source-error">${escapeHtml(probe.error)}</small>` : ''}
         </div>
         <span>${probe.passed ? 'Kaloi' : 'Dështoi'}</span>
-      </article>`).join('') : '<div class="system-empty">Nuk u kthyen rezultatet e smoke-probes ICD.</div>';
+      </article>`).join('') : '<div class="system-empty">Testet e kërkimit ICD-10 nuk kthyen rezultate.</div>';
 
     elements.icdError.hidden = !icd.error;
     elements.icdError.textContent = icd.error || '';
@@ -326,17 +326,17 @@
     elements.message.textContent = Number(outbox.deadLetter) > 0
       ? `${outbox.deadLetter} ndryshim(e) kanë kaluar në dead letter dhe kërkojnë ndërhyrje.`
       : icdState === 'error'
-        ? 'Burimi ICD nuk u lexua. Kontrollo kartën ICD; Supabase mbetet i izoluar nga ky gabim.'
+        ? 'Burimi ICD-10 nuk u hap. Shiko kartën e ICD-10 për detaje.'
         : icdState === 'stale'
           ? 'ICD po shërbehet nga cache-i i fundit i vlefshëm derisa Google Sheet të rikthehet.'
           : icdState === 'warning'
-            ? 'ICD u lexua, por integriteti ose një smoke-probe klinik kërkon kontroll.'
+            ? 'Burimi ICD-10 u hap, por një kontroll kërkon vëmendje.'
             : Number(outbox.pending) > 0
               ? `${outbox.pending} ndryshim(e) presin konfirmimin e Google Sheet-it.`
               : payload.overall?.code === 'healthy'
-                ? 'Supabase, sinkronizimi dhe burimi ICD janë brenda intervalit të pritshëm.'
+                ? 'Shërbimet e kontrolluara po funksionojnë.'
                 : payload?.synchronization?.state?.code === 'setup_required'
-                  ? 'Databaza është aktive. Për sinkronizim live duhet aktivizuar një herë Apps Script-i.'
+                  ? 'Të dhënat janë në dispozicion. Sinkronizimi automatik kërkon konfigurim.'
                   : 'Kontrollo kartat e mësipërme për burimin që kërkon ndërhyrje.';
   }
 

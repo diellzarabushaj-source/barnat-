@@ -8,12 +8,12 @@
   <title>DRx | Regjistri i barnave</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/registry-v2.css?v=registry-smooth-20261103">
+  <link rel="stylesheet" href="/registry-v2.css?v=workspace-polish-20261110">
   <link rel="stylesheet" href="/registry-atc-filter.css?v=20261006">
   <link rel="stylesheet" href="/registry-column-filter.css?v=registry-smooth-20261103">
   <link rel="stylesheet" href="/luna-search.css?v=20261108-luna-beta">
   <link rel="stylesheet" href="/registry-phone-compact-table.css?v=20261109-mobile-compact-v2">
-  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107">
+  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-workspace-polish-20261110">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/dose-core.js?v=drx-dose-core-v1" defer></script>
   <script src="/drx-modal-focus.js?v=p1-20261008" defer></script>
@@ -25,7 +25,7 @@
   <script src="/registry-substance-normalization.js?v=20261006" defer></script>
   <script src="/registry-column-model.js?v=20261006-substances" defer></script>
   <script src="/registry-column-filter.js?v=registry-smooth-20261103" defer></script>
-<script src="/registry-v2.js?v=registry-smooth-20261103&amp;registryUpdates=20261005" defer></script>
+<script src="/registry-v2.js?v=workspace-polish-20261110&amp;registryUpdates=20261005" defer></script>
   <script src="/luna-search.js?v=20261108-luna-beta" defer></script>
 </head>
 <body>
@@ -123,14 +123,6 @@
         </div>
 
         <section class="personal-workspace" id="personalWorkspace" aria-labelledby="pageTitle" aria-describedby="pageSubtitle" hidden>
-          <div class="personal-workspace-head">
-            <div>
-              <p class="eyebrow">Puna ime</p>
-              <h2 id="personalTitle">Favoritët</h2>
-              <p id="personalSubtitle">Barnat që i ke ruajtur për qasje të shpejtë.</p>
-            </div>
-            <span class="personal-sync" title="Të dhënat ruhen në llogarinë tënde"><span class="sync-dot"></span><span>Supabase</span></span>
-          </div>
           <div class="personal-toolbar">
             <div class="personal-tabs" role="tablist" aria-label="Biblioteka personale">
               <button class="personal-tab" id="personalFavoritesTab" type="button" role="tab" data-personal-tab="favorites" aria-controls="personalList" aria-selected="true">Favoritët <span id="personalFavoritesCount">0</span></button>
@@ -148,14 +140,14 @@
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/></svg>
                 <input id="personalSearchInput" type="search" autocomplete="off" placeholder="Kërko në punën time…" aria-label="Kërko në favoritët dhe shënimet">
               </label>
-              <button class="button button-secondary personal-refresh" id="personalRefreshButton" type="button" aria-label="Rifresko punën time" title="Rifresko nga Supabase">
+              <button class="button button-secondary personal-refresh" id="personalRefreshButton" type="button" aria-label="Rifresko punën time" title="Rifresko listën">
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6v5h-5"/><path d="M4 18v-5h5"/><path d="M18.4 9A7 7 0 0 0 6.2 6.7L4 11M20 13l-2.2 4.3A7 7 0 0 1 5.6 15"/></svg>
               </button>
             </div>
           </div>
           <div class="personal-summary">
             <span id="personalCountText">Duke sinkronizuar…</span>
-            <span id="personalStatus" role="status" aria-live="polite">Supabase · i sigurt për llogarinë tënde</span>
+            <span id="personalStatus" role="status" aria-live="polite"></span>
           </div>
           <div class="personal-list" id="personalList"></div>
           <div class="personal-empty" id="personalEmpty" hidden>
@@ -166,13 +158,13 @@
           </div>
         </section>
 
-        <section class="luna-panel" id="lunaPanel" hidden aria-label="Kërkim i barnave me GPT-6 Luna">
+        <section class="luna-panel" id="lunaPanel" hidden aria-labelledby="lunaTitle">
           <div class="luna-head">
             <div>
-              <h2>Pyet DRx Luna</h2>
+              <h2 id="lunaTitle">Pyet DRx Luna</h2>
               <p>Kërko barna ose substanca me gjuhë natyrale, vetëm në regjistrin e publikuar.</p>
             </div>
-            <span class="luna-tag">GPT-6 Luna · Beta</span>
+            <span class="luna-tag">Beta</span>
           </div>
           <form class="luna-form" id="lunaSearchForm">
             <input id="lunaQuestion" type="search" maxlength="220" autocomplete="off" placeholder="P.sh. kërko amoxicillin ose ceftriaxone…" aria-label="Kërkimi me Luna" required>
@@ -182,19 +174,12 @@
           <ul class="luna-results" id="lunaResults" aria-label="Barnat e gjetura"></ul>
         </section>
 
-        <div class="metrics-row" aria-label="Përmbledhje e regjistrit">
-          <article class="metric-card"><span>Rezultate</span><strong id="metricTotal">—</strong><small id="metricScope">Në regjistrin aktiv</small></article>
-          <article class="metric-card"><span>Faqja</span><strong id="metricPage">1</strong><small id="metricPageSize">50 për faqe</small></article>
-          <article class="metric-card"><span>Burimi</span><strong>Supabase</strong><small id="metricSource">Server-side</small></article>
-          <article class="metric-card"><span>Filtra aktivë</span><strong id="metricFilters">0</strong><small>Kërkim, ATC, formë</small></article>
-        </div>
-
         <section class="data-card" aria-label="Tabela e barnave">
           <div class="data-card-head">
             <div class="search-box">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/></svg>
               <input id="searchInput" type="search" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="search" placeholder="Emri i barit, substanca ose kodi…" aria-label="Kërko barnat">
-              <kbd>⌘K</kbd>
+              <kbd id="registrySearchShortcut" aria-hidden="true">Ctrl K</kbd>
             </div>
             <div class="toolbar-actions">
               <div class="view-toggle" id="viewToggle" role="group" aria-label="Pamja e regjistrit">
@@ -322,14 +307,13 @@
             <button class="button button-secondary" id="emptyClearButton" type="button">Pastro kërkimin</button>
           </div>
 
-          <div class="pagination-bar">
-            <span id="paginationSummary">—</span>
+          <nav class="pagination-bar" id="paginationBar" aria-label="Faqet e regjistrit" hidden>
             <div class="pagination-actions">
               <button class="button button-secondary button-square" id="prevPageButton" type="button" aria-label="Faqja e mëparshme"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5.5 8.5 12l6.5 6.5"/></svg></button>
               <span class="page-indicator" id="pageIndicator">1 / —</span>
               <button class="button button-secondary button-square" id="nextPageButton" type="button" aria-label="Faqja tjetër"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5.5 15.5 12 9 18.5"/></svg></button>
             </div>
-          </div>
+          </nav>
         </section>
       </section>
     </main>

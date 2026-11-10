@@ -55,6 +55,15 @@
     node.setAttribute('content', content);
   }
 
+  function setCanonical(slug) {
+    const url = new URL('https://barnat-six.vercel.app/blog.html');
+    if (slug) url.searchParams.set('slug', slug);
+    const link = document.createElement('link');
+    link.rel = 'canonical';
+    link.href = url.href;
+    document.head.appendChild(link);
+  }
+
   function safeImageUrl(value) {
     if (!value) return '';
     try {
@@ -125,7 +134,11 @@
         signal: controller.signal,
       });
       const payload = await response.json().catch(() => ({}));
-      if (!response.ok || !payload.ok) throw new Error(payload.error || `HTTP ${response.status}`);
+      if (!response.ok || !payload.ok) {
+        const error = new Error(payload.error || `HTTP ${response.status}`);
+        error.status = response.status;
+        throw error;
+      }
       return payload;
     } finally {
       window.clearTimeout(timeout);
@@ -325,8 +338,7 @@
   }
 
   async function loadList() {
-    document.title = 'DRx Journal | Blog';
-    setMeta('description', 'DRx Journal — analiza klinike, Clinical Decision Support, inteligjencë artificiale dhe teknologji shëndetësore për praktikë më të qartë.');
+    setCanonical();
     if (readingProgress) readingProgress.hidden = true;
     showStatus('Duke ngarkuar artikujt…', 'Përmbajtja po merret nga biblioteka klinike e DRx.');
     try {
@@ -352,8 +364,10 @@
       const payload = await fetchJson(`${API_URL}&slug=${encodeURIComponent(slug)}`);
       hideStatus();
       renderArticle(payload.post);
+      setCanonical(payload.post.slug || slug);
     } catch (error) {
       console.error('[blog-detail]', error);
+      if (error.status === 400 || error.status === 404) setMeta('robots', 'noindex');
       listView.hidden = false;
       articleView.hidden = true;
       if (readingProgress) readingProgress.hidden = true;

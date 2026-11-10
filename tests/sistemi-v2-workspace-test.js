@@ -24,9 +24,9 @@ const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi
   .map(match => match[1]);
 const pageRuntimes = scripts.filter(src => !/sidebar-taxonomy-v3\.js|drx-runtime-telemetry\.js/.test(src));
 
-assert.deepEqual(styles, ['/sistemi-v2.css?v=2-admin-20261014','/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107']);
+assert.deepEqual(styles, ['/sistemi-v2.css?v=2-admin-20261014','/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-workspace-polish-20261110']);
 assert.ok(scripts.includes('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012'), 'Sistemi shared sidebar runtime is missing');
-assert.deepEqual(pageRuntimes, ['/sistemi-v2.js?v=2-admin-20261014']);
+assert.deepEqual(pageRuntimes, ['/sistemi-v2.js?v=2-workspace-polish-20261110']);
 assert.doesNotMatch(html, /tailadmin-|auth-client\.js|system-health\.js|media-library\.js|admin-entry\.js/);
 
 ['systemHealth','systemOverallState','systemRefresh','systemDrugCount','systemDosageCount','systemIcdCount','systemLabCount',

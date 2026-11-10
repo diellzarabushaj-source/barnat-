@@ -149,16 +149,15 @@
     appShell: $('appShell'), sidebar: $('sidebar'), sidebarBackdrop: $('sidebarBackdrop'), menuButton: $('menuButton'), sidebarClose: $('sidebarClose'),
     logoutButton: $('logoutButton'), sourceStatus: $('sourceStatus'), syncText: $('syncText'), avatarInitials: $('avatarInitials'),
     refreshButton: $('refreshButton'), openPrescriptionButton: $('openPrescriptionButton'), selectedCount: $('selectedCount'),
-    metricTotal: $('metricTotal'), metricPage: $('metricPage'), metricPageSize: $('metricPageSize'), metricSource: $('metricSource'), metricFilters: $('metricFilters'),
     searchInput: $('searchInput'), filterToggle: $('filterToggle'), filterPanel: $('filterPanel'), filterCountBadge: $('filterCountBadge'),
     columnPicker: $('columnPicker'), columnPickerButton: $('columnPickerButton'), columnPickerPanel: $('columnPickerPanel'), columnPickerList: $('columnPickerList'), columnPickerSummary: $('columnPickerSummary'), columnSaveStatus: $('columnSaveStatus'), resetColumnsButton: $('resetColumnsButton'),
     formPicker: $('formPicker'), formPickerButton: $('formPickerButton'), formPickerPanel: $('formPickerPanel'), formPickerSearch: $('formPickerSearch'), formPickerList: $('formPickerList'), formPickerValue: $('formPickerValue'), formPickerHint: $('formPickerHint'), sortSelect: $('sortSelect'), clearFiltersButton: $('clearFiltersButton'),
     pageSizeSelect: $('pageSizeSelect'), resultSummary: $('resultSummary'), requestTiming: $('requestTiming'), registryRows: $('registryRows'), registryTable: $('registryTable'), tableScroll: $('tableScroll'),
     registryList: $('registryList'), viewToggle: $('viewToggle'),
-    emptyState: $('emptyState'), emptyClearButton: $('emptyClearButton'), selectPageCheckbox: $('selectPageCheckbox'), paginationSummary: $('paginationSummary'), pageIndicator: $('pageIndicator'), prevPageButton: $('prevPageButton'), nextPageButton: $('nextPageButton'),
+    emptyState: $('emptyState'), emptyClearButton: $('emptyClearButton'), selectPageCheckbox: $('selectPageCheckbox'), paginationBar: $('paginationBar'), pageIndicator: $('pageIndicator'), prevPageButton: $('prevPageButton'), nextPageButton: $('nextPageButton'),
     drawerBackdrop: $('drawerBackdrop'), detailDrawer: $('detailDrawer'), drawerClose: $('drawerClose'), drawerCloseButton: $('drawerCloseButton'), drawerTitle: $('drawerTitle'), drawerBody: $('drawerBody'), drawerPrescriptionButton: $('drawerPrescriptionButton'),
     pageTitle: $('pageTitle'), pageEyebrow: $('pageEyebrow'), pageSubtitle: $('pageSubtitle'), breadcrumbCurrent: $('breadcrumbCurrent'), headingActions: $('headingActions'),
-    personalWorkspace: $('personalWorkspace'), personalTitle: $('personalTitle'), personalSubtitle: $('personalSubtitle'), personalList: $('personalList'), personalEmpty: $('personalEmpty'),
+    personalWorkspace: $('personalWorkspace'), personalList: $('personalList'), personalEmpty: $('personalEmpty'),
     personalEmptyTitle: $('personalEmptyTitle'), personalEmptyText: $('personalEmptyText'), personalSearchInput: $('personalSearchInput'), personalSortSelect: $('personalSortSelect'), personalRefreshButton: $('personalRefreshButton'), personalCountText: $('personalCountText'), personalStatus: $('personalStatus'),
     personalFavoritesTab: $('personalFavoritesTab'), personalNotesTab: $('personalNotesTab'), personalFavoritesCount: $('personalFavoritesCount'), personalNotesCount: $('personalNotesCount'),
     favoriteNavCount: $('favoriteNavCount'), noteNavCount: $('noteNavCount'), personalBackToRegistry: $('personalBackToRegistry'),
@@ -927,7 +926,7 @@
     if (el.personalRefreshButton) el.personalRefreshButton.disabled = true;
     if (el.personalStatus) {
       el.personalStatus.dataset.state = 'loading';
-      el.personalStatus.textContent = 'Supabase · duke rifreskuar';
+      el.personalStatus.textContent = 'Duke rifreskuar…';
     }
     try {
       await api.load({ force:true });
@@ -947,24 +946,18 @@
     const snapshot = personalSnapshot();
     updatePersonalCounts(snapshot);
     const view = state.view === 'notes' ? 'notes' : 'favorites';
-    const title = view === 'notes' ? 'Shënimet' : 'Favoritët';
-    const subtitle = view === 'notes'
-      ? 'Shënimet e tua personale për barnat, të ruajtura vetëm në llogarinë tënde.'
-      : 'Barnat që i ke ruajtur për qasje të shpejtë.';
-    el.personalTitle.textContent = title;
-    el.personalSubtitle.textContent = subtitle;
     el.personalFavoritesTab.setAttribute('aria-selected', view === 'favorites' ? 'true' : 'false');
     el.personalNotesTab.setAttribute('aria-selected', view === 'notes' ? 'true' : 'false');
 
     if (!snapshot.loaded) {
       const error = clean(snapshot.error);
       el.personalEmpty.hidden = true;
-      el.personalCountText.textContent = error ? 'Sinkronizimi nuk u krye' : 'Duke sinkronizuar…';
+      el.personalCountText.textContent = '';
       el.personalStatus.dataset.state = error ? 'error' : 'loading';
-      el.personalStatus.textContent = error ? 'Supabase · sinkronizimi dështoi' : 'Supabase · duke u lidhur';
+      el.personalStatus.textContent = '';
       el.personalList.innerHTML = error
-        ? `<div class="personal-load-error"><strong>Biblioteka personale nuk u ngarkua</strong><p>${escapeHtml(error)}</p><button class="button button-secondary" type="button" data-personal-retry>Provo përsëri</button></div>`
-        : '<div class="drawer-loading">Duke sinkronizuar bibliotekën personale…</div>';
+        ? `<div class="personal-load-error"><strong>Biblioteka personale nuk u ngarkua</strong><p>Kontrollo lidhjen dhe provo përsëri.</p><button class="button button-secondary" type="button" data-personal-retry>Provo përsëri</button></div>`
+        : '<div class="drawer-loading">Duke ngarkuar…</div>';
       return;
     }
 
@@ -976,7 +969,7 @@
 
     el.personalCountText.textContent = query ? `${rows.length} nga ${all.length} rezultate` : `${all.length} ${view === 'notes' ? 'shënime' : 'favoritë'}`;
     el.personalStatus.dataset.state = 'ready';
-    el.personalStatus.textContent = 'Supabase · sinkronizuar me llogarinë tënde';
+    el.personalStatus.textContent = '';
     el.personalEmpty.hidden = rows.length > 0;
     if (!rows.length) {
       el.personalList.innerHTML = '';
@@ -1258,6 +1251,9 @@
     state.dosageIdentityRequired = payload.meta?.doseHydrationRequired === true;
     renderRows();
     updateSummary(durationMs);
+    if (source?.startsWith('Kopje lokale')) {
+      el.resultSummary.textContent = source + " · " + el.resultSummary.textContent;
+    }
     updateSortHeaders();
     updateFilterUi();
     restoreRegistryPosition();
@@ -1318,7 +1314,10 @@
         return;
       }
       if (error?.name === 'AbortError') renderError('Kërkesa zgjati tepër. Provo përsëri.');
-      else renderError(error?.message || 'Regjistri nuk u ngarkua.');
+      else {
+        console.warn('Registry request failed:', error);
+        renderError('Kontrollo lidhjen dhe provo përsëri.');
+      }
     } finally {
       if (requestId === state.requestId) {
         if (state.pageController === controller) state.pageController = null;
@@ -1616,6 +1615,8 @@
 
   function renderRows() {
     if (!state.rows.length) {
+      el.emptyState.dataset.action = 'clear';
+      el.emptyClearButton.textContent = 'Pastro kërkimin';
       el.emptyState.querySelector('h2').textContent = 'Nuk u gjet asnjë bar';
       el.emptyState.querySelector('p').textContent = 'Provo një emër, substancë ose kod ATC tjetër.';
       el.registryRows.innerHTML = '';
@@ -1671,14 +1672,12 @@
   function updateSummary(durationMs) {
     const first = state.rows.length ? (state.page - 1) * state.pageSize + 1 : 0;
     const last = state.rows.length ? first + state.rows.length - 1 : 0;
-    const totalText = Number.isFinite(state.total) ? state.total.toLocaleString('sq-XK') : '—';
-    el.resultSummary.textContent = state.rows.length ? `${state.atc ? `ATC ${state.atc} · ` : ''}${first.toLocaleString('sq-XK')}–${last.toLocaleString('sq-XK')} nga ${totalText} rezultate` : `${state.atc ? `ATC ${state.atc} · ` : ''}0 rezultate`;
+    const prefix = state.atc ? 'ATC ' + state.atc + ' · ' : '';
+    const range = first === last ? first.toLocaleString('sq-XK') : first.toLocaleString('sq-XK') + '–' + last.toLocaleString('sq-XK');
+    const countLabel = state.total === 1 ? '1 rezultat' : Number.isFinite(state.total) ? range + ' nga ' + state.total.toLocaleString('sq-XK') + ' rezultate' : 'Rezultatet ' + range;
+    el.resultSummary.textContent = prefix + (state.rows.length ? countLabel : '0 rezultate');
     el.requestTiming.textContent = '';
     el.requestTiming.dataset.durationMs = String(durationMs);
-    el.metricTotal.textContent = totalText;
-    el.metricPage.textContent = String(state.page);
-    el.metricPageSize.textContent = `${state.pageSize} për faqe`;
-    el.paginationSummary.textContent = state.rows.length ? `Duke shfaqur ${first}–${last}${Number.isFinite(state.total) ? ` nga ${state.total.toLocaleString('sq-XK')}` : ''}` : 'Asnjë rezultat';
     updatePagination();
   }
 
@@ -1686,6 +1685,7 @@
     el.pageIndicator.textContent = `${state.page} / ${Number.isFinite(state.totalPages) ? state.totalPages : '—'}`;
     const hasPrevious = state.hasPrevious ?? state.page > 1;
     const hasNext = state.hasNext ?? (Number.isFinite(state.totalPages) ? state.page < state.totalPages : state.rows.length >= state.pageSize);
+    el.paginationBar.hidden = !hasPrevious && !hasNext;
     el.prevPageButton.disabled = state.loading || !hasPrevious;
     el.nextPageButton.disabled = state.loading || !hasNext;
   }
@@ -1801,7 +1801,6 @@
 
   function updateFilterUi() {
     const count = activeFilterCount();
-    el.metricFilters.textContent = String(count);
     el.filterCountBadge.textContent = String(count);
     el.filterCountBadge.hidden = count === 0;
     el.pageSizeSelect.value = String(state.pageSize);
@@ -1821,31 +1820,29 @@
     });
   }
 
-  function renderError(message) {
-  // Fail closed visually as well as at the API layer: never mix an error
-  // for the new query with rows left over from the previous query.
-  state.rows = [];
-  state.total = null;
-  state.totalPages = null;
-  state.hasPrevious = false;
-  state.hasNext = false;
-  state.dosageByRegistry.clear();
-  el.registryRows.innerHTML = '';
-  el.registryList.innerHTML = '';
-  el.tableScroll.hidden = true;
-  el.registryList.hidden = true;
-  el.emptyState.hidden = false;
-  el.emptyState.querySelector('h2').textContent = 'Regjistri nuk u ngarkua';
-  el.emptyState.querySelector('p').textContent = message;
-  el.resultSummary.textContent = 'Gabim gjatë ngarkimit';
-  el.requestTiming.textContent = '';
-  el.paginationSummary.textContent = 'Asnjë rezultat';
-  el.metricTotal.textContent = '—';
-  el.pageIndicator.textContent = `${state.page} / —`;
-  syncPageSelection();
-  el.prevPageButton.disabled = true;
-  el.nextPageButton.disabled = true;
-}
+  function renderError(message, action = 'retry') {
+    // Fail closed visually as well as at the API layer: never mix an error
+    // for the new query with rows left over from the previous query.
+    state.rows = [];
+    state.total = null;
+    state.totalPages = null;
+    state.hasPrevious = false;
+    state.hasNext = false;
+    state.dosageByRegistry.clear();
+    el.registryRows.innerHTML = '';
+    el.registryList.innerHTML = '';
+    el.tableScroll.hidden = true;
+    el.registryList.hidden = true;
+    el.emptyState.hidden = false;
+    el.emptyState.dataset.action = action;
+    el.emptyClearButton.textContent = 'Provo përsëri';
+    el.emptyState.querySelector('h2').textContent = 'Regjistri nuk u ngarkua';
+    el.emptyState.querySelector('p').textContent = message;
+    el.resultSummary.textContent = 'Gabim gjatë ngarkimit';
+    el.requestTiming.textContent = '';
+    syncPageSelection();
+    updatePagination();
+  }
 
   function setBusy(busy) {
     state.loading = busy;
@@ -2194,6 +2191,9 @@
   }
 
   function bindEvents() {
+    const shortcut = $('registrySearchShortcut');
+    const isMac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent || '');
+    if (shortcut) shortcut.textContent = isMac ? '⌘K' : 'Ctrl K';
     el.searchInput.addEventListener('input', debounceSearch);
     el.searchInput.addEventListener('keydown', event => { if (event.key === 'Escape' && el.searchInput.value) { clearTimeout(state.searchTimer); el.searchInput.value = ''; state.q = ''; state.page = 1; loadPage(); } });
     window.addEventListener('keydown', event => {
@@ -2306,7 +2306,12 @@
     el.sortSelect.addEventListener('change', () => { state.sort = el.sortSelect.value; state.columnSort = true; state.page = 1; loadPage(); });
     el.pageSizeSelect.addEventListener('change', () => { state.pageSize = Number(el.pageSizeSelect.value) || 50; state.page = 1; loadPage(); });
     el.clearFiltersButton.addEventListener('click', clearFilters);
-    el.emptyClearButton.addEventListener('click', clearFilters);
+    el.emptyClearButton.addEventListener('click', () => {
+      const action = el.emptyState.dataset.action;
+      if (action === 'reload') location.reload();
+      else if (action === 'retry') void loadPage({ forceRefresh:true });
+      else clearFilters();
+    });
     el.refreshButton.addEventListener('click', () => loadPage({ preserveScroll:true, preserveRows:true, forceRefresh:true }));
     el.prevPageButton.addEventListener('click', () => { if (!state.loading && !el.prevPageButton.disabled && state.page > 1) { state.page -= 1; loadPage(); } });
     el.nextPageButton.addEventListener('click', () => { if (!state.loading && !el.nextPageButton.disabled) { state.page += 1; loadPage(); } });
@@ -2509,13 +2514,13 @@ async function init() {
         console.debug('Column preference hydration skipped:', error);
       });
       void loadPersonalLibrary().then(api => api?.load?.()).then(syncPersonalUi).catch(() => {
-        if (el.personalStatus) el.personalStatus.textContent = 'Supabase · sinkronizimi dështoi';
+        if (el.personalStatus) el.personalStatus.textContent = 'Puna ime nuk u ngarkua.';
       });
 
       await initialPage;
     } catch (error) {
       console.error('DRx registry v2 bootstrap failed:', error);
-      renderError(error?.message || 'Aplikacioni nuk u inicializua.');
+      renderError('Nuk u hap dot aplikacioni. Kontrollo lidhjen dhe provo përsëri.', 'reload');
       el.appShell.setAttribute('aria-busy', 'false');
     }
   }

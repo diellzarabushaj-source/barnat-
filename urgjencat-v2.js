@@ -478,7 +478,7 @@
       return {
         className:'is-verified',
         label:'I verifikuar',
-        detail:'Përmbajtja është shënuar si e verifikuar në Sanity.',
+        detail:'Për këtë mësim është shënuar statusi “I verifikuar”.',
       };
     }
     if (value === 'review') {
@@ -498,7 +498,7 @@
     return {
       className:'',
       label:'Status i papërcaktuar',
-      detail:'Statusi i rishikimit nuk është përcaktuar në Sanity.',
+      detail:'Ky mësim nuk ka ende status rishikimi.',
     };
   }
 
@@ -1131,7 +1131,7 @@
 
       $('#chapterTotal').textContent = String(state.sections.length || 0);
       $('#lessonTotal').textContent = String(state.lessons.length || 0);
-      if ($('#syncText')) $('#syncText').textContent = 'Sanity';
+      if ($('#syncText')) $('#syncText').textContent = 'Përmbajtja u ngarkua';
 
       state.visibleSections = [...state.sections];
       state.selectedSectionId = state.sections[0]?._id || '';

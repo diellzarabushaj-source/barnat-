@@ -9,7 +9,7 @@
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/classification-v2.css?v=profile-columns-v5-audit-20261009">
-  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107">
+  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-workspace-polish-20261110">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/classification-data.js?v=atc-catalog-v2" defer></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
@@ -97,20 +97,13 @@
       <section class="page-wrap" aria-labelledby="pageTitle">
         <div class="page-heading">
           <div>
-            <p class="eyebrow">Anatomical Therapeutic Chemical</p>
+            <p class="eyebrow">Klasifikimi i barnave</p>
             <h1 id="pageTitle">Klasifikimi ATC</h1>
-            <p class="page-subtitle">Shfleto barnat sipas sistemit anatomik, grupit terapeutik dhe nënndarjeve farmakologjike.</p>
+            <p class="page-subtitle">Kërko një kod ATC ose shfleto barnat sipas grupit.</p>
           </div>
           <div class="heading-actions">
             <a class="button button-secondary" href="/index.html">Hap regjistrin</a>
           </div>
-        </div>
-
-        <div class="metrics-row" aria-label="Përmbledhje ATC">
-          <article class="metric-card"><span>Grupe anatomike</span><strong id="metricGroups">14</strong><small>Niveli kryesor ATC</small></article>
-          <article class="metric-card"><span>Kategori terapeutike</span><strong id="metricCategories">—</strong><small>Kode me 3 karaktere</small></article>
-          <article class="metric-card"><span>Barna të klasifikuara</span><strong id="metricClassified">—</strong><small id="metricCoverage">Duke ngarkuar…</small></article>
-          <article class="metric-card"><span>Pa klasifikim ATC</span><strong id="metricUnclassified">—</strong><small>Rreshta pa kategori të njohur</small></article>
         </div>
 
         <section class="atc-card">
@@ -160,6 +153,16 @@
             </section>
           </div>
         </section>
+
+        <details class="workspace-details atc-overview">
+          <summary>Përmbledhja e katalogut</summary>
+  <div class="metrics-row" aria-label="Përmbledhje ATC">
+            <article class="metric-card"><span>Grupe anatomike</span><strong id="metricGroups">14</strong><small>Niveli kryesor ATC</small></article>
+            <article class="metric-card"><span>Kategori terapeutike</span><strong id="metricCategories">—</strong><small>Kode me 3 karaktere</small></article>
+            <article class="metric-card"><span>Barna të klasifikuara</span><strong id="metricClassified">—</strong><small id="metricCoverage">Duke ngarkuar…</small></article>
+            <article class="metric-card"><span>Pa klasifikim ATC</span><strong id="metricUnclassified">—</strong><small>Rreshta pa kategori të njohur</small></article>
+          </div>
+        </details>
       </section>
     </main>
   </div>

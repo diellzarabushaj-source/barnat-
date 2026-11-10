@@ -665,3 +665,17 @@ html[data-drx-app="recetat-v2"] .rx-source-guide .rx-source-item-body{line-heigh
 #rxTabCompose .rx-safety{font-size:11px;padding:10px}
 @media(max-width:1180px){#rxTabCompose .rx-compose-continue{display:block}#rxTabCompose .rx-dashboard{max-width:820px;margin-inline:auto}}
 @media(max-width:760px){#rxTabCompose .rx-compose-card,#rxTabCompose .rx-preview-card{padding:16px 12px}#rxTabCompose .rx-inline-search input{font-size:16px}#rxTabCompose .rx-pediatric-fields :is(input,select){font-size:16px}#rxTabCompose .rx-diagnosis>span>small{display:none}#rxTabCompose .rx-inline-search .rx-drug-results{max-height:40dvh}#rxTabCompose .rx-regimen-offer{padding-inline:12px}}
+
+.rx-page .rx-tabs{padding:0;border:0;border-bottom:1px solid var(--rx-line);border-radius:0;background:transparent}
+.rx-page .rx-tab{flex:0 1 auto;min-height:44px;border-radius:8px 8px 0 0;font-size:13px;text-align:center}
+.rx-page .rx-tab:hover{background:var(--rx-soft)}
+.rx-page .rx-tab.is-active{background:transparent;color:var(--stripe-primary,#533afd);box-shadow:inset 0 -2px currentColor}
+.rx-page .rx-tab:focus-visible{outline:2px solid var(--stripe-primary,#533afd);outline-offset:-3px}
+.rx-page .rx-source-library-head{gap:8px 14px;flex-wrap:wrap}
+.rx-page .rx-source-total strong{font-size:14px;font-variant-numeric:tabular-nums}
+.rx-page .rx-source-total span{font-size:12px}
+.rx-page .rx-source-live-pill{min-height:24px;padding:2px 6px;border:0;background:transparent}
+@media(max-width:640px){
+  .rx-page .rx-tab{flex:1 1 0;gap:4px}
+  .rx-page .rx-tab-name{font-size:12px}
+}

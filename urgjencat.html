@@ -8,8 +8,8 @@
   <title>DRx | Urgjencat</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/urgjencat-v2.css?v=10-audit-20261009">
-  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107">
+  <link rel="stylesheet" href="/urgjencat-v2.css?v=10-audit-20261009-ui-20261110">
+  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-workspace-polish-20261110">
 </head>
 <body>
   <a class="sr-only" href="#emergencyDetail">Kalo te përmbajtja</a>
@@ -83,7 +83,7 @@
         </button>
         <div class="breadcrumbs"><span>DRx</span><span class="crumb-sep">/</span><strong>Urgjencat</strong></div>
         <div class="topbar-actions">
-          <span class="sync-pill"><span class="sync-dot"></span><span id="syncText">Sanity</span></span>
+          <span class="sync-pill"><span class="sync-dot"></span><span id="syncText">Duke u lidhur…</span></span>
           <button class="drx-profile-chip mi-profile-chip" id="profileButton" type="button" data-mi-profile-trigger aria-label="Hap profilin">
             <span class="mi-user-avatar drx-user-avatar avatar-button" id="avatarInitials">DR</span>
             <span class="drx-profile-copy"><strong>Llogaria</strong><small></small></span>
@@ -96,14 +96,14 @@
           <div>
             <p class="eyebrow">Emergency Medicine · Tintinalli 8e</p>
             <h1>Urgjencat</h1>
-            <p class="page-subtitle">Zgjidh kapitullin dhe mësimin, pastaj lexo vetëm informacionin klinik që të duhet.</p>
+            <p class="page-subtitle">Shfleto kapitujt ose kërko një temë klinike.</p>
           </div>
           <div class="emergency-totals"><span><strong id="chapterTotal">—</strong> kapituj</span><span><strong id="lessonTotal">—</strong> mësime</span></div>
         </header>
 
         <section class="emergency-command" aria-label="Navigimi në urgjenca">
           <label class="command-field command-chapter">
-            <span>Kapitulli <small id="chapterStatus">Duke ngarkuar…</small></span>
+            <span>Kapitulli <small id="chapterStatus"></small></span>
             <select id="emergencyChapterSelect" aria-label="Zgjidh kapitullin"><option>Duke ngarkuar…</option></select>
           </label>
           <label class="command-field command-lesson">
@@ -113,14 +113,14 @@
           <div class="command-search" id="emergencySearchField">
             <label class="sr-only" for="emergencySearch">Kërko në urgjenca</label>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="11" cy="11" r="6.7"/><path d="m16 16 4.2 4.2"/></svg>
-            <input id="emergencySearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko kapitull, mësim, Rx…" aria-label="Kërko në urgjenca">
+            <input id="emergencySearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko në urgjenca…" aria-label="Kërko në urgjenca">
             <kbd>⌘ K</kbd>
             <button class="command-search-clear" id="emergencySearchClear" type="button" aria-label="Pastro kërkimin">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>
             </button>
           </div>
           <div class="emergency-command-footer">
-            <span class="emergency-result-status" id="emergencyResultStatus" role="status" aria-live="polite">Duke ngarkuar përmbajtjen…</span>
+            <span class="emergency-result-status" id="emergencyResultStatus" role="status" aria-live="polite"></span>
             <div class="emergency-lesson-nav" aria-label="Navigimi mes mësimeve">
               <button id="previousLessonButton" type="button" aria-label="Mësimi i kaluar">← <span>I kaluari</span></button>
               <span id="emergencyLessonPosition" aria-live="polite">—</span>
@@ -130,13 +130,13 @@
         </section>
 
         <article class="emergency-document ec-detail" id="emergencyDetail" aria-live="polite">
-          <div class="ec-detail-placeholder"><div><strong>Duke ngarkuar urgjencat…</strong><span>Përmbajtja vjen nga Sanity.</span></div></div>
+          <div class="ec-detail-placeholder"><div><strong>Duke ngarkuar mësimet…</strong></div></div>
         </article>
       </div>
     </main>
   </div>
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
-<script src="/urgjencat-v2.js?v=11" defer></script>
+<script src="/urgjencat-v2.js?v=11-ui-20261110" defer></script>
 </body>
 </html>

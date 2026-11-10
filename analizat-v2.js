@@ -173,7 +173,7 @@
       if (!response.ok) throw new Error(payload?.error || `API ${response.status}`);
       const data = payload?.data;
       if (!data || !Array.isArray(data.tests) || !Array.isArray(data.categories) || !Array.isArray(data.indications)) {
-        throw new Error('Dataset-i i analizave nuk është i plotë.');
+        throw new Error('Katalogu i analizave është i paplotë.');
       }
       if (!data.tests.length || !data.categories.length || !data.indications.length) {
         throw new Error('Katalogu ose profilet klinike janë bosh.');
@@ -393,7 +393,7 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 7l10 10M17 7 7 17"/></svg>
             </button>
           </span>`).join('')
-        : '<span class="lab-selected-empty">Nuk ke zgjedhur ende profil.</span>';
+        : '<span class="lab-selected-empty">Asnjë simptomë ose diagnozë e zgjedhur.</span>';
     }
 
     if (summary) {
@@ -611,7 +611,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/><path d="M7.5 16h9"/></svg>
           </span>
           <strong>Zgjidh simptomën ose diagnozën sipër.</strong>
-          <span>DRx do t’i bashkojë analizat e nevojshme dhe do ta shpjegojë pse sugjerohet secila.</span>
+          <span>Arsyet e sugjerimeve shfaqen pranë secilës analizë.</span>
         </div>`;
       return;
     }
@@ -880,7 +880,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 4.5 3.5 19.5h17L12 4.5Z"/><path d="M12 9v4M12 16.5h.01"/></svg>
           </span>
           <strong>Analizat nuk u ngarkuan.</strong>
-          <span>Kontrollo lidhjen me Supabase dhe provo përsëri.</span>
+          <span>Kontrollo lidhjen me internetin.</span>
           <button class="lab-clear-plan" type="button" data-lab-retry>Provo përsëri</button>
         </div>`;
       $('#labPlanSections')?.querySelector('[data-lab-retry]')?.addEventListener('click', () => window.location.reload());

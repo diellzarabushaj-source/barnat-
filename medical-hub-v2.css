@@ -5,3 +5,8 @@
 @import url('/medical-hub-accessibility-v1.css?v=1');
 @import url('/medical-hub-source-faithful-v1.css?v=5');
 @import url('/medical-hub-professional-reader.css?v=20261008-p2');
+
+html[data-drx-app="medical-hub-v2"] .hub-page .hub-command{padding:12px}
+.hub-page .hub-command-footer{padding-inline:0}
+.hub-page .hub-search input{background:#fafbfc}
+.hub-page .hub-search input:focus{background:#fff}
