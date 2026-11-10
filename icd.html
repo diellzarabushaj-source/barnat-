@@ -8,12 +8,12 @@
   <title>DRx | ICD-10</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/icd-v2.css?v=icd-clarification-20261025">
+  <link rel="stylesheet" href="/icd-v2.css?v=icd-browser-polish-20261110">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
 <script src="/icd-search-lexical.js?v=icd-resilience-20261103" defer></script>
-  <script src="/icd-v2.js?v=icd-resilience-20261103" defer></script>
+  <script src="/icd-v2.js?v=icd-browser-polish-20261110" defer></script>
 </head>
 <body>
   <div class="app-shell" id="appShell" aria-busy="true">
@@ -327,25 +327,22 @@
 
           <div class="icd-workspace">
             <details class="icd-chapter-browser" id="icdChapterBrowser" open>
-            <summary>Shfleto kapitujt <span>22</span></summary>
-            <aside class="chapter-panel" aria-label="Kapitujt ICD-10">
+            <summary><span>Shfleto kapitujt</span><span class="panel-count" id="chapterSummaryCount">—</span></summary>
+            <nav class="chapter-panel" aria-labelledby="chapterHeading">
               <div class="panel-heading">
-                <div><span class="panel-kicker">Niveli kryesor</span><h2>Kapitujt</h2></div>
+                <h2 id="chapterHeading">Kapitujt</h2>
                 <span class="panel-count" id="chapterCount">—</span>
               </div>
-              <div class="chapter-list" id="chapterList" role="listbox" aria-label="Zgjidh kapitullin ICD-10"></div>
-            </aside>
+              <div class="chapter-list" id="chapterList"></div>
+            </nav>
             </details>
 
             <section class="node-panel" aria-labelledby="nodeSectionTitle">
+              <div class="node-hero" id="nodeHero" role="group" aria-labelledby="nodeHeroTitle" tabindex="-1" hidden></div>
               <details class="icd-clinical-disclosure"><summary>Udhëzime për diagnozat e shpeshta</summary><section class="clinical-quick-hub" id="clinicalQuickHub" aria-label="Diagnozat klinike të shpeshta"></section></details>
-              <div class="node-hero" id="nodeHero" hidden></div>
               <section class="clinical-action-panel" id="clinicalActionPanel" aria-live="polite" hidden></section>
               <div class="node-section-head">
-                <div>
-                  <span class="panel-kicker" id="nodeKicker">Fillo</span>
-                  <h2 id="nodeSectionTitle">Zgjidh një kapitull</h2>
-                </div>
+                <h2 id="nodeSectionTitle">Zgjidh një kapitull</h2>
                 <span class="panel-count" id="nodeCount">0</span>
               </div>
               <div class="node-list" id="nodeList"></div>

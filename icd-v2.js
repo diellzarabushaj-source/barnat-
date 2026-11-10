@@ -156,7 +156,7 @@
       'appShell','sidebar','sidebarBackdrop','menuButton','sidebarClose','logoutButton','avatarInitials','sourceStatus','syncText',
       'metricNodes','metricChapters','metricCategories','metricCoverage','metricCoverageNote',
       'icdPath','icdPathItems','icdPathReset','icdSearch','icdSearchBox','icdSearchClear','icdSuggestions','icdStatusText',
-      'icdFilterChapter','icdFilterBlock','icdFilterLevel','icdFilterReset','chapterList','chapterCount','clinicalQuickHub','nodeHero','clinicalActionPanel','nodeList','nodeSectionTitle','nodeCount','nodeKicker','toast',
+      'icdFilterChapter','icdFilterBlock','icdFilterLevel','icdFilterReset','icdChapterBrowser','chapterList','chapterCount','chapterSummaryCount','clinicalQuickHub','nodeHero','clinicalActionPanel','nodeList','nodeSectionTitle','nodeCount','toast',
     ].forEach(id => { el[id] = document.getElementById(id); });
   }
 
@@ -220,17 +220,16 @@
     return clean(node?.displayTitle) || clean(node?.albanianDraft) || clean(node?.englishTitle) || clean(node?.code) || '—';
   }
 
-  /* Titujt e kapitujve vijnë si «Neoplazitë (C00-D48)». Intervali është e vetmja
-     gjë që i dallon te lista e ngushtë; kur titulli pritej me elips, pikërisht ai
-     humbte, dhe poshtë të tetë rreshtave rrinte e njëjta fjalë «Kapitull». */
   const CODE_RANGE = /\s*[(\[]\s*([A-Z]\d{2}(?:\.\d+)?\s*[–—-]\s*[A-Z]?\d{2}(?:\.\d+)?)\s*[)\]]\s*$/;
 
   function splitRange(node) {
     const title = nodeTitle(node);
     const match = title.match(CODE_RANGE);
-    if (!match) return { title, range:'' };
-    const stripped = title.slice(0, match.index).trim();
-    return stripped ? { title:stripped, range:match[1].replace(/\s+/g, '') } : { title, range:'' };
+    const range = match || clean(node?.englishTitle).match(CODE_RANGE);
+    return {
+      title: match ? title.slice(0, match.index).trim() || title : title,
+      range: range ? range[1].replace(/\s+/g, '') : '',
+    };
   }
 
   function nodeSubtitle(node) {
@@ -261,7 +260,7 @@
 
   function renderChapters() {
     renderFilterOptions();
-    el.chapterCount.textContent = formatNumber(state.chapters.length);
+    el.chapterCount.textContent = el.chapterSummaryCount.textContent = formatNumber(state.chapters.length);
     if (!state.chapters.length) {
       el.chapterList.innerHTML = '<div class="skeleton-row"></div><div class="skeleton-row"></div><div class="skeleton-row"></div>';
       return;
@@ -270,9 +269,9 @@
       const code = clean(node.code);
       const active = code === state.chapter;
       const { title, range } = splitRange(node);
-      return `<button class="chapter-row ${active ? 'is-active' : ''}" type="button" role="option" aria-selected="${active}" data-chapter="${escapeHtml(code)}">
+      return `<button class="chapter-row${active ? ' is-active' : ''}" type="button" ${active ? 'aria-current="true"' : ''} data-chapter="${escapeHtml(code)}">
         <span class="chapter-code">${escapeHtml(code)}</span>
-        <span class="chapter-copy"><strong>${escapeHtml(title)}</strong><small>${escapeHtml(range || levelLabel('chapter'))}</small></span>
+        <span class="chapter-copy"><strong>${escapeHtml(title)}</strong>${range ? `<small>${escapeHtml(range)}</small>` : ''}</span>
       </button>`;
     }).join('');
   }
@@ -302,21 +301,22 @@
     el.nodeHero.hidden = false;
     const code = clean(node.code);
     const { title, range } = splitRange(node);
+    const isDiagnosis = ['category', 'subcategory'].includes(node.level);
     el.nodeHero.innerHTML = `
-      ${['category','subcategory'].includes(node.level)?'<button type="button" class="icd-back-to-search" id="icdBackToSearch">Kërko diagnozë tjetër</button>':''}
+      ${isDiagnosis ? '<button type="button" class="icd-back-to-search" id="icdBackToSearch">Kërko diagnozë tjetër</button>' : ''}
       <span class="hero-code">${escapeHtml(code)}</span>
-      <span class="hero-copy">
+      <div class="hero-copy">
         <span class="hero-kicker">${escapeHtml(levelLabel(node.level))}${range ? ` · <b>${escapeHtml(range)}</b>` : ''}</span>
-        <h2>${escapeHtml(clean(node.latinTitle) || title)}</h2>
+        <h2 id="nodeHeroTitle">${escapeHtml(clean(node.latinTitle) || title)}</h2>
         ${node.latinTitle ? `<p>${escapeHtml(title)}${node.englishTitle ? ` · ${escapeHtml(node.englishTitle)}` : ''}</p>` : nodeSubtitle(node) ? `<p>${escapeHtml(nodeSubtitle(node))}</p>` : ''}
-      </span>
+      </div>
       <span class="hero-actions">
-        ${['category','subcategory'].includes(node.level) ? '<button class="button button-secondary" type="button" id="icdCopyDiagnosis">Kopjo diagnozën</button>' : ''}
-        ${['category','subcategory'].includes(node.level) ? '<button class="button button-secondary" type="button" id="icdUseInPrescription">Vendos në recetë</button>' : ''}
-        <a class="button button-secondary" href="/index.html?q=${encodeURIComponent(code)}">Kërko në barna</a>
+        ${isDiagnosis ? '<button class="button button-secondary" type="button" id="icdCopyDiagnosis">Kopjo diagnozën</button>' : ''}
+        ${isDiagnosis ? '<button class="button button-secondary" type="button" id="icdUseInPrescription">Vendos në recetë</button>' : ''}
+        <a class="button button-secondary icd-drug-link" href="/index.html?q=${encodeURIComponent(code)}">${SEARCH_GLYPH} Kërko në barna</a>
       </span>`;
     const memoryCode=document.getElementById('icdMemoryCode');
-    if(memoryCode&&['category','subcategory'].includes(node.level))memoryCode.value=code;
+    if(memoryCode && isDiagnosis) memoryCode.value=code;
   }
 
   function clinicalGroupForCode(code) {
@@ -682,7 +682,7 @@
     el.icdPathItems.innerHTML = trail.map((node, index) => {
       const current = index === trail.length - 1;
       const sep = index ? `<span class="icd-path-sep" aria-hidden="true">${CHEVRON_RIGHT}</span>` : '';
-      return `${sep}<button class="icd-path-node ${current ? 'is-current' : ''}" type="button" data-path-index="${index}" title="${escapeHtml(nodeTitle(node))}"><strong>${escapeHtml(clean(node.code))}</strong><span>${escapeHtml(nodeTitle(node))}</span></button>`;
+      return `${sep}<button class="icd-path-node${current ? ' is-current' : ''}" type="button" ${current ? 'aria-current="location"' : ''} data-path-index="${index}" title="${escapeHtml(nodeTitle(node))}"><strong>${escapeHtml(clean(node.code))}</strong><span>${escapeHtml(nodeTitle(node))}</span></button>`;
     }).join('');
   }
 
@@ -708,23 +708,14 @@
         <span class="node-copy"><strong>${escapeHtml(nodeTitle(node))}</strong>${nodeSubtitle(node) ? `<small>${escapeHtml(nodeSubtitle(node))}</small>` : ''}</span>
         <span class="node-meta">
           <span class="node-level">${escapeHtml(levelLabel(node.level))}${hasChildren ? ` · ${formatNumber(node.childCount)}` : ''}</span>
-          ${hasChildren ? `<span class="node-open" aria-hidden="true">${CHEVRON_RIGHT}</span>` : ''}
+          <span class="node-open" aria-hidden="true">${CHEVRON_RIGHT}</span>
         </span>
       </button>`;
     }).join('');
   }
 
   function renderSection() {
-    const node = currentNode();
-    if (!node) {
-      el.nodeKicker.textContent = 'Fillo';
-      el.nodeSectionTitle.textContent = 'Zgjidh një kapitull';
-      return;
-    }
-    /* Koka e listës thoshte fjalë për fjalë titullin e hero-s dy dhjetëra pikselë
-       më lart. Tani thotë çfarë përmban lista, jo se ku ndodhemi. */
-    el.nodeKicker.textContent = 'Nënndarjet';
-    el.nodeSectionTitle.textContent = childLevelLabel() || nodeTitle(node);
+    el.nodeSectionTitle.textContent = currentNode() ? (childLevelLabel() || 'Nënndarjet') : 'Zgjidh një kapitull';
   }
 
   const LEVEL_PLURALS = Object.freeze({ chapter:'Kapitujt', block:'Blloqet', category:'Kategoritë', subcategory:'Nënkategoritë' });
@@ -1485,7 +1476,7 @@
     if (instant) {
       state.rows = instant;
       state.loading = false;
-      setStatus(`${formatNumber(instant.length)} nyje nën ${key} · instant`);
+      setStatus(`${formatNumber(instant.length)} nyje nën ${key}`);
       render();
       if (state.reveal) { state.reveal = false; revealNodePanel(); }
       return;
@@ -1979,17 +1970,23 @@
 
     el.chapterList.addEventListener('click', event => {
       const button = event.target.closest('[data-chapter]');
-      if (button) selectChapter(button.dataset.chapter, { reveal:true,filterScope:true });
+      if (!button) return;
+      selectChapter(button.dataset.chapter, { reveal:true,filterScope:true });
+      if (event.detail === 0) el.nodeHero.focus();
     });
 
     el.nodeList.addEventListener('click', event => {
       const button = event.target.closest('[data-code]');
-      if (button) void openNode(button.dataset.code);
+      if (!button) return;
+      void openNode(button.dataset.code);
+      if (event.detail === 0) el.nodeHero.focus();
     });
 
     el.icdPathItems.addEventListener('click', event => {
       const button = event.target.closest('[data-path-index]');
-      if (button) goToPathIndex(Number(button.dataset.pathIndex));
+      if (!button) return;
+      goToPathIndex(Number(button.dataset.pathIndex));
+      if (event.detail === 0) el.nodeHero.focus();
     });
 
     el.icdPathReset?.addEventListener('click', () => {
@@ -1997,10 +1994,18 @@
       state.chapter = '';
       state.path = [];
       state.rows = [];
+      state.loading = false;
+      state.requestId++;
       clearClinicalGuidance();
       writeHash('');
       setStatus(`${formatNumber(state.chapters.length)} kapituj`);
       render();
+      if (compact.matches) {
+        el.icdChapterBrowser.open = true;
+        el.icdChapterBrowser.querySelector('summary').focus();
+      } else {
+        el.chapterList.querySelector('button')?.focus();
+      }
     });
 
     el.icdSearch.addEventListener('input', () => {
