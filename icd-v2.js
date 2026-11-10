@@ -679,24 +679,31 @@
     if (chapter) trail.push(chapter);
     trail.push(...state.path);
     el.icdPath.hidden = !trail.length;
+    const previousCode = el.icdPathItems.lastElementChild?.querySelector('strong')?.textContent;
     el.icdPathItems.innerHTML = trail.map((node, index) => {
       const current = index === trail.length - 1;
+      const code = escapeHtml(clean(node.code));
+      const title = escapeHtml(nodeTitle(node));
       const sep = index ? `<span class="icd-path-sep" aria-hidden="true">${CHEVRON_RIGHT}</span>` : '';
-      return `${sep}<button class="icd-path-node${current ? ' is-current' : ''}" type="button" ${current ? 'aria-current="location"' : ''} data-path-index="${index}" title="${escapeHtml(nodeTitle(node))}"><strong>${escapeHtml(clean(node.code))}</strong><span>${escapeHtml(nodeTitle(node))}</span></button>`;
+      return `${sep}<button class="icd-path-node${current ? ' is-current' : ''}" type="button" ${current ? 'aria-current="location"' : ''} data-path-index="${index}" aria-label="${code} · ${title}" title="${title}"><strong>${code}</strong><span>${title}</span></button>`;
     }).join('');
+    if (trail.length && previousCode !== clean(trail.at(-1).code)) {
+      requestAnimationFrame(() => { el.icdPathItems.scrollLeft = el.icdPathItems.scrollWidth; });
+    }
   }
 
   function renderRows() {
+    el.nodeCount.hidden = state.loading || !state.rows.length;
     el.nodeCount.textContent = formatNumber(state.rows.length);
+    el.nodeList.setAttribute('aria-busy', String(state.loading));
     if (state.loading) {
       el.nodeList.innerHTML = '<div class="skeleton-row"></div><div class="skeleton-row"></div><div class="skeleton-row"></div><div class="skeleton-row"></div>';
       return;
     }
     if (!state.rows.length) {
+      const hasSelection = Boolean(currentNode());
       el.nodeList.innerHTML = `<div class="icd-empty">
-        <div class="icd-empty-icon">${SEARCH_GLYPH}</div>
-        <h3>Nuk ka nënndarje</h3>
-        <p>Ky është niveli i fundit i kësaj dege.</p>
+        <p>${hasSelection ? 'Ky kod nuk ka nënndarje.' : 'Zgjidh një kapitull nga lista për të parë blloqet dhe kodet e tij.'}</p>
       </div>`;
       return;
     }
@@ -707,7 +714,7 @@
         <span class="node-code">${escapeHtml(code)}</span>
         <span class="node-copy"><strong>${escapeHtml(nodeTitle(node))}</strong>${nodeSubtitle(node) ? `<small>${escapeHtml(nodeSubtitle(node))}</small>` : ''}</span>
         <span class="node-meta">
-          <span class="node-level">${escapeHtml(levelLabel(node.level))}${hasChildren ? ` · ${formatNumber(node.childCount)}` : ''}</span>
+          <span class="node-level">${hasChildren ? `${formatNumber(node.childCount)} nënndarje` : escapeHtml(levelLabel(node.level))}</span>
           <span class="node-open" aria-hidden="true">${CHEVRON_RIGHT}</span>
         </span>
       </button>`;
@@ -1304,6 +1311,7 @@
     renderClarification(state.suggestionMeta?.descriptionAnalysis,shouldOpen);
     document.documentElement.classList.toggle('icd-query-open',Boolean(shouldOpen));
     el.icdSearchBox.setAttribute('aria-expanded', String(Boolean(shouldOpen)));
+    el.icdSuggestions.setAttribute('aria-busy', String(Boolean(shouldOpen && state.suggestionLoading)));
     if (!shouldOpen) {
       el.icdSuggestions.hidden = true;
       el.icdSearch?.removeAttribute('aria-activedescendant');
@@ -1316,7 +1324,7 @@
       ? ` · kuptuar si <strong>${escapeHtml(interpreted)}</strong>`
       : '';
     const analysis=state.suggestionMeta?.descriptionAnalysis;
-    const head = `<div class="icd-suggestion-head"><span>${state.suggestionLoading ? 'Duke rafinuar…' : `${formatNumber(state.suggestions.length)} sugjerime`}${interpretation}</span><strong>↑ ↓ Enter</strong></div>`;
+    const head = `<div class="icd-suggestion-head"><span>${state.suggestionLoading ? 'Duke kërkuar…' : `${formatNumber(state.suggestions.length)} sugjerime`}${interpretation}</span><span class="icd-result-keys" aria-hidden="true"><kbd>↑</kbd><kbd>↓</kbd><kbd>Enter</kbd></span></div>`;
     const symptom = state.suggestionMeta?.symptomIntent || null;
     const symptomTypo = symptom && ['fuzzy-phrase','fuzzy-tokens'].includes(clean(symptom.match_type));
     const symptomBanner = symptom
@@ -1332,7 +1340,8 @@
       : '';
 
     if (!state.suggestions.length) {
-      el.icdSuggestions.innerHTML = head + symptomBanner + `<div class="icd-suggestion-empty"><strong>${state.suggestionLoading ? 'Po kërkoj…' : analysis ? 'Shto një sqarim' : 'Nuk gjeta përputhje të sigurt'}</strong><span>${analysis?'Plotëso përshkrimin në kërkim dhe provo përsëri.':'Provo kod, Shqip, English ose Latin — edhe me një typo tjetër.'}</span></div>`;
+      el.icdSuggestions.innerHTML = head + symptomBanner + (state.suggestionLoading ? '<div class="skeleton-row" aria-hidden="true"></div>' : `<div class="icd-suggestion-empty"><strong>${analysis ? 'Shto një sqarim' : 'Nuk gjeta përputhje të sigurt'}</strong><span>${analysis ? 'Plotëso përshkrimin dhe provo përsëri.' : 'Provo një kod ose një term në shqip, anglisht ose latinisht.'}</span></div>`);
+      el.icdSearch?.removeAttribute('aria-activedescendant');
       return;
     }
 
@@ -1689,12 +1698,12 @@
     });
   }
 
-  function applySuggestionData(query, data, { fromCache = false } = {}) {
+  function applySuggestionData(query, data, { fromCache = false, open = true } = {}) {
     state.searching = true;
     state.query = query;
     state.suggestions = Array.isArray(data?.rows) ? data.rows : (Array.isArray(data?.suggestions) ? data.suggestions : []);
     state.suggestionMeta = data || null;
-    state.suggestionOpen = true;
+    state.suggestionOpen = open;
     state.activeSuggestion = state.suggestions.length ? 0 : -1;
     renderSuggestions();
 
@@ -1748,7 +1757,7 @@
       if (requestId !== state.requestId) return;
       const data = payload.data || {};
       cacheSuggestions(value, data);
-      applySuggestionData(value, data);
+      applySuggestionData(value, data, { open:state.suggestionOpen });
     } catch (error) {
       if (error?.name === 'AbortError') return;
       if (requestId !== state.requestId) return;
@@ -1785,6 +1794,7 @@
   }
 
   function clearSearch({ preserveInput = false } = {}) {
+    clearTimeout(searchTimer);
     cancelTerminologyAi();
     resetDescriptionConversation();
     ++state.requestId;
@@ -1822,6 +1832,11 @@
     state.chapter = clean(code);
     if(options.filterScope){state.filterChapter=state.chapter;state.filterBlock='';}
     state.path = [];
+    if (!state.chapter) {
+      state.rows = [];
+      state.loading = false;
+      setStatus(`${formatNumber(state.chapters.length)} kapituj të ngarkuar`);
+    }
     clearClinicalGuidance();
     writeHash(state.chapter);
     render();
@@ -1930,14 +1945,17 @@
       }
     };
     setDisclosures();compact.addEventListener('change',setDisclosures);
-    document.getElementById('icdFilterClearCompact')?.addEventListener('click',()=>el.icdFilterReset.click());
+    document.getElementById('icdFilterClearCompact')?.addEventListener('click', () => {
+      el.icdFilterReset.click();
+      document.querySelector('#icdFilterPanel > summary')?.focus();
+    });
     document.addEventListener('click',event=>{
       if(!event.target.closest('#icdBackToSearch'))return;
       const behavior=matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth';
       el.icdSearchBox.scrollIntoView({block:'start',behavior});el.icdSearch.focus({preventScroll:true});
     });
     const changeFilters=()=> {
-      clearTimeout(searchTimer); clearSearch({preserveInput:true});
+      clearSearch({preserveInput:true});
       state.filterChapter=el.icdFilterChapter.value;state.filterBlock=el.icdFilterBlock.value;state.filterLevel=el.icdFilterLevel.value;
       updateScopeSummary();
       const query=clean(el.icdSearch.value);
@@ -2011,7 +2029,7 @@
     el.icdSearch.addEventListener('input', () => {
       clearTimeout(searchTimer);
       searchAbortController?.abort();searchAbortController=null;
-      ++state.requestId;state.suggestionLoading=false;
+      ++state.requestId;
       const value = clean(el.icdSearch.value);
       if (value.length < 2) {
         clearSearch({ preserveInput:true });
@@ -2023,6 +2041,7 @@
       state.query = value;
       state.suggestionOpen = true;
       const preview = immediatePreview(value);
+      state.suggestionLoading = !preview.rows.length;
       state.suggestionMeta = preview.meta;
       state.suggestions = preview.rows;
       state.activeSuggestion = preview.rows.length ? 0 : -1;
@@ -2053,7 +2072,7 @@
           void runSearch(clean(el.icdSearch.value));
           return;
         }
-        if (event.key === 'Escape') { clearSearch({ preserveInput:true }); el.icdSearch.blur(); }
+        if (event.key === 'Escape') { event.preventDefault(); clearSearch({ preserveInput:true }); }
         return;
       }
       if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
@@ -2071,13 +2090,13 @@
       }
       if (event.key === 'Escape') {
         event.preventDefault();
+        clearTimeout(searchTimer);
         state.suggestionOpen = false;
         renderSuggestions();
       }
     });
 
     el.icdSearchClear?.addEventListener('click', () => {
-      clearTimeout(searchTimer);
       clearSearch();
       el.icdSearch.focus();
       setStatus(`${formatNumber(state.chapters.length)} kapituj të ngarkuar`);
