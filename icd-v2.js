@@ -301,14 +301,15 @@
     el.nodeHero.hidden = false;
     const code = clean(node.code);
     const { title, range } = splitRange(node);
+    const subtitle = nodeSubtitle(node);
     const isDiagnosis = ['category', 'subcategory'].includes(node.level);
     el.nodeHero.innerHTML = `
-      ${isDiagnosis ? '<button type="button" class="icd-back-to-search" id="icdBackToSearch">Kërko diagnozë tjetër</button>' : ''}
+      ${isDiagnosis ? `<button type="button" class="icd-back-to-search" id="icdBackToSearch">${CHEVRON_RIGHT} Kërko diagnozë tjetër</button>` : ''}
       <span class="hero-code">${escapeHtml(code)}</span>
       <div class="hero-copy">
         <span class="hero-kicker">${escapeHtml(levelLabel(node.level))}${range ? ` · <b>${escapeHtml(range)}</b>` : ''}</span>
-        <h2 id="nodeHeroTitle">${escapeHtml(clean(node.latinTitle) || title)}</h2>
-        ${node.latinTitle ? `<p>${escapeHtml(title)}${node.englishTitle ? ` · ${escapeHtml(node.englishTitle)}` : ''}</p>` : nodeSubtitle(node) ? `<p>${escapeHtml(nodeSubtitle(node))}</p>` : ''}
+        <h2 id="nodeHeroTitle">${escapeHtml(title)}</h2>
+        ${subtitle ? `<p>${escapeHtml(subtitle)}</p>` : ''}
       </div>
       <span class="hero-actions">
         ${isDiagnosis ? '<button class="button button-secondary" type="button" id="icdCopyDiagnosis">Kopjo diagnozën</button>' : ''}
@@ -1190,7 +1191,6 @@
     const latinParent = clean(node?.latinParentTitle);
     const latinParentCode = clean(node?.latinParentCode);
     if (sq && sq !== primary) items.push({ lang:'SQ', text:sq, kind:'exact' });
-    if (en) items.push({ lang:'EN', text:en, kind:'exact' });
     if (la) {
       items.push({ lang:'LA', text:la, kind:'exact' });
     } else if (latinParent) {
@@ -1198,6 +1198,7 @@
     } else {
       items.push({ lang:'LA', text:'—', kind:'missing' });
     }
+    if (en) items.push({ lang:'EN', text:en, kind:'exact' });
     return items;
   }
 
@@ -1273,7 +1274,7 @@
   }
 
   function suggestionTranslationHtml(node, query) {
-    return suggestionTranslations(node).filter(item => !node.latinTitle || !['LA','SQ'].includes(item.lang)).map(item => `
+    return suggestionTranslations(node).filter(item => item.text !== nodeTitle(node)).map(item => `
       <small class="icd-suggestion-translation is-${escapeHtml(item.kind)}"
         ${item.kind === 'parent' ? 'title="Latin i kategorisë prind — jo titull specifik i nënkodit"' : ''}>
         <b>${escapeHtml(item.lang)}</b><span>${highlightSearchText(item.text, query)}</span>
@@ -1304,6 +1305,11 @@
     document.getElementById('icdClarificationHint').textContent=full||used>=598?'Për një kërkim të ri, ndrysho përshkrimin më sipër.':'Përgjigju me pak fjalë, pa të dhëna identifikuese.';
   }
 
+  function suggestionCountLabel() {
+    const count = state.suggestions.length;
+    return `${formatNumber(count)} ${count === 1 ? 'sugjerim' : 'sugjerime'}`;
+  }
+
   function renderSuggestions() {
     if (!el.icdSuggestions || !el.icdSearchBox) return;
     const query = clean(el.icdSearch?.value);
@@ -1324,7 +1330,7 @@
       ? ` · kuptuar si <strong>${escapeHtml(interpreted)}</strong>`
       : '';
     const analysis=state.suggestionMeta?.descriptionAnalysis;
-    const head = `<div class="icd-suggestion-head"><span>${state.suggestionLoading ? 'Duke kërkuar…' : `${formatNumber(state.suggestions.length)} sugjerime`}${interpretation}</span><span class="icd-result-keys" aria-hidden="true"><kbd>↑</kbd><kbd>↓</kbd><kbd>Enter</kbd></span></div>`;
+    const head = `<div class="icd-suggestion-head"><span>${state.suggestionLoading ? 'Duke kërkuar…' : suggestionCountLabel()}${interpretation}</span><span class="icd-result-keys" aria-hidden="true"><kbd>↑</kbd><kbd>↓</kbd><kbd>Enter</kbd></span></div>`;
     const symptom = state.suggestionMeta?.symptomIntent || null;
     const symptomTypo = symptom && ['fuzzy-phrase','fuzzy-tokens'].includes(clean(symptom.match_type));
     const symptomBanner = symptom
@@ -1379,19 +1385,18 @@
         id="icd-suggestion-${index}" aria-selected="${active}" data-suggestion-index="${index}" data-code="${escapeHtml(clean(node.code))}">
         <span class="icd-suggestion-code">${highlightSearchText(clean(node.code), query)}</span>
         <span class="icd-suggestion-copy">
-          <span class="icd-suggestion-titleline"><strong>${highlightSearchText(clean(node.latinTitle) || nodeTitle(node), query)}</strong>${isReviewedContext?`<em class="is-pending">${node.descriptionContext.conditional?escapeHtml(clean(node.descriptionContext.confirmationLabel)||'Konfirmo burimin'):'Përputhje e simptomës'}</em>`:isAiDescription?'<em class="is-pending">Sugjerim AI</em>':node.memoryVerification==='pending'?'<em class="is-pending">Propozim · i paverifikuar</em>':best ? '<em>Përputhja më e mirë</em>' : isDifferential ? '<em class="is-differential">Kandidat diferencial</em>' : ''}</span>
-          ${node.latinTitle?`<span class="icd-suggestion-sq">${highlightSearchText(nodeTitle(node),query)}</span>`:''}
+          <span class="icd-suggestion-titleline"><strong>${highlightSearchText(nodeTitle(node), query)}</strong>${isReviewedContext?`<em class="is-pending">${node.descriptionContext.conditional?escapeHtml(clean(node.descriptionContext.confirmationLabel)||'Konfirmo burimin'):'Përputhje e simptomës'}</em>`:isAiDescription?'<em class="is-pending">Sugjerim AI</em>':node.memoryVerification==='pending'?'<em class="is-pending">Propozim · i paverifikuar</em>':best ? '<em class="icd-best-label">Përputhja më e mirë</em>' : isDifferential ? '<em class="is-differential">Kandidat diferencial</em>' : ''}</span>
+          ${translations}
           <span class="icd-concept-kind">${/^R\d/.test(node.code)||node.searchMatch?.type==='symptom-code'||node.aiDescription?.kind==='symptom'||isReviewedContext?'Simptomë / shenjë':'Koncept ICD · kërkon konfirmim klinik'}${['verified-resource','reviewed-memory'].includes(node.latinVerification)?' · Latinisht e verifikuar':''}</span>
           ${node.latinProposal?`<span class="icd-suggestion-sq">LA · propozim i paverifikuar: ${escapeHtml(node.latinProposal)}</span>`:''}
           ${relationReason ? `<span class="icd-symptom-reason">${escapeHtml(relationReason)}</span>` : ''}
           ${hierarchyHint}
-          ${translations}
         </span>
         <span class="icd-suggestion-meta">
-          ${source ? `<span class="icd-match-source ${isDifferential ? 'is-symptom' : ''}">${escapeHtml(source)}</span>` : ''}
           <span class="icd-match-chip">${escapeHtml(match)}</span>
-          <span class="icd-level-chip">${escapeHtml(levelLabel(node.level))}</span>
+          <span class="icd-match-context">${source ? `<span class="icd-match-source ${isDifferential ? 'is-symptom' : ''}">${escapeHtml(source)}</span> · ` : ''}${escapeHtml(levelLabel(node.level))}</span>
         </span>
+        <span class="icd-suggestion-open" aria-hidden="true">${CHEVRON_RIGHT}</span>
       </button>`;
     }).join('');
     const ambiguity=!analysis&&(state.suggestionMeta?.semanticMemory?.ambiguous||state.suggestionMeta?.ambiguity)
@@ -1711,7 +1716,7 @@
     prefetchChildren(top);
     const corrected = top?.searchMatch?.type?.startsWith('fuzzy-') || top?.searchMatch?.type === 'code-fuzzy';
     const suffix = corrected ? ' · typo i korrigjuar' : fromCache ? ' · instant' : '';
-    setStatus(`${formatNumber(state.suggestions.length)} sugjerime për «${query}»${suffix}`);
+    setStatus(`${suggestionCountLabel()} për «${query}»${suffix}`);
   }
 
   async function runSearch(query) {
@@ -1817,12 +1822,16 @@
   /* Nën 940px të dy panelet bien njëri poshtë tjetrit, kështu që pas zgjedhjes
      së kapitullit përmbajtja mbetej një ekran e gjysmë më poshtë, pas tetë
      rreshtave të listës. Zgjedhja e sjell atë vetë në pamje. */
-  function revealNodePanel() {
-    if (!window.matchMedia('(max-width:940px)').matches) return;
-    el.icdSearch?.blur();
-    for(const id of ['icdFilterPanel','icdChapterBrowser','icdMemoryTools','icdMemoryReview']){
-      const panel=document.getElementById(id);if(panel)panel.open=false;
+  function revealNodePanel({ focusResult = false } = {}) {
+    const compact = window.matchMedia('(max-width:940px)').matches;
+    if (!compact && !focusResult) return;
+    if (compact) {
+      el.icdSearch?.blur();
+      for(const id of ['icdFilterPanel','icdChapterBrowser','icdMemoryTools','icdMemoryReview']){
+        const panel=document.getElementById(id);if(panel)panel.open=false;
+      }
     }
+    if (focusResult) el.nodeHero?.focus({ preventScroll:true });
     const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
     requestAnimationFrame(() => el.nodeHero?.scrollIntoView({ block:'start', behavior }));
   }
@@ -1846,7 +1855,7 @@
     else state.reveal = false;
   }
 
-  async function openNode(code) {
+  async function openNode(code, { focusResult = false } = {}) {
     const node = [...state.suggestions, ...state.rows].find(row => clean(row.code) === clean(code));
     if (!node) return false;
 
@@ -1870,12 +1879,12 @@
       state.loading = false;
       setStatus(`${clean(node.code)} · kodi i zgjedhur`);
       render();
-      revealNodePanel();
+      revealNodePanel({ focusResult });
       return true;
     }
 
     render();
-    state.reveal=false;revealNodePanel();
+    state.reveal=false;revealNodePanel({ focusResult });
     await loadChildren(clean(node.code));
     return true;
   }
@@ -1939,12 +1948,9 @@
   }
   function bindEvents() {
     const compact=window.matchMedia('(max-width:940px)');
-    const setDisclosures=()=>{
-      for(const id of ['icdFilterPanel','icdChapterBrowser']){
-        const panel=document.getElementById(id);if(panel)panel.open=!compact.matches;
-      }
-    };
-    setDisclosures();compact.addEventListener('change',setDisclosures);
+    const syncChapterDisclosure = () => { el.icdChapterBrowser.open = !compact.matches; };
+    syncChapterDisclosure();
+    compact.addEventListener('change', syncChapterDisclosure);
     document.getElementById('icdFilterClearCompact')?.addEventListener('click', () => {
       el.icdFilterReset.click();
       document.querySelector('#icdFilterPanel > summary')?.focus();
@@ -2085,7 +2091,7 @@
         event.preventDefault();
         const index = state.activeSuggestion >= 0 ? state.activeSuggestion : 0;
         const node = state.suggestions[index];
-        if (node) void openNode(clean(node.code));
+        if (node) void openNode(clean(node.code), { focusResult:true });
         return;
       }
       if (event.key === 'Escape') {
@@ -2112,7 +2118,7 @@
       const button = event.target.closest('[data-suggestion-index]');
       if (!button) return;
       const node = state.suggestions[Number(button.dataset.suggestionIndex)];
-      if (node) void openNode(clean(node.code));
+      if (node) void openNode(clean(node.code), { focusResult:true });
     });
 
     el.clinicalActionPanel?.addEventListener('click', async event => {
@@ -2159,6 +2165,7 @@
     });
 
     document.addEventListener('pointerdown', event => {
+      if (event.target.closest('#icdFilterPanel, #icdFilterClearCompact')) return;
       if (event.target.closest('#icdSearchBox') || event.target.closest('#icdSuggestions') || event.target.closest('#icdClarificationPanel') || event.target.closest('#icdAiConsent') || event.target.closest('#icdUnderstandTerm') || event.target.closest('#icdAiCancel') || event.target.closest('#icdMemoryTools') || event.target.closest('#icdMemoryReview')) return;
       state.suggestionOpen = false;
       renderSuggestions();
