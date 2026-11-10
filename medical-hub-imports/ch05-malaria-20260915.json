@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "medical-hub-import-v1",
+  "createdAt": "2026-09-15",
+  "source": {
+    "book": "Doctor on Duty Treatment Guide, 3rd Edition 2024–25",
+    "chapter": 5,
+    "chapterTitle": "Infectious Diseases",
+    "heading": "MALARIA FEVER",
+    "printedPages": [64, 65],
+    "pdfPages": [72, 73],
+    "input": "User-provided page images"
+  },
+  "sanity": {
+    "projectId": "4wdtp8cz",
+    "dataset": "production",
+    "workspace": "medical-hub-authoring",
+    "legacyLearningTopicId": "medicalhub-dod-ch05-sub05",
+    "modernMedicalTopicDraftId": "drafts.56ee7045-812b-4a60-b9a5-599d2f3041cd",
+    "slug": "05-05-malaria",
+    "reviewStatus": "review"
+  },
+  "migration": {
+    "doseValuesChanged": false,
+    "clinicalContentAddedBeyondSource": false,
+    "formatChangesOnly": true,
+    "rendererBlocks": [
+      "medicalTable",
+      "clinicalCallout",
+      "prescriptionGroup"
+    ],
+    "sections": [
+      "Organizmi, vektori dhe speciet",
+      "Tiparet klinike",
+      "Klasifikimi dhe malaria e rëndë",
+      "Diagnoza dhe vlerësimi laboratorik",
+      "TRAJTIMI I MALARIES"
+    ],
+    "treatmentLayout": {
+      "singleTreatmentSection": true,
+      "inventedPrescriptionNumbering": false,
+      "sourceOrderPreserved": true,
+      "sourceDivisions": [
+        {
+          "heading": "Non-Falciparum Malaria",
+          "items": [
+            "1. P. vivax, P. ovale (tertian malaria) — without chloroquine resistance",
+            "Plus one of the following",
+            "P. vivax, P. ovale (tertian malaria) — with chloroquine resistance",
+            "Plus one of the following",
+            "2. Paracetamol 500 mg",
+            "3. Multivitamins / appetizer"
+          ]
+        },
+        {
+          "heading": "Un-complicated Falciparum Malaria",
+          "items": [
+            "1. Antimalarials",
+            "2. Paracetamol",
+            "3. Multivitamins / appetizer"
+          ]
+        },
+        {
+          "heading": "FOR NAUSEA &/OR VOMITING",
+          "items": [
+            "4. Domperidone"
+          ]
+        }
+      ],
+      "alternativeRelationRenderedAs": "OSE",
+      "plusBlocksKeptAsAdd-onChoices": true
+    }
+  },
+  "publicationGate": {
+    "requiredBeforeVerified": "Clinical review of source-transcribed regimens and thresholds",
+    "reason": "Medical Hub modern API publishes only verified book/chapter/topic content."
+  }
+}
