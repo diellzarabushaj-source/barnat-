@@ -48,3 +48,19 @@ These requirements apply to corrections and every future chapter import:
 
 Keep the current frontend design; source fidelity is a content and rendering
 contract, not authorization for an unrelated redesign.
+
+## Project continuity and verifiable progress
+
+- At the start of **every** new coding session, read `docs/PROJECT_CONTEXT.md`,
+  `README.md`, and the relevant feature documentation before planning work.
+- Treat the `main` GitHub commit, current GitHub checks, GitHub Issues, and the
+  actual Vercel deployment SHA as separate sources of truth. Never assume that a
+  merged change was deployed or that a completed CI job proves clinical safety.
+- The private admin **Project Pulse** panel is at `/project-progress.html`; its
+  read-only data endpoint `/api/project-progress` requires a live admin session.
+- An issue's closed/open state is only task-tracking progress. Do not claim that
+  issue completion is whole-product completion, or invent percent-complete values.
+- Before starting work, compare the latest changes and open issues with the
+  current request. After work, report tests, exact commit/PR, any blockers and
+  deployment verification separately. Update feature documentation where needed.
+- Never place GitHub or Vercel API tokens in client-side assets or the repo.

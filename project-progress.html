@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="sq">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="color-scheme" content="light">
+  <title>DRx — Project Pulse</title>
+  <link rel="icon" href="/brand/drx-icon-silver.svg" type="image/svg+xml">
+  <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/project-progress.css?v=1">
+  <script src="/project-progress.js?v=1" defer></script>
+</head>
+<body>
+  <header class="pulse-topbar">
+    <a class="pulse-brand" href="/admin"><img src="/brand/drx-icon-silver.svg" alt="" width="32" height="32"><span>DRx <span class="pulse-brand-soft">/ Project Pulse</span></span></a>
+    <a class="pulse-back" href="/admin">← Admin Console</a>
+  </header>
+  <main class="pulse-main">
+    <section class="pulse-access" id="pulseGate" role="status" aria-live="polite">
+      <div class="pulse-loading-dot" aria-hidden="true"></div>
+      <h1 id="pulseGateTitle">Duke verifikuar qasjen…</h1>
+      <p id="pulseGateText">Raporti i projektit është i disponueshëm vetëm për administratorin.</p>
+      <a id="pulseLoginLink" class="pulse-primary-link" href="/admin-login.html?return=%2Fproject-progress.html" hidden>Hyr si administrator</a>
+    </section>
+
+    <div id="pulseDashboard" hidden>
+      <section class="pulse-hero">
+        <div>
+          <p class="pulse-eyebrow"><span class="pulse-live-dot"></span> PROJECT INTELLIGENCE</p>
+          <h1>Një pamje. I gjithë progresi.</h1>
+          <p>Gjendja e verifikuar e kodit, kontrolleve dhe detyrave — e lexuar drejtpërdrejt nga burimet e projektit.</p>
+        </div>
+        <div class="pulse-actions">
+          <span class="pulse-updated" id="pulseUpdated">Në pritje të të dhënave…</span>
+          <button type="button" class="pulse-button pulse-button-primary" id="pulseRefresh">↻ Rifresko tani</button>
+        </div>
+      </section>
+
+      <div class="pulse-alert" id="pulseAlert" role="status" hidden></div>
+
+      <section class="pulse-stats" aria-label="Statistikat e projektit">
+        <article class="pulse-stat"><span>MAIN BRANCH</span><strong id="pulseMainSha">—</strong><small id="pulseMainTime">Commit-i më i fundit</small></article>
+        <article class="pulse-stat"><span>LIVE DEPLOYMENT</span><strong id="pulseDeploySha">—</strong><small id="pulseDeployState">Versioni në prodhim</small></article>
+        <article class="pulse-stat"><span>CI CHECKS</span><strong id="pulseChecks">—</strong><small id="pulseCheckState">Kontrollet e commit-it</small></article>
+        <article class="pulse-stat"><span>GITHUB ISSUES</span><strong id="pulseIssueTotal">—</strong><small id="pulseIssueState">Detyra të regjistruara</small></article>
+      </section>
+
+      <section class="pulse-panel pulse-runtime" aria-label="Gjendja e të dhënave në website">
+        <div class="pulse-runtime-head"><div><p class="pulse-eyebrow">LIVE WEBSITE DATA</p><h2>Gjendja e të dhënave në prodhim</h2></div><span class="pulse-tag" id="pulseRuntimeState">Duke kontrolluar…</span></div>
+        <div class="pulse-runtime-values">
+          <div><span>Barna</span><strong id="pulseLiveDrugs">—</strong></div>
+          <div><span>Regjime dozimi</span><strong id="pulseLiveDoses">—</strong></div>
+          <div><span>Kode ICD</span><strong id="pulseLiveIcd">—</strong></div>
+          <div><span>Analiza laboratorike</span><strong id="pulseLiveLabs">—</strong></div>
+        </div>
+        <p class="pulse-runtime-foot" id="pulseRuntimeChecked">Po kërkohet snapshot-i i sistemit…</p>
+      </section>
+
+      <section class="pulse-grid">
+        <article class="pulse-panel pulse-release">
+          <div class="pulse-panel-head"><div><p class="pulse-eyebrow">RELEASE PIPELINE</p><h2>Nga kodi në prodhim</h2></div><span class="pulse-tag" id="pulseReleaseBadge">Duke kontrolluar</span></div>
+          <div class="pulse-pipeline">
+            <div class="pulse-stage"><span class="pulse-stage-number">01</span><div><strong>Kodi në GitHub</strong><p id="pulseStageMain">Duke lexuar main…</p></div><span class="pulse-stage-light" id="pulseMainLight"></span></div>
+            <div class="pulse-stage"><span class="pulse-stage-number">02</span><div><strong>Testet automatike</strong><p id="pulseStageChecks">Duke lexuar CI…</p></div><span class="pulse-stage-light" id="pulseChecksLight"></span></div>
+            <div class="pulse-stage"><span class="pulse-stage-number">03</span><div><strong>Website në Vercel</strong><p id="pulseStageDeploy">Duke krahasuar versionet…</p></div><span class="pulse-stage-light" id="pulseDeployLight"></span></div>
+          </div>
+          <p class="pulse-fineprint">Versionet krahasohen me SHA. “I sinkronizuar” shfaqet vetëm kur commit-et përputhen.</p>
+        </article>
+
+        <article class="pulse-panel pulse-completion">
+          <div class="pulse-panel-head"><div><p class="pulse-eyebrow">TRACKED WORK</p><h2>Detyrat e përfunduara</h2></div></div>
+          <div class="pulse-completion-inner">
+            <div class="pulse-ring" id="pulseRing"><div><strong id="pulsePercent">—</strong><span>GitHub Issues</span></div></div>
+            <div class="pulse-completion-legend"><div><i class="is-done"></i><span>Të mbyllura</span><strong id="pulseClosed">—</strong></div><div><i class="is-open"></i><span>Të hapura</span><strong id="pulseOpen">—</strong></div><div class="pulse-legend-total"><span>Gjithsej të gjurmuara</span><strong id="pulseTotal">—</strong></div></div>
+          </div>
+          <p class="pulse-fineprint" id="pulseCoverage">Kjo nuk është përqindje e verifikimit klinik ose e të gjithë produktit.</p>
+        </article>
+      </section>
+
+      <section class="pulse-grid pulse-bottom-grid">
+        <article class="pulse-panel">
+          <div class="pulse-panel-head"><div><p class="pulse-eyebrow">NEXT ACTIONS</p><h2>Detyrat e hapura</h2></div><a href="https://github.com/diellzarabushaj-source/barnat-/issues" target="_blank" rel="noopener noreferrer">GitHub Issues ↗</a></div>
+          <div class="pulse-list" id="pulseTasks"><p class="pulse-empty">Po lexohen detyrat…</p></div>
+        </article>
+        <article class="pulse-panel">
+          <div class="pulse-panel-head"><div><p class="pulse-eyebrow">CHANGE HISTORY</p><h2>Ndryshimet e fundit</h2></div><a href="https://github.com/diellzarabushaj-source/barnat-/commits/main" target="_blank" rel="noopener noreferrer">Të gjitha ↗</a></div>
+          <div class="pulse-list" id="pulseCommits"><p class="pulse-empty">Po lexohen commit-et…</p></div>
+        </article>
+      </section>
+
+      <section class="pulse-handoff">
+        <div><p class="pulse-eyebrow">AI HANDOFF</p><h2>Vazhdo me një model tjetër</h2><p>Gjenero kontekstin nga statusi i verifikuar dhe ngjite në një bisedë të re. Agjentët që lexojnë repository-n mund t'i marrin udhëzimet nga <code>AGENTS.md</code> dhe <code>docs/PROJECT_CONTEXT.md</code>.</p></div>
+        <button type="button" class="pulse-button pulse-button-outline" id="pulseCopy">Kopjo kontekstin për AI</button>
+      </section>
+      <p class="pulse-footer">Burimi: GitHub API + SHA e deployment-it që po përgjigjet. Kjo pamje nuk certifikon sigurinë, saktësinë klinike apo funksionimin e secilës veçori.</p>
+    </div>
+  </main>
+</body>
+</html>
