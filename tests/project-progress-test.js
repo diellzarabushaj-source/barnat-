@@ -6,7 +6,7 @@ const path = require('node:path');
 const test = require('node:test');
 const Progress = require('../lib/project-progress.js');
 const Admin = require('../lib/admin-access.js');
-const handler = require('../api/project-progress.js');
+const handler = require('../lib/project-progress-handler.js');
 
 const SHA = 'a'.repeat(40);
 const OTHER = 'b'.repeat(40);
@@ -95,5 +95,8 @@ test('admin page links to the protected progress view and its client script', ()
   assert.match(admin, /href="\/project-progress\.html"/);
   assert.match(page, /project-progress\.js/);
   assert.match(page, /noindex,nofollow/);
+  assert.match(fs.readFileSync(path.join(root,'api/clinical-editor.js'),'utf8'), /projectProgress/);
+  const rewrites = JSON.parse(fs.readFileSync(path.join(root,'vercel.json'),'utf8')).rewrites;
+  assert.ok(rewrites.some(entry => entry.source === '/api/project-progress' && entry.destination === '/api/clinical-editor?projectProgress=1'));
   assert.doesNotMatch(fs.readFileSync(path.join(root,'project-progress.js'),'utf8'), /GITHUB_TOKEN|Authorization:Bearer/);
 });

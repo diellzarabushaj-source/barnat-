@@ -34,7 +34,9 @@ those become stale as soon as the repository changes.
 
 ## Source of progress data
 
-`/api/project-progress` is admin-authenticated and read-only. It fetches:
+`/api/project-progress` is admin-authenticated and read-only. It reuses the
+existing clinical-editor serverless gateway (to preserve the 11-function
+budget), and fetches:
 
 - GitHub's current `main` commit;
 - the commit's reported check-runs;
