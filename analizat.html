@@ -8,8 +8,8 @@
   <title>DRx | Analizat</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/analizat-v2.css?v=1-symptoms-20261029">
-  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107">
+  <link rel="stylesheet" href="/analizat-v2.css?v=1-symptoms-20261029-ui-20261110">
+  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-workspace-polish-20261110">
 </head>
 <body>
   <a class="sr-only" href="#labPlan">Kalo te paneli i analizave</a>
@@ -92,9 +92,8 @@
       <div class="page-wrap lab-order-page">
         <header class="page-heading lab-order-heading">
           <div>
-            <p class="eyebrow">Clinical laboratory · order builder</p>
             <h1>Analizat</h1>
-            <p class="page-subtitle">Zgjidh një ose disa diagnoza dhe DRx ndërton një panel laboratorik të deduplikuar, me arsyen klinike për secilën analizë.</p>
+            <p class="page-subtitle">Përgatit listën e analizave sipas simptomave ose diagnozave.</p>
           </div>
           <div class="lab-header-stats" aria-label="Përmbledhja e katalogut">
             <span><strong id="labTestTotal">—</strong> analiza</span>
@@ -105,11 +104,10 @@
         <section class="lab-builder" aria-labelledby="labBuilderTitle">
           <div class="lab-builder-head">
             <div>
-              <span class="lab-builder-kicker">01 · Simptoma / diagnoza</span>
-              <h2 id="labBuilderTitle">Ndërto panelin laboratorik</h2>
-              <p>Zgjidh simptomën ose diagnozën. Analizat e përbashkëta bashkohen; ato sipas rastit i zgjedh ti.</p>
+              <h2 id="labBuilderTitle">Zgjidh analizat</h2>
+              <p>Fillo me simptomat ose diagnozat, ose kërko një analizë veçmas.</p>
             </div>
-            <button class="lab-clear-plan" id="labClearPlan" type="button">Pastro</button>
+            <button class="lab-clear-plan" id="labClearPlan" type="button">Pastro listën</button>
           </div>
 
           <div class="lab-builder-grid">
@@ -119,7 +117,6 @@
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v18M3 12h18"/></svg>
                 </span>
                 <span class="lab-trigger-copy">
-                  <small>Simptoma ose diagnoza</small>
                   <strong id="labDiseaseTriggerText">Zgjidh simptomë ose diagnozë…</strong>
                 </span>
                 <svg class="lab-trigger-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
@@ -140,7 +137,7 @@
             <div class="lab-manual-picker" id="labManualPicker">
               <div class="lab-manual-search">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="11" cy="11" r="6.7"/><path d="m16 16 4.2 4.2"/></svg>
-                <input id="labManualSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Shto analizë manualisht…" aria-label="Shto analizë manualisht">
+                <input id="labManualSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko një analizë…" aria-label="Kërko një analizë për ta shtuar">
                 <kbd>⌘ K</kbd>
               </div>
               <div class="lab-manual-results" id="labManualResults" role="listbox" aria-label="Analizat për shtim manual" hidden></div>
@@ -148,7 +145,7 @@
           </div>
 
           <div class="lab-selected-diseases" id="labSelectedDiseases" aria-live="polite">
-            <span class="lab-selected-empty">Nuk ke zgjedhur ende profil.</span>
+            <span class="lab-selected-empty">Asnjë simptomë ose diagnozë e zgjedhur.</span>
           </div>
         </section>
 
@@ -158,7 +155,6 @@
           <article class="lab-plan-card">
             <header class="lab-plan-head">
               <div>
-                <span class="lab-builder-kicker">02 · Paneli</span>
                 <h2>Analizat për t’u kërkuar</h2>
                 <p id="labPlanStatus" role="status" aria-live="polite">Zgjidh simptomën ose diagnozën për të filluar.</p>
               </div>
@@ -173,14 +169,13 @@
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/><path d="M7.5 16h9"/></svg>
                 </span>
                 <strong>Zgjidh simptomën ose diagnozën sipër.</strong>
-                <span>DRx do t’i bashkojë analizat e mundshme dhe do ta shpjegojë pse sugjerohet secila.</span>
+                <span>Arsyet e sugjerimeve shfaqen pranë secilës analizë.</span>
               </div>
             </div>
           </article>
 
           <aside class="lab-summary-card" aria-labelledby="labSummaryTitle">
             <div class="lab-summary-head">
-              <span class="lab-builder-kicker">03 · Kontrolli klinik</span>
               <h2 id="labSummaryTitle">Përmbledhja</h2>
             </div>
 
@@ -207,6 +202,6 @@
   </div>
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
-<script src="/analizat-v2.js?v=3-symptoms-20261029-r2" defer></script>
+<script src="/analizat-v2.js?v=3-symptoms-20261029-r2-ui-20261110" defer></script>
 </body>
 </html>

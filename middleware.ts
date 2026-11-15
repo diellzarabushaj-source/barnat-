@@ -106,6 +106,7 @@ const PUBLIC_PATHS = new Set([
   '/images/icons/urgjencat.webp',
   '/favicon.ico',
   '/robots.txt',
+  '/sitemap.xml',
 ]);
 
 const PUBLIC_SECRET_APIS = new Set([

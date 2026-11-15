@@ -8,12 +8,12 @@
   <title>DRx | ICD-10</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/icd-v2.css?v=icd-clarification-20261025">
-  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107">
+  <link rel="stylesheet" href="/icd-v2.css?v=icd-minimal-20261110">
+  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-workspace-polish-20261110">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
 <script src="/icd-search-lexical.js?v=icd-resilience-20261103" defer></script>
-  <script src="/icd-v2.js?v=icd-resilience-20261103" defer></script>
+  <script src="/icd-v2.js?v=workspace-polish-20261110" defer></script>
 </head>
 <body>
   <div class="app-shell" id="appShell" aria-busy="true">
@@ -97,9 +97,9 @@
       <section class="page-wrap" aria-labelledby="pageTitle">
         <div class="page-heading">
           <div>
-            <p class="eyebrow">International Classification of Diseases</p>
+            <p class="eyebrow">Klasifikimi i sëmundjeve</p>
             <h1 id="pageTitle">ICD‑10</h1>
-            <p class="page-subtitle">Shfleto kapitujt, blloqet, kategoritë dhe nënkategoritë. Kërko me kod ICD, shqip, English ose Latin — edhe me gabime shkrimi.</p>
+            <p class="page-subtitle">Shfleto kapitujt, blloqet dhe kodet ICD‑10. Kërkim në shqip, anglisht dhe latinisht, edhe me gabime shkrimi.</p>
           </div>
           <div class="heading-actions">
             <a class="button button-secondary" href="/index.html">Hap regjistrin</a>
@@ -108,9 +108,7 @@
 
         <section class="icd-search-stage" aria-labelledby="icdSearchTitle">
           <div class="icd-search-stage-copy">
-            <p class="eyebrow">Kërkimi universal ICD‑10</p>
             <h2 id="icdSearchTitle">Kërko diagnozën ose kodin</h2>
-            <p>Kërkim në shqip, anglisht dhe latinisht, edhe me gabime shkrimi.</p>
           </div>
           <div class="icd-search-command">
             <div class="search-box search-box-primary" id="icdSearchBox" role="combobox" aria-haspopup="listbox" aria-owns="icdSuggestions" aria-expanded="false">
@@ -123,7 +121,7 @@
               <button class="icd-search-clear" id="icdSearchClear" type="button" aria-label="Pastro kërkimin" title="Pastro" hidden>×</button>
               <kbd>Ctrl K</kbd>
             </div>
-            <button type="button" id="icdUnderstandTerm" class="icd-ai-search-button" aria-label="Kërko me AI" aria-controls="icdAiConsent" aria-expanded="false" title="Kërko me AI · Ctrl+Enter" disabled><span>Kërko me AI</span><span class="icd-ai-short-label" aria-hidden="true">AI</span><small>Gemini · Groq</small></button>
+            <button type="button" id="icdUnderstandTerm" class="icd-ai-search-button" aria-label="Kërko me AI" aria-controls="icdAiConsent" aria-expanded="false" title="Kërko me AI · Ctrl+Enter" disabled><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c0 5-3 8-8 9 5 1 8 4 8 9 0-5 3-8 8-9-5-1-8-4-8-9Z"/></svg><span>Kërko me AI</span><span class="icd-ai-short-label" aria-hidden="true">AI</span></button>
           </div>
           <div id="icdAiConsent" class="icd-ai-consent" hidden>
             <label class="icd-term-confirm"><input type="checkbox" id="icdTermOnly"> Vetëm përshkrim dhe sqarime mjekësore, pa emra ose të dhëna identifikuese.</label>
@@ -132,16 +130,16 @@
           </div>
           <div class="icd-ai-feedback"><p id="icdMemoryStatus" class="icd-ai-status" role="status" aria-live="polite" aria-atomic="true"></p><button id="icdAiCancel" class="icd-ai-cancel" type="button" hidden>Ndalo</button></div>
           <div class="icd-filter-section">
-          <details class="icd-filter-panel" id="icdFilterPanel" open>
-            <summary>Filtra <span id="icdFilterCount" hidden></span></summary>
-          <div class="icd-filter-bar" aria-label="Filtrat ICD-10">
-            <label>Kapitulli<select id="icdFilterChapter"><option value="">Të gjithë kapitujt</option></select></label>
-            <label>Blloku<select id="icdFilterBlock"><option value="">Të gjithë blloqet</option></select></label>
-            <label>Niveli në kërkim<select id="icdFilterLevel"><option value="">Të gjitha nivelet</option><option value="category">Kategori · kod 3 shenja</option><option value="subcategory">Nënkategori · kod specifik</option><option value="block">Blloqe</option><option value="chapter">Kapituj</option></select></label>
-            <button type="button" id="icdFilterReset">Pastro filtrat</button>
-          </div>
-          </details>
-          <button class="icd-filter-clear-compact" id="icdFilterClearCompact" type="button" hidden>Pastro</button>
+            <details class="icd-filter-panel" id="icdFilterPanel">
+              <summary><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M7 12h10m-7 5h4"/></svg>Filtra <span id="icdFilterCount" hidden></span></summary>
+              <div class="icd-filter-bar" aria-label="Filtrat ICD-10">
+                <label><span class="icd-filter-label">Kapitulli</span><select id="icdFilterChapter"><option value="">Të gjithë kapitujt</option></select></label>
+                <label><span class="icd-filter-label">Blloku</span><select id="icdFilterBlock"><option value="">Të gjithë blloqet</option></select></label>
+                <label><span class="icd-filter-label">Niveli në kërkim</span><select id="icdFilterLevel"><option value="">Të gjitha nivelet</option><option value="category">Kategori · kod 3 shenja</option><option value="subcategory">Nënkategori · kod specifik</option><option value="block">Blloqe</option><option value="chapter">Kapituj</option></select></label>
+                <button type="button" id="icdFilterReset">Pastro filtrat</button>
+              </div>
+            </details>
+            <button class="icd-filter-clear-compact" id="icdFilterClearCompact" type="button" aria-label="Pastro filtrat" hidden>Pastro</button>
           </div>
           <section id="icdClarificationPanel" class="icd-description-analysis icd-clarification-panel" aria-labelledby="icdClarificationTitle" hidden>
             <div class="icd-clarification-heading"><strong id="icdClarificationTitle">Sqarojmë kërkimin</strong><span id="icdClarificationCount"></span></div>
@@ -154,21 +152,21 @@
             </form>
           </section>
           <div class="icd-suggestions" id="icdSuggestions" role="listbox" aria-label="Sugjerimet ICD-10" hidden></div>
-          <details class="icd-memory-tools" id="icdMemoryTools">
-            <summary>Fjalori i kërkimit</summary>
-            <p>Mbaj mend shprehjet mjekësore që përdor. Mos përfshi emra ose të dhëna pacienti.</p>
-            <div class="icd-memory-actions">
-              <label>Kodi i zgjedhur<input id="icdMemoryCode" type="text" placeholder="p.sh. R07.4" maxlength="8" autocomplete="off" aria-label="Kodi për shprehjen"></label>
-              <button type="button" id="icdRememberTerm">Mbaje mend për mua</button>
-              <button type="button" id="icdProposeTerm">Propozo për verifikim</button>
-            </div>
-          </details>
-          <details class="icd-memory-tools" id="icdMemoryReview" hidden>
-            <summary>Terma për verifikim · administrim</summary>
-            <button type="button" id="icdLoadTermReview">Hap radhën e verifikimit</button>
-            <div id="icdTermReviewList"></div>
-          </details>
           <div class="icd-search-foot">
+            <details class="icd-memory-tools" id="icdMemoryTools">
+              <summary>Fjalori i kërkimit</summary>
+              <p>Mbaj mend shprehjet mjekësore që përdor. Mos përfshi emra ose të dhëna pacienti.</p>
+              <div class="icd-memory-actions">
+                <label>Kodi i zgjedhur<input id="icdMemoryCode" type="text" placeholder="p.sh. R07.4" maxlength="8" autocomplete="off" aria-label="Kodi për shprehjen"></label>
+                <button type="button" id="icdRememberTerm">Mbaje mend për mua</button>
+                <button type="button" id="icdProposeTerm">Propozo për verifikim</button>
+              </div>
+            </details>
+            <details class="icd-memory-tools" id="icdMemoryReview" hidden>
+              <summary>Terma për verifikim · administrim</summary>
+              <button type="button" id="icdLoadTermReview">Hap radhën e verifikimit</button>
+              <div id="icdTermReviewList"></div>
+            </details>
             <details class="icd-quick-disclosure"><summary>Shkurtore klinike · mjekësi familjare dhe urgjenca</summary><div class="icd-quick-diagnoses" aria-label="Shkurtore klinike QKMF">
               <section class="icd-quick-group" aria-labelledby="familyQuickTitle">
                 <div class="icd-quick-label" id="familyQuickTitle"><span class="icd-quick-dot"></span><strong>Mjekësi familjare</strong><small>100 të shpeshta</small></div>
@@ -311,41 +309,37 @@
           </div>
         </section>
 
-        <div class="metrics-row" aria-label="Përmbledhje ICD-10">
-          <article class="metric-card"><span>Nyje të ngarkuara</span><strong id="metricNodes">—</strong><small>Kapituj dhe blloqe në këtë pamje</small></article>
-          <article class="metric-card"><span>Kapituj</span><strong id="metricChapters">—</strong><small>Niveli kryesor</small></article>
-          <article class="metric-card"><span>Kategori</span><strong id="metricCategories">—</strong><small>Kode me tre karaktere</small></article>
-          <article class="metric-card"><span>Në shqip</span><strong id="metricCoverage">—</strong><small id="metricCoverageNote">Mbulimi i përkthimit</small></article>
-        </div>
-
         <section class="icd-card">
           <nav class="icd-path" id="icdPath" aria-label="Rruga aktive ICD-10" hidden>
             <span class="icd-path-label">Rruga ICD</span>
             <div class="icd-path-items" id="icdPathItems"></div>
-            <button class="icd-path-reset" id="icdPathReset" type="button">Pastro</button>
+            <button class="icd-path-reset" id="icdPathReset" type="button" aria-label="Pastro rrugën ICD">Pastro</button>
           </nav>
 
           <div class="icd-workspace">
             <details class="icd-chapter-browser" id="icdChapterBrowser" open>
-            <summary>Shfleto kapitujt <span>22</span></summary>
-            <aside class="chapter-panel" aria-label="Kapitujt ICD-10">
+            <summary><span>Shfleto kapitujt</span><span class="panel-count" id="chapterSummaryCount">—</span></summary>
+            <nav class="chapter-panel" aria-labelledby="chapterHeading">
               <div class="panel-heading">
-                <div><span class="panel-kicker">Niveli kryesor</span><h2>Kapitujt</h2></div>
+                <h2 id="chapterHeading">Kapitujt</h2>
                 <span class="panel-count" id="chapterCount">—</span>
               </div>
-              <div class="chapter-list" id="chapterList" role="listbox" aria-label="Zgjidh kapitullin ICD-10"></div>
-            </aside>
+              <div class="chapter-list" id="chapterList"></div>
+            </nav>
             </details>
 
             <section class="node-panel" aria-labelledby="nodeSectionTitle">
-              <details class="icd-clinical-disclosure"><summary>Udhëzime për diagnozat e shpeshta</summary><section class="clinical-quick-hub" id="clinicalQuickHub" aria-label="Diagnozat klinike të shpeshta"></section></details>
-              <div class="node-hero" id="nodeHero" hidden></div>
+              <div class="node-hero" id="nodeHero" role="group" aria-labelledby="nodeHeroTitle" tabindex="-1" hidden></div>
+              <details class="icd-clinical-disclosure">
+                <summary>
+                  <svg class="icon icd-guide-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 5.5A2.5 2.5 0 0 1 7 3h5v17H7a2.5 2.5 0 0 0-2.5 2.5v-17Z"/><path d="M19.5 5.5A2.5 2.5 0 0 0 17 3h-5v17h5a2.5 2.5 0 0 1 2.5 2.5v-17Z"/><path d="M7.5 8h2M14.5 8h2M7.5 12h2M14.5 12h2"/></svg>
+                  <span>Udhëzime për diagnozat e shpeshta</span>
+                </summary>
+                <section class="clinical-quick-hub" id="clinicalQuickHub" aria-label="Diagnozat klinike të shpeshta"></section>
+              </details>
               <section class="clinical-action-panel" id="clinicalActionPanel" aria-live="polite" hidden></section>
               <div class="node-section-head">
-                <div>
-                  <span class="panel-kicker" id="nodeKicker">Fillo</span>
-                  <h2 id="nodeSectionTitle">Zgjidh një kapitull</h2>
-                </div>
+                <h2 id="nodeSectionTitle">Zgjidh një kapitull</h2>
                 <span class="panel-count" id="nodeCount">0</span>
               </div>
               <div class="node-list" id="nodeList"></div>

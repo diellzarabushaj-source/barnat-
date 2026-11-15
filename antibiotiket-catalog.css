@@ -27,3 +27,25 @@
 @media(max-width:540px){.abx-indication-calc{grid-column:1;grid-row:auto;justify-self:start;min-height:40px}}
 .abx-dose-pending{padding:18px 20px;border:1px solid #e5e2ed;border-radius:12px;background:#fff;min-width:0}.abx-dose-pending-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}.abx-dose-pending-heading h3{margin:0;color:#393246;font-size:14px;font-weight:650;line-height:1.5}.abx-dose-pending-badge{flex-shrink:0;padding:4px 9px;border-radius:6px;background:#f3f1f7;color:#6a5b7d;font-size:10px;font-weight:550}.abx-dose-pending-indication{margin:5px 0 0;color:#61566e;font-size:12px;line-height:1.5}.abx-dose-pending-note{margin:8px 0 0;color:#73697e;font-size:12px;line-height:1.6}.abx-dose-reference{margin-top:12px;padding-top:12px;border-top:1px solid #efedf3;font-size:12px;color:#665675}.abx-dose-reference>summary{display:list-item;width:fit-content;max-width:100%;color:#675383;font-size:12px;line-height:1.6;cursor:pointer}.abx-dose-reference .abx-calculator-grid{margin:14px 0 10px}.abx-calc-audit{margin:12px 0 0;color:#73667c;font-size:11px;line-height:1.7}.abx-calc-audit summary{cursor:pointer}.abx-calc-audit ul{margin:8px 0 0;padding-left:17px}.abx-dose-reference .abx-calculator-source,.abx-dose-reference .abx-calc-product-details{margin:10px 0}
 @media(max-width:540px){.abx-dose-pending{padding:15px}.abx-dose-pending-heading{align-items:flex-start}.abx-dose-pending-heading h3{font-size:13px}.abx-dose-pending-badge{font-size:9px}.abx-dose-reference>summary{min-height:32px;padding:4px 0}}
+
+.abx-catalog .abx-catalog-heading{margin:0 0 20px}
+.abx-catalog-heading h1{margin:0 0 6px;color:#18334e;font-size:clamp(25px,3vw,32px);line-height:1.15;letter-spacing:-.025em}
+.abx-catalog-heading p{color:#536478;font-size:14px;line-height:1.5}
+.abx-catalog-workspace:has(#abxFilterPanel[hidden]) .abx-catalog-searchbar{border-bottom:0}
+.abx-catalog-searchbar{padding-block:10px}
+.abx-catalog-search input,.abx-filter-toggle,.abx-catalog-controls select,.abx-catalog-details-button{min-height:44px}
+.abx-catalog-reference-note{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:start;gap:6px 10px;padding:12px 14px;border:1px solid #e2e5ee;border-radius:10px;background:#f8f9fc;color:#4c566d;font-size:12px}
+.abx-info-symbol{margin-top:3px}
+.abx-catalog-reference-note details{grid-column:2;margin:0}
+.abx-catalog-reference-note summary{width:fit-content;color:#514586;font-size:12px}
+.abx-catalog-reference-note details>p{position:static;max-width:65ch;margin:8px 0 0;padding:0;border:0;background:transparent;box-shadow:none}
+.abx-catalog-list{gap:0;overflow:hidden;border:1px solid #e2e5ee;border-radius:12px}
+.abx-catalog-list .abx-catalog-item{border:0;border-radius:0}
+.abx-catalog-list .abx-catalog-item+.abx-catalog-item{border-top:1px solid #e7e9f0}
+.abx-catalog-list .abx-catalog-item:hover{box-shadow:none}
+.abx-catalog-list .abx-catalog-item:has(.abx-catalog-item-check input:checked){box-shadow:inset 3px 0 #7660cc}
+.abx-catalog-item-row{padding-block:16px}
+@media(max-width:540px){
+  .abx-catalog-reference-note{padding-inline:11px}
+  .abx-catalog-checklabel,.abx-catalog-item-check{min-height:44px}
+}

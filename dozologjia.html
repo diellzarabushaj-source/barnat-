@@ -9,14 +9,14 @@
   <title>DRx | Dozologjia</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/dozologjia-v2.css?v=67-market-dose-clarity-20261017">
-  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107">
+  <link rel="stylesheet" href="/dozologjia-v2.css?v=68-workspace-polish-20261110">
+  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-workspace-polish-20261110">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/phase9-personal-entities-client.js?v=drx-phase9-personal-v4" defer></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
 <script src="/pediatric-common-liquid-core.js?v=10" defer></script>
 <script src="/pediatric-weight-age-core.js?v=1" defer></script>
-<script src="/dozologjia-v2.js?v=67-market-dose-clarity-20261017" defer></script>
+<script src="/dozologjia-v2.js?v=68-workspace-polish-20261110" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#dosageContent">Kalo te kalkulatori pediatrik</a>
@@ -102,9 +102,8 @@
           <section class="dz-common-reference" id="pediatricCommonReference" aria-labelledby="pediatricCommonTitle">
             <header class="dz-common-head">
               <div>
-                <span class="scope-pill">REFERENCË PEDIATRIKE</span>
-                <h2 id="pediatricCommonTitle">Dozologjia pediatrike</h2>
-                <p>Zgjidh barin dhe formën. Shkruaj peshën.</p>
+                <h1 id="pediatricCommonTitle">Dozologjia pediatrike</h1>
+                <p>Zgjidh produktin, pastaj plotëso të dhënat e fëmijës.</p>
               </div>
               <span class="dz-status" id="pediatricCommonCount" role="status">Duke ngarkuar…</span>
             </header>
@@ -125,13 +124,13 @@
                 <label class="dz-market-confirm" id="pediatricAgeGate" hidden><input id="pediatricAgeConfirmed" type="checkbox">Konfirmoj moshën reale të fëmijës</label>
                 <label class="dz-market-confirm" id="pediatricSafetyGate" hidden><input id="pediatricSafetyConfirmed" type="checkbox"><span id="pediatricSafetyText"></span></label>
               </div>
-              <div class="dz-market-answer" id="pediatricAnswer" role="status" aria-live="polite" aria-atomic="true" aria-busy="false">Zgjidh barin për të filluar.</div>
+              <div class="dz-market-answer" id="pediatricAnswer" role="status" aria-live="polite" aria-atomic="true" aria-busy="false"></div>
               </div>
               <details class="dz-market-details" id="pediatricProductDetails" hidden><summary>Produktet në AKKPM</summary><div id="pediatricProducts"></div></details>
               <details class="dz-market-details" id="pediatricReferenceDetails" hidden><summary>Kontrollet klinike dhe burimet</summary><div id="pediatricEvidence"></div></details>
               <details class="dz-market-details" id="pediatricSourceDetails" hidden><summary>Tabela bazë e referencës</summary><div id="pediatricSourceTable"></div></details>
             </section>
-            <p class="dz-market-source">Format dhe fortësitë: AKKPM · regjistri i publikuar. Renditja sipas numrit të produkteve në listë; nuk tregon stokun.</p>
+            <p class="dz-market-source"><strong>Burimi i produkteve</strong> · AKKPM. Renditja pasqyron numrin e produkteve të regjistruara. Stoku në barnatore nuk verifikohet.</p>
           </section>
         </div>
       </div>

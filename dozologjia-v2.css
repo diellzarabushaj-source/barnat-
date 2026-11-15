@@ -742,7 +742,7 @@ button,input,select{font:inherit}
   gap:18px;
   margin-bottom:12px;
 }
-.dosage-page .dz-common-head h2{
+.dosage-page .dz-common-head h1{
   margin:8px 0 0;
   color:var(--dz-ink);
   font-size:22px;
@@ -1173,7 +1173,7 @@ button,input,select{font:inherit}
     text-align:left;
     white-space:normal;
   }
-  .dosage-page .dz-common-head h2{
+  .dosage-page .dz-common-head h1{
     font-size:24px;
     letter-spacing:-.45px;
   }
@@ -1475,7 +1475,7 @@ button,input,select{font:inherit}
   .dosage-page .dz-common-head{
     margin-bottom:10px;
   }
-  .dosage-page .dz-common-head h2{
+  .dosage-page .dz-common-head h1{
     font-size:23px;
     line-height:1.12;
   }
@@ -1890,13 +1890,13 @@ button,input,select{font:inherit}
   margin-top:0;
   padding-top:0;
 }
-.dosage-page .dz-column > .dz-common-reference:first-child .dz-common-head h2{
+.dosage-page .dz-column > .dz-common-reference:first-child .dz-common-head h1{
   font-size:28px;
   line-height:1.08;
   letter-spacing:-.55px;
 }
 @media(max-width:760px){
-  .dosage-page .dz-column > .dz-common-reference:first-child .dz-common-head h2{
+  .dosage-page .dz-column > .dz-common-reference:first-child .dz-common-head h1{
     font-size:25px;
   }
 }
@@ -2095,9 +2095,10 @@ button,input,select{font:inherit}
   }
 }
 /* AKKPM workspace: one product selection and one patient. */
+.dosage-page .dz-column{width:min(100%,1040px);margin-inline:0}
 .dosage-page .dz-common-reference{max-width:1040px;margin:auto;background:transparent;border:0;box-shadow:none}
 .dosage-page .dz-common-head{align-items:start;padding:0 0 22px;gap:16px}
-.dosage-page .dz-common-head h2{font-size:clamp(24px,2.2vw,32px);line-height:1.2;letter-spacing:-.7px;color:#18334e}
+.dosage-page .dz-common-head h1{font-size:clamp(24px,2.2vw,32px);line-height:1.2;letter-spacing:-.7px;color:#18334e}
 .dosage-page .dz-common-head p{max-width:620px;font-size:14px;line-height:1.6;color:#536478}
 .dosage-page .dz-common-head .dz-status{font-size:12px;white-space:normal;color:#536478}
 .dz-market-workspace{padding:28px;border:1px solid #d8e2ed;background:#fff;border-radius:16px;box-shadow:0 8px 32px #18334e05}
@@ -2120,6 +2121,7 @@ button,input,select{font:inherit}
 .dz-market-confirm{grid-column:1/-1;display:flex;align-items:center;gap:10px;min-height:44px;padding:10px 12px;border-radius:10px;background:#eef4ff;color:#274d79;font-size:13px;line-height:1.5;cursor:pointer}
 .dz-market-confirm input{width:20px;height:20px;flex:0 0 20px;accent-color:#4964d8}
 .dz-market-answer{margin:24px 0 0;padding:18px 20px;background:#f6f9fc;border:1px solid #e0e8f0;border-radius:12px;min-height:68px;display:grid;gap:8px;color:#18334e;overflow-wrap:anywhere}
+.dz-market-workspace .dz-market-answer:empty{margin:0;padding:0;border:0;min-height:0}
 .dz-market-answer.has-result{background:#eff5ff;border-color:#cfddf3}
 .dz-market-kicker{font-size:11px;letter-spacing:.8px;color:#395c9a}
 .dz-market-measure{font-size:clamp(32px,3vw,42px);font-weight:750;letter-spacing:-.9px;line-height:1.2}
@@ -2134,7 +2136,8 @@ button,input,select{font:inherit}
 .dz-market-product{display:grid;gap:5px;padding:12px 0;border-top:1px solid #e3eaf2;overflow-wrap:anywhere;font-size:13px;color:#536478}
 .dz-market-product strong{color:#18334e}.dz-market-product small{font-size:12px}
 .dz-market-reset{margin-top:20px;min-height:44px;border:0;background:transparent;padding:8px 0;color:#395c9a;font:inherit;font-size:13px;cursor:pointer}
-.dz-market-source{font-size:12px;color:#64758a;line-height:1.6;margin-top:14px}
+.dz-market-source{margin:14px 0 0;padding:0 2px;color:#536478;font-size:12px;line-height:1.6}
+.dz-market-source strong{color:#263d54;font-weight:650}
 .dosage-page .dz-market-details .dz-evidence{background:transparent;border:0;box-shadow:none;padding:12px 0}
 @media(max-width:760px){
  .dosage-page .dz-common-head{display:block;padding-bottom:16px}.dosage-page .dz-common-head .dz-status{display:block;margin-top:12px;max-width:none}

@@ -2363,13 +2363,13 @@
       $('#appShell')?.setAttribute('aria-busy','false');
     } catch (error) {
       console.error('[Medical Hub v2]', error);
-      if ($('#learningResultStatus')) $('#learningResultStatus').textContent = 'Gabim në lidhjen me backend.';
+      if ($('#learningResultStatus')) $('#learningResultStatus').textContent = 'Mësimet nuk u ngarkuan.';
       if ($('#learningTopic')) $('#learningTopic').innerHTML = '<option>Gabim në ngarkim</option>';
       if ($('#learningDetail')) {
         $('#learningDetail').innerHTML = `
           <div class="ck-empty">
             <strong>Medical Hub nuk u ngarkua.</strong>
-            <span>Backend-i ose Sanity nuk u përgjigj. Provo përsëri pa humbur sesionin.</span>
+            <span>Kontrollo lidhjen me internetin.</span>
             <button class="ck-retry" type="button" data-hub-retry>Provo përsëri</button>
           </div>`;
         $('#learningDetail').querySelector('[data-hub-retry]')?.addEventListener('click', () => window.location.reload());

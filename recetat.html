@@ -10,8 +10,8 @@
   <title>DRx | Recetat</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/recetat-v2.css?v=42-direct-prescription-20261103">
-  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107">
+  <link rel="stylesheet" href="/recetat-v2.css?v=42-workspace-polish-20261110">
+  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-workspace-polish-20261110">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
   <script src="/drx-modal-focus.js?v=p1-20261008" defer></script>
@@ -117,14 +117,14 @@
 
         <nav class="rx-tabs" id="rxTabs" role="tablist" aria-label="Seksionet e recetave">
           <button class="rx-tab is-active" type="button" role="tab" id="rxTabBtnSource" data-rx-tab="source" aria-controls="rxTabSource" aria-selected="true" tabindex="0">
-            <span class="rx-tab-name">Skemat klinike</span><span class="rx-tab-description">Gjej një pikënisje</span>
+            <span class="rx-tab-name">Skemat klinike</span>
           </button>
           <button class="rx-tab" type="button" role="tab" id="rxTabBtnCompose" data-rx-tab="compose" aria-controls="rxTabCompose" aria-selected="false" tabindex="-1">
-            <span class="rx-tab-name">Ndërto recetën</span><span class="rx-tab-description">Përshtat barnat dhe udhëzimet</span>
+            <span class="rx-tab-name">Ndërto recetën</span>
             <span class="rx-tab-count" id="rxTabComposeState" hidden>0</span>
           </button>
           <button class="rx-tab" type="button" role="tab" id="rxTabBtnLibrary" data-rx-tab="library" aria-controls="rxTabLibrary" aria-selected="false" tabindex="-1">
-            <span class="rx-tab-name">Recetat e mia</span><span class="rx-tab-description">Gjej recetat e ruajtura</span>
+            <span class="rx-tab-name">Recetat e mia</span>
             <span class="rx-tab-count" id="rxTabLibraryCount" hidden>0</span>
           </button>
         </nav>
@@ -138,7 +138,7 @@
             <div class="rx-source-head-actions">
               <div class="rx-source-total" aria-label="Skema në burim">
                 <strong id="rxSourceTotal">—</strong>
-                <span>skema në burim</span>
+                <span>skema</span>
               </div>
               <span class="rx-source-live-pill" id="rxSourceConnection"><i aria-hidden="true"></i> Duke u lidhur…</span>
             </div>
@@ -147,27 +147,26 @@
           <div class="rx-source-browser">
             <aside class="rx-source-index" aria-label="Skemat e kapitullit">
           <div class="rx-source-commandbar">
-            <div class="rx-search-intro"><strong>Kërko një skemë</strong><span id="rxSearchHelp">Kërko diagnozën, substancën ose udhëzimin. Zgjidh ku të kërkosh dhe llojin e skemës.</span></div>
             <div class="rx-source-search-row">
             <label class="rx-source-search">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
-              <input id="rxSourceSearch" type="search" autocomplete="off" placeholder="Kërko diagnozën, barin ose udhëzimin…" aria-label="Kërko diagnozën ose substancën" aria-describedby="rxSearchHelp">
+              <input id="rxSourceSearch" type="search" autocomplete="off" placeholder="Diagnoza, bari ose udhëzimi…" aria-label="Kërko diagnozën, barin ose udhëzimin">
               <kbd aria-hidden="true">/</kbd>
             </label>
             <select id="rxSourceSearchScope" aria-label="Ku të kërkoj" title="Kërko në të gjithë kapitujt ose në kapitullin e zgjedhur">
-              <option value="all">Të gjithë</option>
+              <option value="all">Çdo kapitull</option>
               <option value="chapter">Ky kapitull</option>
             </select>
             </div>
             <div class="rx-browse-divider"><span>ose shfleto sipas kapitullit</span></div>
             <label class="rx-source-chapter-picker">
-              <span>Kapitulli klinik</span>
+              <span>Kapitulli</span>
               <select id="rxSourceChapterSelect" aria-label="Zgjidh kapitullin e recetave">
                 <option value="">Duke ngarkuar…</option>
               </select>
             </label>
             <label class="rx-source-lesson-picker">
-              <span>Mësimi / skema</span>
+              <span>Mësimi ose skema</span>
               <select id="rxSourceLessonSelect" aria-label="Zgjidh mësimin ose skemën">
                 <option value="">Zgjidh kapitullin…</option>
               </select>
@@ -381,7 +380,7 @@ S (Signatura): Nga 1 tabletë çdo 12 orë pas ushqimit, për 7 ditë."></textar
         </section>
         </div>
 
-        <footer class="rx-page-footer">Recetat ruhen lokalisht dhe sinkronizohen të enkriptuara me Supabase.</footer>
+        <footer class="rx-page-footer">Recetat ruhen në këtë pajisje dhe sinkronizohen të enkriptuara me llogarinë tënde.</footer>
       </div>
     </main>
   </div>

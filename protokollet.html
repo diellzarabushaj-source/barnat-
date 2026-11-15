@@ -9,11 +9,11 @@
   <title>DRx | Protokollet</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/protokollet-v2.css?v=2-audit-20261009">
-  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107">
+  <link rel="stylesheet" href="/protokollet-v2.css?v=2-audit-20261009-ui-20261110">
+  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-workspace-polish-20261110">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
-<script src="/protokollet-v2.js?v=2-polish1" defer></script>
+<script src="/protokollet-v2.js?v=2-polish1-ui-20261110" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#protocolDirectory">Kalo te protokollet</a>
@@ -100,9 +100,8 @@
       <section class="page-wrap protocol-page" aria-labelledby="pageTitle">
         <div class="page-heading protocol-page-heading">
           <div>
-            <p class="eyebrow">Biblioteka klinike</p>
             <h1 id="pageTitle">Protokollet</h1>
-            <p class="page-subtitle">Dokumente zyrtare të organizuara për kërkim të shpejtë, lexim të kontrolluar dhe përdorim të sigurt në workflow-in klinik.</p>
+            <p class="page-subtitle">Kërko dhe lexo protokollet zyrtare të Ministrisë së Shëndetësisë.</p>
           </div>
           <div class="protocol-source-badge" aria-label="Burimi i dokumenteve">
             <span class="protocol-source-badge-mark" aria-hidden="true">MSH</span>
@@ -111,10 +110,10 @@
         </div>
 
         <div class="protocol-metrics" aria-label="Përmbledhje e protokolleve">
-          <article class="protocol-metric"><span>Dokumente</span><strong id="protocolTotalCount">55</strong><small>Në regjistrin aktiv</small></article>
-          <article class="protocol-metric"><span>Kategori</span><strong id="protocolCategoryCount">12</strong><small>Fusha klinike</small></article>
-          <article class="protocol-metric"><span>Aktuale</span><strong id="protocolCurrentCount">—</strong><small>Jo arkivore</small></article>
-          <article class="protocol-metric"><span>Rezultate</span><strong id="protocolCount">55</strong><small>Sipas filtrave</small></article>
+          <article class="protocol-metric"><span>Dokumente</span><strong id="protocolTotalCount">55</strong></article>
+          <article class="protocol-metric"><span>Kategori</span><strong id="protocolCategoryCount">12</strong></article>
+          <article class="protocol-metric"><span>Aktuale</span><strong id="protocolCurrentCount">—</strong></article>
+          <article class="protocol-metric"><span>Rezultate</span><strong id="protocolCount">55</strong></article>
         </div>
 
         <section class="protocol-directory" id="protocolDirectory" aria-labelledby="protocolDirectoryTitle">
@@ -122,7 +121,6 @@
             <div class="protocol-toolbar-heading">
               <div>
                 <strong id="protocolDirectoryTitle">Gjej protokollin</strong>
-                <p>Kërko me titull, kategori ose fjalë kyçe dhe filtro dokumentet pa humbur kontekstin.</p>
               </div>
               <span class="protocol-toolbar-shortcut"><kbd>⌘</kbd><kbd>K</kbd></span>
             </div>
@@ -130,7 +128,7 @@
             <div class="clinical-toolbar" role="search" aria-label="Kërkimi dhe filtrat e protokolleve">
               <label class="protocol-search-field" for="protocolSearch">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
-                <input id="protocolSearch" type="search" autocomplete="off" placeholder="Kërko titullin, sëmundjen ose fjalën kyçe…">
+                <input id="protocolSearch" type="search" autocomplete="off" placeholder="Titulli, sëmundja ose fjala kyçe…" aria-label="Kërko protokollet">
               </label>
               <label class="protocol-filter-field"><span>Kategoria</span><select id="protocolCategory" aria-label="Kategoria"><option value="">Të gjitha kategoritë</option></select></label>
               <label class="protocol-filter-field"><span>Formati</span><select id="protocolType" aria-label="Formati"><option value="">PDF / DOCX</option><option value="pdf">Vetëm PDF</option><option value="docx">Vetëm DOCX</option></select></label>
@@ -155,7 +153,6 @@
           <p class="protocol-reader-loading" role="status">Duke përgatitur lexuesin…</p>
         </section>
 
-        <footer class="protocol-page-footer">DRx · Dokumentet origjinale dhe gjurma e burimit ruhen si referenca autoritative.</footer>
       </section>
     </main>
   </div>

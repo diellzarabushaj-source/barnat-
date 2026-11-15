@@ -10,10 +10,10 @@
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/sistemi-v2.css?v=2-admin-20261014">
-  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107">
+  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-workspace-polish-20261110">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
-<script src="/sistemi-v2.js?v=2-admin-20261014" defer></script>
+<script src="/sistemi-v2.js?v=2-workspace-polish-20261110" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#systemHealth">Kalo te statusi i sistemit</a>
@@ -96,9 +96,9 @@
         
     <section class="system-hero" aria-labelledby="systemTitle">
       <div>
-        <p class="system-kicker">DRx · kontroll operacional</p>
-        <h1 id="systemTitle">Sistemi dhe sinkronizimi</h1>
-        <p>Gjendja reale e Supabase, Google Sheet-it, kërkimit ICD, editorit klinik dhe të dhënave që përdoren nga recetat.</p>
+        <p class="system-kicker">Administrimi</p>
+        <h1 id="systemTitle">Gjendja e shërbimeve</h1>
+        <p>Kontrollo nëse shërbimet dhe burimet klinike janë të përditësuara.</p>
       </div>
       <div class="system-hero-actions">
         <span class="system-state is-loading" id="systemOverallState">Duke kontrolluar…</span>
@@ -106,8 +106,8 @@
       </div>
     </section>
 
-    <section class="system-metrics" aria-label="Numrat e databazës">
-      <article><span>Barnat</span><strong id="systemDrugCount">—</strong><small>prezantime në Supabase</small></article>
+    <section class="system-metrics" aria-label="Përmbledhje e të dhënave">
+      <article><span>Barnat</span><strong id="systemDrugCount">—</strong><small>prezantime në regjistër</small></article>
       <article><span>Skemat e dozimit</span><strong id="systemDosageCount">—</strong><small>të rritur dhe pediatri</small></article>
       <article><span>Kodet ICD</span><strong id="systemIcdCount">—</strong><small>diagnoza të strukturuara</small></article>
       <article><span>Analizat</span><strong id="systemLabCount">—</strong><small>referenca laboratorike</small></article>
@@ -116,15 +116,18 @@
     <section class="system-grid">
       <article class="system-panel system-sync-panel">
         <header>
-          <div><p class="system-kicker">Google Sheet ↔ Supabase</p><h2>Sinkronizimi i dozologjisë</h2></div>
+          <div><p class="system-kicker">Burimet e dozimit</p><h2>Sinkronizimi i dozologjisë</h2></div>
           <span class="system-state is-loading" id="systemSyncState">Duke kontrolluar…</span>
         </header>
         <div class="system-source-list" id="systemSourceList" aria-live="polite"></div>
         <div class="system-setup" id="systemSetup" hidden>
-          <strong>Kërkohet aktivizimi një herë</strong>
-          <p>Në Apps Script të spreadsheet-it aktual ekzekuto funksionin:</p>
-          <code>setupMedIndexPerfectSync</code>
-          <p>Pas autorizimit, editimet kalojnë menjëherë në Supabase, kontrolli rikuperues bëhet çdo 5 minuta dhe ndryshimet e editorit kthehen në Sheet çdo minutë.</p>
+          <strong>Kërkohet konfigurim</strong>
+          <details class="workspace-details">
+            <summary>Hapat e konfigurimit</summary>
+            <p>Në Apps Script të spreadsheet-it aktual ekzekuto funksionin:</p>
+            <code>setupMedIndexPerfectSync</code>
+            <p>Pas autorizimit, editimet kalojnë menjëherë në Supabase, kontrolli rikuperues bëhet çdo 5 minuta dhe ndryshimet e editorit kthehen në Sheet çdo minutë.</p>
+          </details>
         </div>
       </article>
 
@@ -146,25 +149,28 @@
         </div>
         <span class="system-state is-loading" id="systemIcdState">Duke kontrolluar…</span>
       </header>
-      <p class="system-panel-copy" id="systemIcdSummary">Po kontrollohen integriteti i 12,542 nyjeve dhe smoke-probes e kërkimit klinik.</p>
+      <p class="system-panel-copy" id="systemIcdSummary">Po kontrollohen burimi ICD-10 dhe rezultatet e kërkimit.</p>
 
-      <div class="system-icd-metrics" aria-label="Statusi i burimit ICD">
-        <article><span>Nyje live</span><strong id="systemIcdLiveNodes">—</strong><small>baseline 12,542</small></article>
-        <article><span>Revision</span><strong id="systemIcdRevision">—</strong><small>fingerprint i CSV-së</small></article>
-        <article><span>Ngarkuar</span><strong id="systemIcdLoadedAt">—</strong><small>cache i procesit</small></article>
-        <article><span>Burimi</span><strong id="systemIcdSourceStatus">—</strong><small>live ose stale</small></article>
-        <article><span>Smoke-probes</span><strong id="systemIcdProbeScore">—</strong><small>kërkime klinike</small></article>
-      </div>
+      <details class="workspace-details system-diagnostics">
+        <summary>Diagnostika e ICD-10</summary>
+        <div class="system-icd-metrics" aria-label="Statusi i burimit ICD">
+          <article><span>Nyje live</span><strong id="systemIcdLiveNodes">—</strong><small>baseline 12,542</small></article>
+          <article><span>Revision</span><strong id="systemIcdRevision">—</strong><small>fingerprint i CSV-së</small></article>
+          <article><span>Ngarkuar</span><strong id="systemIcdLoadedAt">—</strong><small>cache i procesit</small></article>
+          <article><span>Burimi</span><strong id="systemIcdSourceStatus">—</strong><small>live ose stale</small></article>
+          <article><span>Smoke-probes</span><strong id="systemIcdProbeScore">—</strong><small>kërkime klinike</small></article>
+        </div>
 
-      <div class="system-probe-list" id="systemIcdProbeList" aria-live="polite"></div>
+        <div class="system-probe-list" id="systemIcdProbeList" aria-live="polite"></div>
+      </details>
       <p class="system-icd-error" id="systemIcdError" role="alert" hidden></p>
     </section>
 
     <section class="system-panel media-library-panel" aria-labelledby="mediaLibraryTitle">
       <header>
         <div class="media-library-copy">
-          <p class="system-kicker">Vercel Blob · media publike</p>
-          <h2 id="mediaLibraryTitle">Media Library</h2>
+          <p class="system-kicker">Materiale publike</p>
+          <h2 id="mediaLibraryTitle">Biblioteka e mediave</h2>
           <p class="system-panel-copy">Ruaj logo, imazhe të ndërfaqes dhe materiale vizuale publike. Mos ngarko dokumente pacientësh ose të dhëna klinike sensitive.</p>
         </div>
         <div class="system-hero-actions">
@@ -174,9 +180,12 @@
       </header>
 
       <div class="media-library-setup" id="mediaLibrarySetup" hidden>
-        <strong>Lidhe një Vercel Blob store me projektin “barnat”</strong>
-        <p>Në Vercel Dashboard hap Storage → Create Database → Blob, zgjidh Public dhe lidhe me projektin. Vercel krijon automatikisht variablën:</p>
-        <code>BLOB_READ_WRITE_TOKEN</code>
+        <strong>Kërkohet konfigurim i bibliotekës</strong>
+        <details class="workspace-details">
+          <summary>Hapat e konfigurimit</summary>
+          <p>Në Vercel Dashboard hap Storage → Create Database → Blob, zgjidh Public dhe lidhe me projektin. Vercel krijon automatikisht variablën:</p>
+          <code>BLOB_READ_WRITE_TOKEN</code>
+        </details>
       </div>
 
       <form class="media-upload-form" id="mediaUploadForm" hidden>

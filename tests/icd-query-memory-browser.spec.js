@@ -60,8 +60,10 @@ for(const width of [390,1440]){
   await page.locator('#icdSearch').fill('pom dhemb gjoksi');await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','R07.4');
   await expect(page.locator('.icd-suggestion-row').first()).toContainText('Simptomë / shenjë');await expect(page.locator('.icd-suggestion-row.is-differential')).not.toHaveCount(0);
   await page.locator('#icdSearch').fill('I10');await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','I10');
-  const latin=Advanced.compactNode(Memory.codeNode(dataset,'I10'),dataset).latinTitle;
-  await expect(page.locator('.icd-suggestion-row').first().locator('.icd-suggestion-titleline strong')).toHaveText(latin);
+  const diagnosis=Advanced.compactNode(Memory.codeNode(dataset,'I10'),dataset);
+  const result=page.locator('.icd-suggestion-row').first();
+  await expect(result.locator('.icd-suggestion-titleline strong')).toHaveText(diagnosis.displayTitle);
+  await expect(result.locator('.icd-suggestion-translation').filter({hasText:/^LA/}).locator('span')).toHaveText(diagnosis.latinTitle);
   await page.locator('#icdSearch').fill('shtypja nalt');await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','I10');await expect(page.locator('.icd-suggestion-row').first()).toContainText('Shprehje e verifikuar');
   expect(api.mutations).toEqual([]);expect(api.reads()).toBe(1,'One terminology bootstrap, not one lookup per keystroke');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);expect(errors).toEqual([]);
@@ -85,12 +87,12 @@ for(const width of [390,1440]){
   await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','J02');
   release();await expect(page.locator('.icd-suggestion-row[data-code="J02.9"]')).toBeVisible();
   await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','J02');
-  await expect(page.locator('.icd-suggestion-head')).not.toContainText('Duke rafinuar');
+  await expect(page.locator('#icdSuggestions')).toHaveAttribute('aria-busy','false');
   remotePending=false;await page.locator('#icdSearch').fill('laringitis acu');await expect.poll(()=>remotePending).toBe(true);
-  await expect(page.locator('.icd-suggestion-head')).toContainText('Duke rafinuar');
+  await expect(page.locator('#icdSuggestions')).toHaveAttribute('aria-busy','true');
   const releaseOther=release;await page.locator('#icdSearch').fill('faringitis acu');
   await expect(page.locator('#icdStatusText')).toContainText('për «faringitis acu»');
-  await expect(page.locator('.icd-suggestion-head')).not.toContainText('Duke rafinuar');
+  await expect(page.locator('#icdSuggestions')).toHaveAttribute('aria-busy','false');
   await expect(page.locator('.icd-suggestion-row').first()).toHaveAttribute('data-code','J02');
   expect(suggestRequests).toBe(2,'Returning to a completed lookup reuses it without another remote request');releaseOther();
   expect(api.mutations).toEqual([]);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
@@ -204,6 +206,7 @@ for(const width of [320,390,430]){
 test('active filters constrain remembered aliases and warm search survives offline',async({page,context})=>{
  const api=await setup(page);
  await expect(page.locator('#icdFilterChapter option')).not.toHaveCount(1);
+ await page.locator('#icdFilterPanel > summary').click();
  await page.locator('#icdFilterChapter').selectOption('I');
  await page.locator('#icdSearch').fill('shtypja nalt');
  await expect(page.locator('.icd-suggestion-row[data-code="I10"]')).toHaveCount(0);

@@ -816,7 +816,7 @@
     byId('pediatricSchemeField').hidden=true;byId('pediatricSchemeNote').hidden=true;showPatient(false);
     byId('pediatricAgeConfirmed').checked=false;byId('pediatricSafetyConfirmed').checked=false;
     const {drug,entry}=selection();renderSources(drug);renderProducts(null);
-    if(!drug){nextChoice('pediatricDrug','Zgjidh barin','Zgjidh barin për të filluar.');return;}
+    if(!drug){byId('pediatricAnswer').replaceChildren();return;}
     choices('pediatricForm',(entry?.forms||[]).map(f=>({id:f.id,label:f.label,availability:f.variants.some(v=>v.schemes.length)?'active':'reference'})),'Zgjidh formën…');
     if(!entry?.forms.length)clearResult(referenceActive?'Nuk ka formë të konfirmuar në regjistrin e publikuar për këtë bar.':'Lidhja aktive mungon. Llogaritja nuk është e disponueshme.');
     else if(entry.forms.length===1){byId('pediatricForm').value=entry.forms[0].id;formChanged();}
