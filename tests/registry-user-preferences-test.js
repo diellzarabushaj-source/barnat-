@@ -149,4 +149,32 @@ assert.match(authClient, /drx_registry_v2_selection/, 'Logout must clear the pre
 assert.match(profileAvatar, /supabase-data-api/);
 assert.doesNotMatch(profileAvatar, /neonRequest|neon-data-api/);
 
+// The FK on user_preferences.user_id targets auth.users(id). A bridged
+// legacy storage UUID is NOT an Auth user; it must never be used for PUT.
+const authUuid = '11111111-1111-4111-8111-111111111111';
+const legacyUuid = '22222222-2222-4222-8222-222222222222';
+assert.equal(prefs._test.preferenceAuthUid({
+  provider:'supabase-google', authUid:authUuid, uid:legacyUuid,
+}), authUuid, 'Use Supabase Auth UUID, not a legacy storage UUID');
+assert.equal(prefs._test.preferenceAuthUid({
+  provider:'supabase-password', authUid:authUuid,
+}), authUuid, 'Password auth users can save preferences');
+assert.equal(prefs._test.preferenceAuthUid({
+  provider:'legacy-session', uid:legacyUuid,
+}), '', 'Legacy sessions cannot write to auth.users-FK preferences');
+assert.equal(prefs._test.preferenceAuthUid({
+  provider:'supabase-google', uid:legacyUuid,
+}), '', 'Missing Auth UUID must not silently fall back to legacy storage');
+assert.equal(prefs._test.preferenceAuthUid({
+  provider:'supabase-google', authUid:'not-a-uuid', uid:legacyUuid,
+}), '', 'Malformed Auth UUID must never be persisted');
+const preferenceSource = read('lib/user-ui-preferences.js');
+assert.match(preferenceSource, /auth\.isSupabaseSession\(session\)/,
+  'Only validated active Supabase sessions may write preferences');
+assert.match(preferenceSource, /user_preferences_user_id_fkey/,
+  'An FK-missing Auth user must receive a distinct re-login response');
+assert.match(preferenceSource, /PREFERENCES_SESSION_STALE/);
+assert.doesNotMatch(preferenceSource, /uuid\(session\.authUid\)\s*\|\|\s*uuid\(session\.uid\)/,
+  'Do not resurrect legacy UUID fallback');
+
 console.log('Per-account persistent registry columns and stable transactional picker contract passed.');
