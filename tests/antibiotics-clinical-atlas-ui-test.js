@@ -31,6 +31,14 @@ assert.match(catalog,/abx-heading-metrics/,'Registry-driven stats retained in he
 assert.match(catalog,/class="abx-heading-symbol" aria-hidden="true">Rx<\/span>/,'Static 34px-safe monogram instead of unbounded capsule SVG');
 assert.doesNotMatch(catalog,/class="abx-heading-symbol"[^>]*><svg/,'Unbounded graphic must never return');
 assert.match(stylesheet,/P1 screenshot regression/);
+assert.match(stylesheet,/V7 · Quiet Clinical Search/,'Minimal search-focused UI remains in clinical shell');
+assert.match(stylesheet,/data-query-active="true"/,'Query hides decorative example chips only while filtering');
+assert.match(stylesheet,/min-height:44px/,'Tap targets remain comfortable');
+assert.match(stylesheet,/color:#b42318/,'Blocked clinical safety status stays red');
+const smartUi=read('antibiotiket-smart-ui.js');
+assert.match(smartUi,/root\.dataset\.queryActive=state\.search\.trim\(\)/,'Query state is derived from real search input');
+assert.match(smartUi,/navigator\.platform/,'Search shortcut adapts to platform');
+assert.doesNotMatch(smartUi,/calculateDose|doseMgPerKg|authorizedRegimen/,'Visual improvements never alter dose calculations');
 assert.match(stylesheet,/max-width:34px/);
 assert.match(stylesheet,/@media\(max-width:420px\)/);
 assert.match(stylesheet,/@media\(prefers-reduced-motion:reduce\)/);
