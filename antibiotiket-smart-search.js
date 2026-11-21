@@ -48,7 +48,7 @@ function record(item){
 const cache=new WeakMap();
 function getRecord(item){let r=cache.get(item);if(!r){r=record(item);cache.set(item,r)}return r;}
 function tokenScore(field,query){
- const t=expand(query),v=field.text;
+ const t=query,v=field.text;
  if(!t||!v)return 0;
  if(v===t)return field.weight+70;
  if(v.startsWith(t))return field.weight+42;
@@ -65,7 +65,7 @@ function tokenScore(field,query){
  return 0;
 }
 function score(item,search,scope='all'){
- const tokens=queryWords(search);if(!tokens.length)return 0;
+ const tokens=scope==='product'||scope==='indication'?words(search):queryWords(search);if(!tokens.length)return 0;
  const rec=getRecord(item);
  const eligible=scope==='all'?rec.fields:rec.fields.filter(f=>f.scope===scope);
  let total=0;
@@ -86,7 +86,7 @@ function filterAntibiotics(all,filters={},selected=[],core){
   .sort((a,b)=>b.rank-a.rank||a.item.name.localeCompare(b.item.name,'sq')).map(x=>x.item);
 }
 function suggestions(all,filters={},selected=[],core,limit=6){
- const terms=queryWords(filters.search),scope=filters.scope||'all';
+ const scope=filters.scope||'all',terms=scope==='product'||scope==='indication'?words(filters.search):queryWords(filters.search);
  if(fold(filters.search).length<2||!terms.length)return [];
  const pool=core.filterAntibiotics(all,{...filters,search:''},selected);
  const seen=new Set(),candidates=[];
