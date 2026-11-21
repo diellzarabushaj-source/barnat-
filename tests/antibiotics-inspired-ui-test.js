@@ -15,7 +15,7 @@ assert(html.indexOf('antibiotiket-interactions.css')<html.indexOf('drx-dashboard
 assert(html.indexOf('antibiotiket-smart-ui.js')<html.indexOf('antibiotiket-interactions.js'),'Progressive enhancements load after base UI');
 assert.match(js,/withChoiceReferences\(data\.antibiotics,choices,data\.conditions\)/);
 assert.match(js,/optionCounts\(all/);
-assert.match(js,/selectedOnly\?'':'String\(count\)/,'Personal list must not display inaccurate global counts');
+assert.match(js,/selectedOnly\?'':String\(count\)/,'Personal list must not display inaccurate global counts');
 assert.match(js,/route\.dispatchEvent\(new Event\('change'/,'Route shortcuts must use existing clinical filters');
 assert.match(js,/aria-pressed/);
 assert.match(js,/abx-density-button/);
