@@ -30,6 +30,12 @@ assert.match(css,/abx-shortcuts/);
 assert.match(css,/abx-density-button/);
 assert.match(css,/abx-catalog-item::before/);
 assert.match(smart,/abxSmartSuggestions/);
+const finish=read('antibiotiket-finish.css');
+assert.match(smart,/quick\.insertAdjacentElement\('beforebegin',suggestions\)/,'Suggestions must be in document flow');
+assert.doesNotMatch(smart,/wrap\.appendChild\(suggestions\)/,'Avoid overlaying the search input and scope controls');
+assert.match(finish,/Smart combobox must never cover scope/);
+assert.match(finish,/position:relative;top:auto;left:auto;right:auto/);
+assert.match(smart,/!wrap\.contains\(event\.target\)&&!suggestions\.contains\(event\.target\)/,'Selecting a suggestion must remain clickable');
 assert.match(catalog,/core\.filterAntibiotics/);
 for(const file of ['antibiotiket-interactions.js','antibiotiket-smart-ui.js','antibiotiket-catalog.js','antibiotiket-smart-search.js'])
  assert.doesNotThrow(()=>new Function(read(file)),file+' should parse');
