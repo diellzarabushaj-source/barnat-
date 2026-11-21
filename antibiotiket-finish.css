@@ -661,3 +661,213 @@
  .abx-catalog-page .abx-catalog-search,
  .abx-catalog-page .abx-back-to-search{transition:none}
 }
+
+
+/* DRx Antibiotics V8 · final quiet UX finish.
+   Approved palette: #1c1e54, #533afd, white, clinical red for unavailable dosing.
+   Presentation only; no change to source references, route matching or calculations. */
+.abx-catalog-page .antibiotiket-page{
+ max-width:1360px;
+}
+.abx-catalog-page .abx-catalog-heading{
+ margin-bottom:19px;
+ padding-bottom:20px;
+}
+.abx-catalog-page .abx-catalog-heading h1{
+ font-weight:350;
+ letter-spacing:-1.1px;
+}
+.abx-catalog-page .abx-catalog-heading p{
+ color:#64748d;
+ max-width:640px;
+}
+.abx-catalog-page .abx-heading-metrics{
+ background:#fff;
+ border-color:#e6eaf2;
+}
+.abx-catalog-page .abx-catalog-workspace{
+ border-color:#e0e6ef;
+ border-radius:12px;
+ box-shadow:0 2px 12px rgba(17,34,74,.035);
+}
+.abx-catalog-page .abx-catalog-searchbar{
+ background:#fff;
+}
+.abx-catalog-page .abx-catalog-search{
+ border-color:#b4c0d5;
+ border-radius:9px;
+}
+.abx-catalog-page .abx-catalog-search:focus-within{
+ border-color:#533afd;
+ box-shadow:0 0 0 3px rgba(83,58,253,.095);
+}
+.abx-catalog-page .abx-catalog-search input{
+ letter-spacing:0;
+}
+.abx-catalog-page .abx-has-query .abx-smart-quick{
+ display:none!important;
+}
+.abx-catalog-page .abx-smart-quick{
+ gap:7px;
+}
+.abx-catalog-page .abx-smart-quick button{
+ border-color:#e6eaf1;
+ background:#f9fafe;
+}
+.abx-catalog-page .abx-smart-quick button:hover{
+ color:#4d37b7;
+ background:#f5f3ff;
+}
+.abx-catalog-page .abx-discovery-rail{
+ background:#fbfcff;
+ border-top-color:#ebedf3;
+ border-bottom-color:#e7ebf3;
+}
+.abx-catalog-page .abx-discovery-rail .abx-smart-scope-switch button[aria-pressed="true"],
+.abx-catalog-page .abx-discovery-rail .abx-shortcut-pills button[aria-pressed="true"]{
+ color:#382c99;
+}
+.abx-catalog-page #abxFilterPanel{
+ border-top-color:#e9edf4;
+}
+.abx-catalog-page .abx-catalog-controls select{
+ border-color:#dee5ef;
+ background:#fff;
+}
+.abx-catalog-page .abx-catalog-controls select:focus-visible{
+ border-color:#533afd;
+ box-shadow:0 0 0 3px rgba(83,58,253,.11);
+}
+.abx-catalog-page .abx-active-filters{
+ gap:7px;
+}
+.abx-catalog-page .abx-active-filters button{
+ min-height:36px;
+ border-radius:8px;
+}
+.abx-catalog-page .abx-catalog-toolbar{
+ margin-top:20px;
+ margin-bottom:12px;
+ padding-bottom:12px;
+}
+.abx-catalog-page .abx-catalog-item{
+ border:1px solid #e1e7f0;
+ border-radius:10px;
+ box-shadow:none;
+}
+.abx-catalog-page .abx-catalog-item:hover{
+ border-color:#c4bcef;
+ box-shadow:0 4px 14px rgba(28,30,84,.035);
+}
+.abx-catalog-page .abx-catalog-name{
+ font-weight:650;
+ letter-spacing:-.2px;
+}
+.abx-catalog-page .abx-catalog-summary{
+ line-height:1.58;
+}
+.abx-catalog-page .abx-catalog-details-button{
+ min-height:44px;
+ border-radius:8px;
+}
+.abx-catalog-page .abx-catalog-details-button:focus-visible,
+.abx-catalog-page .abx-catalog-reset:focus-visible,
+.abx-catalog-page .abx-smart-clear:focus-visible{
+ outline:2px solid #533afd;
+ outline-offset:2px;
+}
+.abx-catalog-page .abx-catalog-reference-note{
+ border-left:2px solid #bdb7e9;
+ background:#fbfcff;
+}
+.abx-catalog-page .abx-catalog-empty{
+ border-color:#dfe5ef;
+ background:#fff;
+ padding:32px 20px;
+}
+.abx-catalog-page .abx-catalog-empty strong{
+ color:#1c1e54;
+ font-size:14px;
+}
+.abx-catalog-page .abx-catalog-empty p{
+ color:#62728c;
+ line-height:1.6;
+}
+.abx-catalog-page .abx-catalog-empty button{
+ min-height:44px;
+ border-radius:8px;
+}
+.abx-catalog-page .abx-catalog-pill.is-missing{
+ color:#b42318;
+ background:#fef3f2;
+ border-color:#fecdca;
+}
+/* Two compact rows of secondary discovery tools, less chrome ahead of results. */
+@media(max-width:760px){
+ .abx-catalog-page .antibiotiket-page{
+  padding-top:16px;
+ }
+ .abx-catalog-page .abx-catalog-heading{
+  margin-bottom:12px;
+  padding-bottom:13px;
+ }
+ .abx-catalog-page .abx-catalog-heading h1{
+  font-size:28px;
+  margin-bottom:7px;
+ }
+ .abx-catalog-page .abx-catalog-heading p{
+  font-size:12px;
+  line-height:1.5;
+ }
+ .abx-catalog-page .abx-heading-metrics{
+  margin-top:0;
+ }
+ .abx-catalog-page .abx-heading-metrics .abx-heading-meta{
+  padding:8px 11px;
+ }
+ .abx-catalog-page .abx-heading-metrics .abx-heading-meta b{
+  font-size:23px;
+ }
+ .abx-catalog-page .abx-smart-quick{
+  display:none!important;
+ }
+ .abx-catalog-page .abx-catalog-workspace>.abx-catalog-searchbar{
+  padding-top:10px;
+  padding-bottom:8px;
+ }
+ .abx-catalog-page .abx-discovery-rail .abx-smart-scopes,
+ .abx-catalog-page .abx-discovery-rail .abx-shortcuts{
+  padding:8px 11px;
+ }
+ .abx-catalog-page .abx-discovery-rail .abx-smart-scopes>span:first-child,
+ .abx-catalog-page .abx-discovery-rail .abx-shortcuts-label{
+  margin-bottom:6px;
+ }
+ .abx-catalog-page .abx-smart-scope-switch button,
+ .abx-catalog-page .abx-shortcut-pills button{
+  touch-action:manipulation;
+ }
+ .abx-catalog-page .abx-catalog-toolbar{
+  margin-top:16px;
+  padding-bottom:10px;
+ }
+ .abx-catalog-page .abx-catalog-item-row{
+  padding:14px 12px;
+ }
+ .abx-catalog-page .abx-catalog-item{
+  border-radius:9px;
+ }
+ .abx-catalog-page .abx-catalog-details-button{
+  min-height:44px;
+ }
+}
+@media(max-width:380px){
+ .abx-catalog-page .abx-catalog-heading h1{font-size:27px}
+ .abx-catalog-page .abx-heading-metrics .abx-heading-meta span{font-size:10px}
+ .abx-catalog-page .abx-catalog-search input{font-size:16px}
+}
+@media(prefers-reduced-motion:reduce){
+ .abx-catalog-page .abx-catalog-item,
+ .abx-catalog-page .abx-catalog-search,
+ .abx-catalog-page .abx-catalog-details-button{transition:none}
+}
