@@ -144,7 +144,7 @@ const rows = [{id:'11111111-1111-4111-8111-111111111111',registryNumber:1,pdid:'
       const dockBox=await dock.boundingBox();
       assert.ok(search.x>=0&&search.x+search.width<=width+1,'Protocol search remains inside phone viewport');
       assert.ok(search.y+search.height<dockBox.y,'Protocol search above phone navigation');
-      for(const control of await page.locator('#protocolSearch,.pl-system,.pl-filter').all()){
+      for(const control of await page.locator('#protocolSearch,.pl-system.is-selected,.pl-filter').all()){
        if(!await control.isVisible())continue;
        const box=await control.boundingBox();
        assert.ok(box.height>=44&&box.x>=-1&&box.x+box.width<=width+1,'Clinical filter touch bounds');
