@@ -99,3 +99,69 @@
  .abx-catalog-page .abx-catalog-item-row{grid-template-columns:30px minmax(0,1fr);gap:8px}
 }
 @media(prefers-reduced-motion:reduce){.abx-catalog-page .abx-catalog-item,.abx-catalog-page .abx-catalog-search{transition:none}}
+
+/* V4.1 — focused clinical search domains, subtle hierarchy, thumb-safe interactions */
+.abx-smart-scopes{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;padding:11px 17px 13px;border-bottom:1px solid #e9edf4;background:#fbfcff;color:#66758e;font-size:11px}
+.abx-smart-scopes>span:first-child{white-space:nowrap;font-weight:650;color:#5b6882;font-size:11px}
+.abx-smart-scope-switch{display:inline-flex;flex-wrap:wrap;align-items:center;gap:3px;padding:3px;background:#eef1f7;border:1px solid #e6eaf1;border-radius:9px}
+.abx-smart-scope-switch button{min-height:33px;padding:6px 13px;border:0;border-radius:6px;background:transparent;color:#63718b;font:550 11.5px Inter,system-ui,sans-serif;cursor:pointer;transition:color .13s,box-shadow .13s,background .13s}
+.abx-smart-scope-switch button:hover{color:#3d349b}
+.abx-smart-scope-switch button[aria-pressed="true"]{color:#342c91;background:#fff;box-shadow:0 1px 3px rgba(24,28,74,.10);font-weight:670}
+.abx-smart-scope-switch button:focus-visible{outline:2px solid #533afd;outline-offset:2px}
+.abx-smart-scopes-note{margin-left:auto;font-size:10px;color:#8996a8;line-height:1.4}
+.abx-catalog-page .abx-smart-quick{border-bottom:0;padding-bottom:9px}
+.abx-smart-suggestions{box-shadow:0 8px 24px rgba(22,35,73,.12),0 18px 45px rgba(22,35,73,.08)}
+.abx-smart-suggestions button{border:1px solid transparent}
+.abx-smart-suggestions button:focus-visible{border-color:#c7befd;outline:2px solid #b1a6ff;outline-offset:-2px}
+.abx-smart-kind{display:inline-flex;align-items:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;padding:4px 8px;border-radius:5px;background:#f0efff;color:#55459f;font-size:10px}
+.abx-catalog-page .abx-catalog-list .abx-catalog-item{position:relative}
+.abx-catalog-page .abx-catalog-list .abx-catalog-item:focus-within{border-color:#b8b0ed}
+.abx-catalog-page .abx-catalog-item-row{grid-template-columns:24px minmax(0,1fr) minmax(152px,190px);align-items:center}
+.abx-catalog-page .abx-catalog-title-line{gap:7px 11px}
+.abx-catalog-page .abx-catalog-name{font-size:15.5px;line-height:1.4;letter-spacing:-.20px}
+.abx-catalog-page .abx-catalog-atc{font-size:10px;padding:4px 7px;color:#68788f}
+.abx-catalog-page .abx-catalog-item-actions{gap:10px;justify-content:center}
+.abx-catalog-page .abx-catalog-details-button{border-radius:8px;background:#f8f7ff;color:#4c3c9e;border:1px solid #e3def8;font-size:11px;min-height:40px;padding:9px 12px;transition:background .13s,border-color .13s}
+.abx-catalog-page .abx-catalog-details-button:hover{background:#eeebff;border-color:#c8c0f8}
+.abx-catalog-page .abx-catalog-details-button[aria-expanded="true"]{background:#eeeaff;color:#40318e;border-color:#bdb3f1}
+.abx-catalog-page .abx-catalog-summary{line-height:1.55;margin:8px 0 6px}
+.abx-catalog-page .abx-catalog-forms{line-height:1.5}
+.abx-catalog-page .abx-catalog-taxonomy{margin:5px 0 7px}
+.abx-catalog-page .abx-catalog-toolbar{border-bottom:1px solid #e9edf4;padding-bottom:12px;margin-bottom:13px}
+.abx-catalog-page .abx-catalog-list-tabs{gap:15px}
+.abx-catalog-page .abx-list-label{font-size:13px;font-weight:650;color:#24344e}
+.abx-catalog-page .abx-catalog-checklabel{min-height:38px}
+.abx-catalog-page .abx-catalog-reference-note{background:#fbfcff;border:1px solid #e9edf4;border-radius:8px;padding:11px 13px;color:#65758b;gap:10px}
+.abx-catalog-page .abx-catalog-reference-note>p{font-size:11px}
+.abx-catalog-page .abx-catalog-reference-note details>p{top:100%}
+.abx-catalog-page .abx-catalog-controls select:disabled{background:#f6f8fb;color:#9ba5b3}
+.abx-catalog-page .abx-catalog-empty{padding:38px 20px;border:1px dashed #d9e1ef}
+.abx-catalog-page .abx-smart-scopes button,.abx-catalog-page .abx-smart-quick button{touch-action:manipulation}
+@media(max-width:1020px){
+ .abx-smart-scopes-note{width:100%;margin-left:0}
+ .abx-catalog-page .abx-catalog-item-row{grid-template-columns:24px minmax(0,1fr) 160px}
+}
+@media(max-width:720px){
+ .abx-smart-scopes{gap:8px;padding:9px 12px 12px}
+ .abx-smart-scopes>span:first-child{width:100%}
+ .abx-smart-scope-switch{width:100%;display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:4px}
+ .abx-smart-scope-switch::-webkit-scrollbar{display:none}
+ .abx-smart-scope-switch button{white-space:nowrap;flex:none;min-height:39px;font-size:11px;padding:8px 13px}
+ .abx-smart-scopes-note{display:none}
+ .abx-catalog-page .abx-catalog-item-row{grid-template-columns:26px minmax(0,1fr);align-items:start;gap:9px}
+ .abx-catalog-page .abx-catalog-item-actions{grid-column:2;flex-direction:row;align-items:center;justify-content:space-between;margin-top:3px}
+ .abx-catalog-page .abx-catalog-name{font-size:15px}
+ .abx-catalog-page .abx-catalog-details-button{min-height:44px}
+ .abx-catalog-page .abx-catalog-reference-note{padding:11px}
+}
+@media(max-width:380px){
+ .abx-smart-scopes{padding-inline:9px}
+ .abx-smart-scope-switch button{font-size:10.5px;padding-inline:10px}
+ .abx-catalog-page .abx-catalog-item-actions{flex-wrap:wrap;align-items:start;justify-content:flex-start}
+ .abx-catalog-page .abx-catalog-searchbar{padding:9px}
+ .abx-catalog-page .abx-catalog-search{padding-inline:9px 32px}
+ .abx-catalog-page .abx-filter-toggle{min-width:73px}
+}
+@media(prefers-reduced-motion:reduce){
+ .abx-smart-scope-switch button,.abx-catalog-page .abx-catalog-details-button{transition:none}
+}
