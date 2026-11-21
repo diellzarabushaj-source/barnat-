@@ -27,6 +27,13 @@ function init(){
  filter.prepend(facetHeading);
  // Leave the editorial header and both source-derived metrics untouched.
  search.placeholder='Substanca, marka, ATC ose indikacioni…';
+ // Keep sample queries discoverable when browsing, but move them out of the
+ // clinician's way once an actual search begins.
+ const updateQueryPresentation=()=>{
+  root.classList.toggle('abx-has-query',Boolean(search.value.trim()));
+ };
+ search.addEventListener('input',updateQueryPresentation,{passive:true});
+ updateQueryPresentation();
  // Respect the operating system in the existing search shortcut hint.
  const key=root.querySelector('.abx-smart-shortcut');
  if(key)key.textContent=/Mac|iPhone|iPad/.test(navigator.platform||'')?'⌘ K':'Ctrl K';
