@@ -21,7 +21,7 @@ const init=()=>{
  search.setAttribute('role','combobox');
  search.setAttribute('aria-autocomplete','list');search.setAttribute('aria-controls','abxSmartSuggestions');search.setAttribute('aria-expanded','false');
  search.setAttribute('aria-describedby','abxSmartHint');
- const key=document.createElement('kbd');key.className='abx-smart-shortcut';key.textContent='⌘ K';label.appendChild(key);
+ const key=document.createElement('kbd');key.className='abx-smart-shortcut';key.textContent=/Mac|iPhone|iPad/i.test(navigator.platform||'')?'⌘ K':'Ctrl K';label.appendChild(key);
  const clear=document.createElement('button');clear.type='button';clear.id='abxSmartClear';clear.className='abx-smart-clear';clear.textContent='×';clear.title='Pastro kërkimin';clear.setAttribute('aria-label','Pastro kërkimin');clear.hidden=true;wrap.appendChild(clear);
  const suggestions=document.createElement('div');suggestions.id='abxSmartSuggestions';suggestions.className='abx-smart-suggestions';suggestions.setAttribute('role','listbox');suggestions.setAttribute('aria-label','Sugjerime nga katalogu');suggestions.hidden=true;
  const quick=document.createElement('div');quick.className='abx-smart-quick';quick.id='abxSmartQuick';quick.innerHTML='<span id="abxSmartHint">Provo:</span><button type="button" data-abx-example="Amoxicillin" data-abx-scope="substance">Amoxicillin</button><button type="button" data-abx-example="Ceftriaxone" data-abx-scope="substance">Ceftriaxone</button><button type="button" data-abx-example="Cistit" data-abx-scope="indication">Cistit</button><span class="abx-smart-disclaimer">Nga të dhënat e katalogut · jo rekomandime terapeutike</span>';
@@ -79,7 +79,9 @@ const init=()=>{
  }
  function update(){
   highlightMatches();
-  const state=readState();clear.hidden=!state.search;
+  const state=readState();
+  root.dataset.queryActive=state.search.trim()?'true':'false';
+  clear.hidden=!state.search;
   const used=[];
   if(state.search.trim())used.push({key:'search',label:'Kërkim: '+state.search.trim().slice(0,45)});
   for(const [key,[id,label]] of Object.entries(facetMap)){if(!state[key])continue;const option=[...$(id).options].find(o=>o.value===state[key]);used.push({key,label:label+': '+(option?.textContent||state[key])});}

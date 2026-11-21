@@ -527,3 +527,179 @@
   margin:0 11px 10px;max-height:188px;
  }
 }
+
+
+/* V7 · Quiet Clinical Search · one compact layer, DRx navy/indigo.
+   Preserves all source, indication, route and dosage safety semantics. */
+.abx-catalog-page .abx-catalog-heading{
+  padding:3px 2px 19px; margin-bottom:19px; gap:18px;
+}
+.abx-catalog-page .abx-heading-content{max-width:690px}
+.abx-catalog-page .abx-heading-topline{margin-bottom:8px}
+.abx-catalog-page .abx-catalog-eyebrow{color:#718099;font-weight:620}
+.abx-catalog-page .abx-catalog-heading h1{
+  font-size:clamp(28px,2.65vw,35px);font-weight:370;
+  margin-bottom:7px;letter-spacing:-1.05px;
+}
+.abx-catalog-page .abx-catalog-heading p{
+  max-width:600px;font-size:12.6px;line-height:1.58;color:#687790;
+}
+.abx-catalog-page .abx-heading-metrics{
+  min-width:0;border-radius:9px;border-color:#e7eaf1;
+}
+.abx-catalog-page .abx-heading-metrics .abx-heading-meta{
+  min-width:108px;padding:9px 15px;gap:4px;
+}
+.abx-catalog-page .abx-heading-metrics .abx-heading-meta b{
+  font-size:25px;font-weight:440;letter-spacing:-.75px;
+}
+.abx-catalog-page .abx-heading-metrics .abx-heading-meta span{
+  font-size:10px;line-height:1.38;color:#8190a5;
+}
+.abx-catalog-page .abx-catalog-workspace{
+  border:1px solid #e0e5ee;border-radius:11px;
+  box-shadow:0 1px 4px rgba(28,30,84,.025);
+}
+.abx-catalog-page .abx-catalog-workspace>.abx-catalog-searchbar{
+  padding:13px 14px 8px;gap:9px;
+}
+.abx-catalog-page .abx-catalog-search{
+  height:51px;padding-left:13px;border:1px solid #bfcadb;
+  border-radius:8px;box-shadow:none;
+}
+.abx-catalog-page .abx-catalog-search input{font-size:14px}
+.abx-catalog-page .abx-catalog-search input::placeholder{color:#8997aa}
+.abx-catalog-page .abx-catalog-search:focus-within{
+  border-color:#6453e7;box-shadow:0 0 0 3px rgba(83,58,253,.11);
+}
+.abx-catalog-page .abx-smart-shortcut{background:#f7f8fb;border-color:#e7eaf1;color:#808ca0}
+.abx-catalog-page .abx-filter-toggle{
+  min-width:104px;height:51px;
+  background:#f7f6ff;border-color:#e5e1fa;
+  color:#4735a1;border-radius:8px;box-shadow:none;
+}
+.abx-catalog-page .abx-filter-toggle:hover{background:#f0edff;border-color:#d2cbf6}
+.abx-catalog-page .abx-smart-quick{
+  padding:1px 14px 12px;gap:6px;
+}
+.abx-catalog-page .abx-smart-quick>span:first-child{color:#8791a4}
+.abx-catalog-page .abx-smart-quick button{
+  min-height:30px;font-size:10.7px;
+  background:#fafbfc;border-color:#e9ecf2;color:#60708a;
+}
+.abx-catalog-page .abx-catalog[data-query-active="true"] .abx-smart-quick{
+  display:none;
+}
+.abx-catalog-page .abx-catalog-workspace>.abx-smart-suggestions{
+  margin:2px 14px 11px;max-height:210px;
+  border-color:#e0e6f0;box-shadow:0 2px 9px rgba(24,31,69,.04);
+}
+.abx-catalog-page .abx-discovery-rail{
+  background:#fcfcfe;border-top-color:#edf0f5;
+  border-bottom-color:#e9ecf2;
+}
+.abx-catalog-page .abx-discovery-rail .abx-smart-scopes,
+.abx-catalog-page .abx-discovery-rail .abx-shortcuts{
+  padding:11px 14px;min-height:0;
+}
+.abx-catalog-page .abx-discovery-rail .abx-smart-scopes>span:first-child,
+.abx-catalog-page .abx-discovery-rail .abx-shortcuts-label{
+  color:#7c899d;letter-spacing:0;font-weight:620;
+}
+.abx-catalog-page .abx-discovery-rail .abx-smart-scope-switch{
+  background:#f2f4f8;border-color:#e9edf3;border-radius:7px;
+}
+.abx-catalog-page .abx-discovery-rail .abx-smart-scope-switch button{
+  border-radius:6px;min-height:36px;font-size:11px;
+}
+.abx-catalog-page .abx-discovery-rail .abx-shortcut-pills button{
+  border-radius:7px;min-height:36px;font-size:11px;
+}
+.abx-catalog-page .abx-catalog-toolbar{
+  margin:20px 0 10px;padding-bottom:11px;
+}
+.abx-catalog-page .abx-catalog-reference-note{
+  border-radius:7px;background:#fcfcfe;
+  padding:9px 12px;margin-bottom:13px;
+}
+.abx-catalog-page .abx-catalog-list{gap:8px}
+.abx-catalog-page .abx-catalog-item{
+  border-radius:9px;border-color:#e4e9f1;
+}
+.abx-catalog-page .abx-catalog-item:hover{
+  box-shadow:0 2px 11px rgba(28,30,84,.035);
+}
+.abx-catalog-page .abx-catalog-item-row{
+  padding:15px 17px;gap:12px;
+}
+.abx-catalog-page .abx-catalog-name{
+  color:#192d4b;font-size:15px;
+  font-weight:660;letter-spacing:-.20px;
+}
+.abx-catalog-page .abx-catalog-summary{
+  color:#5e6e86;font-size:11.6px;
+}
+.abx-catalog-page .abx-catalog-atc{
+  background:#f6f5ff;color:#6152a5;border-color:#ebe7ff;
+}
+.abx-catalog-page .abx-catalog-details-button{
+  background:#f5f3ff;color:#4634aa;
+  border-color:#e6e0fc;box-shadow:none;
+}
+.abx-catalog-page .abx-catalog-details-button:hover{background:#eeeaff}
+.abx-catalog-page .abx-catalog-pill.is-missing{
+  background:#fef3f2;color:#b42318;border-color:#fecdca;
+}
+.abx-catalog-page .abx-active-filters button{
+  min-height:35px; border-radius:7px;
+}
+.abx-catalog-page .abx-catalog .abx-smart-clear:focus-visible,
+.abx-catalog-page .abx-catalog .abx-shortcut-pills button:focus-visible,
+.abx-catalog-page .abx-catalog .abx-smart-scope-switch button:focus-visible{
+  outline:2px solid #533afd;outline-offset:2px;
+}
+@media(max-width:760px){
+  .abx-catalog-page .antibiotiket-page{padding:15px 12px 92px}
+  .abx-catalog-page .abx-catalog-heading{
+    gap:12px;margin-bottom:15px;padding:0 0 15px;
+  }
+  .abx-catalog-page .abx-catalog-heading h1{font-size:28px;font-weight:380}
+  .abx-catalog-page .abx-catalog-heading p{font-size:12px}
+  .abx-catalog-page .abx-heading-metrics .abx-heading-meta{padding:9px 12px}
+  .abx-catalog-page .abx-heading-metrics .abx-heading-meta b{font-size:24px}
+  .abx-catalog-page .abx-catalog-workspace>.abx-catalog-searchbar{
+    padding:10px 10px 6px;
+  }
+  .abx-catalog-page .abx-catalog-search{height:48px}
+  .abx-catalog-page .abx-catalog-search input{font-size:16px}
+  .abx-catalog-page .abx-filter-toggle{height:48px;min-width:80px}
+  .abx-catalog-page .abx-smart-quick{padding:2px 10px 10px}
+  .abx-catalog-page .abx-catalog-workspace>.abx-smart-suggestions{
+    margin:0 10px 9px;max-height:190px;
+  }
+  .abx-catalog-page .abx-discovery-rail .abx-smart-scopes,
+  .abx-catalog-page .abx-discovery-rail .abx-shortcuts{
+    padding:9px 10px;
+  }
+  .abx-catalog-page .abx-discovery-rail .abx-smart-scope-switch button{
+    min-height:44px;
+  }
+  .abx-catalog-page .abx-catalog-toolbar{
+    margin-top:16px;gap:8px;
+  }
+  .abx-catalog-page .abx-catalog-item-row{
+    padding:14px 12px;gap:7px 10px;
+  }
+  .abx-catalog-page .abx-catalog-name{font-size:14.6px}
+  .abx-catalog-page .abx-catalog-details-button{min-height:44px}
+}
+@media(max-width:360px){
+  .abx-catalog-page .abx-catalog-heading p{font-size:11.7px}
+  .abx-catalog-page .abx-catalog-search input::placeholder{font-size:13px}
+  .abx-catalog-page .abx-smart-quick button{min-height:36px}
+}
+@media(prefers-reduced-motion:reduce){
+  .abx-catalog-page .abx-catalog-item,.abx-catalog-page .abx-catalog-search{
+    transition:none!important;
+  }
+}
