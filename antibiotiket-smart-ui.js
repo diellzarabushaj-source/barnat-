@@ -23,9 +23,11 @@ const init=()=>{
  search.setAttribute('aria-describedby','abxSmartHint');
  const key=document.createElement('kbd');key.className='abx-smart-shortcut';key.textContent='⌘ K';label.appendChild(key);
  const clear=document.createElement('button');clear.type='button';clear.id='abxSmartClear';clear.className='abx-smart-clear';clear.textContent='×';clear.title='Pastro kërkimin';clear.setAttribute('aria-label','Pastro kërkimin');clear.hidden=true;wrap.appendChild(clear);
- const suggestions=document.createElement('div');suggestions.id='abxSmartSuggestions';suggestions.className='abx-smart-suggestions';suggestions.setAttribute('role','listbox');suggestions.setAttribute('aria-label','Sugjerime nga katalogu');suggestions.hidden=true;wrap.appendChild(suggestions);
+ const suggestions=document.createElement('div');suggestions.id='abxSmartSuggestions';suggestions.className='abx-smart-suggestions';suggestions.setAttribute('role','listbox');suggestions.setAttribute('aria-label','Sugjerime nga katalogu');suggestions.hidden=true;
  const quick=document.createElement('div');quick.className='abx-smart-quick';quick.id='abxSmartQuick';quick.innerHTML='<span id="abxSmartHint">Provo:</span><button type="button" data-abx-example="Amoxicillin" data-abx-scope="substance">Amoxicillin</button><button type="button" data-abx-example="Ceftriaxone" data-abx-scope="substance">Ceftriaxone</button><button type="button" data-abx-example="Cistit" data-abx-scope="indication">Cistit</button><span class="abx-smart-disclaimer">Nga të dhënat e katalogut · jo rekomandime terapeutike</span>';
  bar.insertAdjacentElement('afterend',quick);
+ // Inline combobox panel keeps filters and scope tabs clickable at every viewport.
+ quick.insertAdjacentElement('beforebegin',suggestions);
  const scope=document.createElement('div');scope.className='abx-smart-scopes';scope.id='abxSmartScopes';
  scope.innerHTML='<span>Kërko sipas:</span><div class="abx-smart-scope-switch" role="group" aria-label="Zgjidh fushën e kërkimit"><button type="button" aria-pressed="true" data-abx-scope-tab="all">Gjithçka</button><button type="button" aria-pressed="false" data-abx-scope-tab="substance">Substanca / ATC</button><button type="button" aria-pressed="false" data-abx-scope-tab="product">Produktet</button><button type="button" aria-pressed="false" data-abx-scope-tab="indication">Indikacionet</button></div><span class="abx-smart-scopes-note">Kërkimi nuk përcakton vetë indikacion terapeutik</span>';
  quick.insertAdjacentElement('afterend',scope);
@@ -129,8 +131,8 @@ const init=()=>{
  filter.addEventListener('change',schedule);
  $('abxCatalogOnlySelected')?.addEventListener('change',schedule);
  $('abxCatalogReset')?.addEventListener('click',()=>{close();setScope('all');lastStamp='';schedule();});
- root.addEventListener('click',event=>{if(!event.target.closest('.abx-smart-search-wrap'))close();});
- document.addEventListener('pointerdown',event=>{if(!wrap.contains(event.target))close();});
+ root.addEventListener('click',event=>{if(!wrap.contains(event.target)&&!suggestions.contains(event.target))close();});
+ document.addEventListener('pointerdown',event=>{if(!root.contains(event.target))close();});
  document.addEventListener('keydown',event=>{
   const tag=document.activeElement?.tagName;
   if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'||event.key==='/'&&!['INPUT','TEXTAREA','SELECT'].includes(tag)){
