@@ -25,13 +25,8 @@ function init(){
  subtitle.textContent='Përputhja e rrugës dhe formës kontrollohet mbi produktin e njëjtë';
  facetHeading.append(title,subtitle);
  filter.prepend(facetHeading);
- const kicker=heading.querySelector('.abx-catalog-eyebrow');
- if(kicker)kicker.textContent='DRx / BIBLIOTEKA KLINIKE / AKPPM';
- const desc=heading.querySelector('h1 + p');
- if(desc)desc.textContent='Substancat, markat dhe indikacionet në një kërkim të vetëm. Filtra të qartë dhe burime të dokumentuara.';
+ // Leave the editorial header and both source-derived metrics untouched.
  search.placeholder='Substanca, marka, ATC ose indikacioni…';
- const counter=heading.querySelector('.abx-heading-meta span');
- if(counter)counter.textContent='substanca dhe kombinime me produkte aktive në eksport';
  root.dataset.finishReady='true';
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
