@@ -1,7 +1,7 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "catalogAsOf": "2026-11-21",
-  "notice": "78 hyrje të katalogut (duke përfshirë dublikimet, përkthimet, dokumentet jashtë fushës klinike dhe draftet e konsultimit). Datat/vlefshmëria duhet verifikuar në MSh.",
+  "notice": "Bibliotekë pa publikime të përsëritura, përkthime alternative dhe dokumente administrative. Lidhjet e MSh-së mund të ndryshojnë; ku ekziston pasqyrim i verifikuar, lexo kopjen në DRx. Statusi i miratimit dhe vlefshmëria klinike duhen kontrolluar në burimin zyrtar.",
   "sourceRegistry": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
   "documents": [
     {
@@ -11,8 +11,8 @@
       "system": "endocrine",
       "title": "Trajtimi i diabetit tip 2 me antidiabetikë oralë te të rriturit",
       "sourceId": null,
-      "sourceUrl": null,
-      "sourceStatus": "catalog_entry_only",
+      "sourceUrl": "https://msh.rks-gov.net/wp-content/uploads/2026/10/Protokolli-Klinik-Trajtimi-i-semundjes-se-sheqerit-tip-2-me-antidiabetike-oral-te-te-rriturit.pdf",
+      "sourceStatus": "official_pdf_indexed",
       "duplicateOf": null,
       "publicationType": "standard",
       "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
@@ -68,11 +68,12 @@
       "title": "Menaxhimi i osteoporozës",
       "sourceId": "upk-01",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Proto35871754.9615.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2026",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-01"
     },
     {
       "id": "msh-006",
@@ -82,11 +83,12 @@
       "title": "Menaxhimi i lindjes normale",
       "sourceId": "upk-49",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Proto42814213.6944.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2026",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-49"
     },
     {
       "id": "msh-007",
@@ -96,11 +98,12 @@
       "title": "Menaxhimi sindromik i infeksioneve seksualisht të transmetueshme",
       "sourceId": "upk-03",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABr49587919.4567.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2026",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-03"
     },
     {
       "id": "msh-008",
@@ -110,11 +113,12 @@
       "title": "Rreziku i mbidozimit nga alkooli dhe drogat e tjera",
       "sourceId": "upk-04",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABr49499898.2016.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2026",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-04"
     },
     {
       "id": "msh-009",
@@ -124,11 +128,12 @@
       "title": "Diagnostikimi i SPOK-ut në tri nivelet e kujdesit shëndetësor",
       "sourceId": "upk-07",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Proto39493018.6268.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2026",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-07"
     },
     {
       "id": "msh-010",
@@ -138,11 +143,12 @@
       "title": "Trajtimi farmakologjik i SPOK-ut",
       "sourceId": "upk-05",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Proto39686492.5766.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2026",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-05"
     },
     {
       "id": "msh-011",
@@ -152,11 +158,12 @@
       "title": "Menaxhimi i SPOK-ut në tri nivelet e kujdesit shëndetësor",
       "sourceId": "upk-06",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Proto39601580.885.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2026",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-06"
     },
     {
       "id": "msh-012",
@@ -166,11 +173,12 @@
       "title": "Menaxhimi i infeksioneve të pakomplikuara të traktit urinar",
       "sourceId": "upk-21",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABr53622966.1413.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available_official_unconfirmed",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2025",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-21"
     },
     {
       "id": "msh-013",
@@ -183,7 +191,7 @@
       "sourceStatus": "catalog_entry_only",
       "duplicateOf": null,
       "publicationType": "draft",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2025",
       "clinical": true
     },
     {
@@ -194,11 +202,12 @@
       "title": "Menaxhimi i osteoporozës",
       "sourceId": "upk-02",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABr29362649.6765.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2025",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-02"
     },
     {
       "id": "msh-015",
@@ -208,11 +217,12 @@
       "title": "Menaxhimi i diabetit në shtatzëni",
       "sourceId": "upk-16",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABr54988816.1039.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2025",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-16"
     },
     {
       "id": "msh-016",
@@ -222,11 +232,12 @@
       "title": "Menaxhimi i komplikimeve të diabetit",
       "sourceId": "upk-15",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABr29479088.3318.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2025",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-15"
     },
     {
       "id": "msh-017",
@@ -236,53 +247,12 @@
       "title": "Diagnostikimi dhe menaxhimi i SPOK-ut",
       "sourceId": "upk-08",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABr29659791.4402.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
-    },
-    {
-      "id": "msh-018",
-      "year": 2025,
-      "kind": "guideline",
-      "system": "endocrine",
-      "title": "Menaxhimi i komplikimeve të diabetit (publikim i përsëritur)",
-      "sourceId": "upk-15",
-      "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABr29479088.3318.pdf",
-      "sourceStatus": "indexed_document_link",
-      "duplicateOf": "msh-016",
-      "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
-    },
-    {
-      "id": "msh-019",
-      "year": 2025,
-      "kind": "guideline",
-      "system": "endocrine",
-      "title": "Menaxhimi i diabetit në shtatzëni (publikim i përsëritur)",
-      "sourceId": "upk-16",
-      "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABr54988816.1039.pdf",
-      "sourceStatus": "indexed_document_link",
-      "duplicateOf": "msh-015",
-      "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
-    },
-    {
-      "id": "msh-020",
-      "year": 2025,
-      "kind": "guideline",
-      "system": "musculo",
-      "title": "Menaxhimi i osteoporozës (publikim i përsëritur)",
-      "sourceId": "upk-02",
-      "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABr29362649.6765.pdf",
-      "sourceStatus": "indexed_document_link",
-      "duplicateOf": "msh-014",
-      "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2025",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-08"
     },
     {
       "id": "msh-021",
@@ -292,11 +262,12 @@
       "title": "Kujdesi antenatal në kujdesin parësor shëndetësor",
       "sourceId": "upk-40",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABr57530326.5531.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2025",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-40"
     },
     {
       "id": "msh-022",
@@ -306,25 +277,12 @@
       "title": "Kujdesi postnatal në kujdesin parësor shëndetësor",
       "sourceId": "upk-41",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABr57612765.5235.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
-    },
-    {
-      "id": "msh-023",
-      "year": 2025,
-      "kind": "guideline",
-      "system": "women",
-      "title": "Kujdesi antenatal (publikim i përsëritur)",
-      "sourceId": "upk-40",
-      "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABr57530326.5531.pdf",
-      "sourceStatus": "indexed_document_link",
-      "duplicateOf": "msh-021",
-      "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2025",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-41"
     },
     {
       "id": "msh-024",
@@ -334,25 +292,12 @@
       "title": "Menaxhimi i lindjes me prerje cezariane",
       "sourceId": "upk-50",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABr29592539.8186.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
-    },
-    {
-      "id": "msh-025",
-      "year": 2025,
-      "kind": "guideline",
-      "system": "women",
-      "title": "Menaxhimi i lindjes me prerje cezariane (publikim i përsëritur)",
-      "sourceId": "upk-50",
-      "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABr29592539.8186.pdf",
-      "sourceStatus": "indexed_document_link",
-      "duplicateOf": "msh-024",
-      "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2025",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-50"
     },
     {
       "id": "msh-026",
@@ -362,25 +307,12 @@
       "title": "Menaxhimi i lindjes normale",
       "sourceId": "upk-48",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABr55327565.227.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
-    },
-    {
-      "id": "msh-027",
-      "year": 2025,
-      "kind": "guideline",
-      "system": "women",
-      "title": "Menaxhimi i lindjes normale (publikim i përsëritur)",
-      "sourceId": "upk-48",
-      "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABr55327565.227.pdf",
-      "sourceStatus": "indexed_document_link",
-      "duplicateOf": "msh-026",
-      "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2025",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-48"
     },
     {
       "id": "msh-028",
@@ -390,53 +322,12 @@
       "title": "Menaxhimi dhe trajtimi i rasteve të dhunës seksuale",
       "sourceId": "upk-43",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABr51174009.4601.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
-    },
-    {
-      "id": "msh-029",
-      "year": 2025,
-      "kind": "protocol",
-      "system": "endocrine",
-      "title": "Trajtimi i diabetit tip 2 me antidiabetikë oralë te të rriturit",
-      "sourceId": "upk-13",
-      "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Proto51704725.9408.pdf",
-      "sourceStatus": "indexed_document_link",
-      "duplicateOf": "msh-001",
-      "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
-    },
-    {
-      "id": "msh-030",
-      "year": 2025,
-      "kind": "protocol",
-      "system": "endocrine",
-      "title": "Trajtimi i diabetit tip 2 me antidiabetikë oralë (publikim i përsëritur)",
-      "sourceId": "upk-13",
-      "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Proto51704725.9408.pdf",
-      "sourceStatus": "indexed_document_link",
-      "duplicateOf": "msh-001",
-      "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
-    },
-    {
-      "id": "msh-031",
-      "year": 2025,
-      "kind": "guideline",
-      "system": "women",
-      "title": "Menaxhimi dhe trajtimi i rasteve të dhunës seksuale (publikim i përsëritur)",
-      "sourceId": "upk-43",
-      "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABr51174009.4601.pdf",
-      "sourceStatus": "indexed_document_link",
-      "duplicateOf": "msh-028",
-      "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2025",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-43"
     },
     {
       "id": "msh-032",
@@ -446,25 +337,12 @@
       "title": "Trajtimi i çrregullimit obsesiv-kompulsiv (OCD)",
       "sourceId": "upk-37",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABr51043611.8582.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
-    },
-    {
-      "id": "msh-033",
-      "year": 2025,
-      "kind": "guideline",
-      "system": "mental",
-      "title": "Trajtimi i çrregullimit obsesiv-kompulsiv (publikim i përsëritur)",
-      "sourceId": "upk-37",
-      "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABr51043611.8582.pdf",
-      "sourceStatus": "indexed_document_link",
-      "duplicateOf": "msh-032",
-      "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2025",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-37"
     },
     {
       "id": "msh-034",
@@ -477,36 +355,8 @@
       "sourceStatus": "catalog_entry_only",
       "duplicateOf": null,
       "publicationType": "draft",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2025",
       "clinical": true
-    },
-    {
-      "id": "msh-035",
-      "year": 2025,
-      "kind": "guideline",
-      "system": "pulmonary",
-      "title": "Diagnostikimi dhe menaxhimi i SPOK-ut (publikim tjetër)",
-      "sourceId": "upk-08",
-      "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABr29659791.4402.pdf",
-      "sourceStatus": "indexed_document_link",
-      "duplicateOf": "msh-017",
-      "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
-    },
-    {
-      "id": "msh-036",
-      "year": 2024,
-      "kind": "other",
-      "system": "administrative",
-      "title": "Ruajtja dhe arkivimi i dokumentacionit financiar",
-      "sourceId": null,
-      "sourceUrl": null,
-      "sourceStatus": "catalog_entry_only",
-      "duplicateOf": null,
-      "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": false
     },
     {
       "id": "msh-037",
@@ -516,11 +366,12 @@
       "title": "Profilaksia e HIV-it para ekspozimit (PrEP)",
       "sourceId": "upk-22",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Proto54311162.4999.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2024",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-22"
     },
     {
       "id": "msh-038",
@@ -530,11 +381,12 @@
       "title": "Trajtimi i diabetit tip 2 me preparate insulinike dhe joinsulinike injektuese",
       "sourceId": "upk-14",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Proto29322229.1642.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2024",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-14"
     },
     {
       "id": "msh-039",
@@ -547,7 +399,7 @@
       "sourceStatus": "catalog_entry_only",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2024",
       "clinical": true
     },
     {
@@ -561,7 +413,7 @@
       "sourceStatus": "catalog_entry_only",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2023",
       "clinical": true
     },
     {
@@ -572,25 +424,12 @@
       "title": "Përdorimi i antibiotikëve në Kujdesin Parësor Shëndetësor",
       "sourceId": "upk-20",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABz54734865.7678.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
-    },
-    {
-      "id": "msh-042",
-      "year": 2023,
-      "kind": "other",
-      "system": "infection",
-      "title": "Plani i Veprimit për HIV (dokument strategjik)",
-      "sourceId": null,
-      "sourceUrl": null,
-      "sourceStatus": "catalog_entry_only",
-      "duplicateOf": null,
-      "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2023",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-20"
     },
     {
       "id": "msh-043",
@@ -600,11 +439,12 @@
       "title": "Çrregullimi i stresit posttraumatik dhe çrregullimet e lidhura me traumën",
       "sourceId": "upk-36",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABr36634021.7658.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2023",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-36"
     },
     {
       "id": "msh-044",
@@ -614,11 +454,12 @@
       "title": "Trajtimi i pacientëve me skizofreni",
       "sourceId": "upk-35",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABr38222824.9085.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2023",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-35"
     },
     {
       "id": "msh-045",
@@ -628,11 +469,12 @@
       "title": "Menaxhimi i hipertensionit arterial",
       "sourceId": "upk-18",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=PKK%20-%20Menaxhimi%20i%20hipertensionit%20arterial%2047213398.8634.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2022",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-18"
     },
     {
       "id": "msh-046",
@@ -642,11 +484,12 @@
       "title": "Trajtimi i çrregullimeve nga alkooli dhe drogat e tjera",
       "sourceId": "upk-33",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Trajtimi%20i%20alkoolit%20dhe%20drogave%20tjera%2040248446.1821.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2022",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-33"
     },
     {
       "id": "msh-047",
@@ -656,11 +499,12 @@
       "title": "Menaxhimi i astmës akute te të rriturit në KPSH",
       "sourceId": "upk-10",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=PKK%20-%20Menaxhimi%20i%20astm%C3%ABs%20akute%20te%20t%C3%AB%20rriturit%20n%C3%AB%20KPSH47355058.4042.docx",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2022",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-10"
     },
     {
       "id": "msh-048",
@@ -670,25 +514,12 @@
       "title": "Trajtimi i sjelljeve suicidale",
       "sourceId": "upk-32",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Trajtimi%20i%20Sjelljeve%20Suicidale%2040374888.0385.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
-    },
-    {
-      "id": "msh-049",
-      "year": 2022,
-      "kind": "guideline",
-      "system": "mental",
-      "title": "Trajtimi i sjelljeve suicidale (publikim i përsëritur)",
-      "sourceId": "upk-32",
-      "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Trajtimi%20i%20Sjelljeve%20Suicidale%2040374888.0385.pdf",
-      "sourceStatus": "indexed_document_link",
-      "duplicateOf": "msh-048",
-      "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2022",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-32"
     },
     {
       "id": "msh-050",
@@ -698,11 +529,12 @@
       "title": "Menaxhimi i hemorragjisë primare postpartale",
       "sourceId": "upk-46",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=PKK%20-%20Menaxhimi%20i%20Hemorragjis%C3%AB%20Primare%20Postpartale47572428.9574.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2022",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-46"
     },
     {
       "id": "msh-051",
@@ -712,11 +544,12 @@
       "title": "Menaxhimi i preeklampsisë së rëndë",
       "sourceId": "upk-45",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=PKK%20-%20Menaxhimi%20i%20preekplampsis%C3%AB%20s%C3%AB%20r%C3%ABnd%C3%AB%2047708410.0706.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2022",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-45"
     },
     {
       "id": "msh-052",
@@ -726,11 +559,12 @@
       "title": "Trajtimi i ankthit",
       "sourceId": "upk-30",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Trajtimi%20i%20Ankthit39857639.78.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2022",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-30"
     },
     {
       "id": "msh-053",
@@ -743,7 +577,7 @@
       "sourceStatus": "catalog_entry_only",
       "duplicateOf": null,
       "publicationType": "draft",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2022",
       "clinical": true
     },
     {
@@ -754,11 +588,12 @@
       "title": "DHBGJ – Dhuna në baza gjinore",
       "sourceId": "upk-44",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udherrefyesi%20%E2%80%93%20DHBGJ38901460.2098.docx",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2022",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-44"
     },
     {
       "id": "msh-055",
@@ -768,39 +603,12 @@
       "title": "Intervenimet promovuese dhe parandaluese në shëndetin mendor të adoleshentëve (shqip)",
       "sourceId": "upk-38",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=SHQ-Udh%C3%ABzuesi%20p%C3%ABr%20%E2%80%9CIntervenime%20Promovuese%20dhe%20Parandaluese%20n%C3%AB%20Fush%C3%ABn%20e%20Sh%C3%ABndetit%20Mendor%20te%20Adoleshent%C3%ABt%E2%80%9D39036981.9602.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
-    },
-    {
-      "id": "msh-056",
-      "year": 2022,
-      "kind": "guideline",
-      "system": "mental",
-      "title": "Intervenimet promovuese dhe parandaluese në shëndetin mendor të adoleshentëve (serbisht)",
-      "sourceId": null,
-      "sourceUrl": null,
-      "sourceStatus": "catalog_entry_only",
-      "duplicateOf": "msh-055",
-      "publicationType": "translation",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
-    },
-    {
-      "id": "msh-057",
-      "year": 2022,
-      "kind": "guideline",
-      "system": "mental",
-      "title": "Intervenimet promovuese dhe parandaluese në shëndetin mendor të adoleshentëve (anglisht)",
-      "sourceId": null,
-      "sourceUrl": null,
-      "sourceStatus": "catalog_entry_only",
-      "duplicateOf": "msh-055",
-      "publicationType": "translation",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2022",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-38"
     },
     {
       "id": "msh-058",
@@ -810,11 +618,12 @@
       "title": "Menaxhimi dhe trajtimi i COVID-19 në KPSH",
       "sourceId": "upk-53",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=PKK%20-Menaxhimi%20dhe%20trajtimi%20i%20COVID-19%20ne%20KPSh46968817.6726.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2021",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-53"
     },
     {
       "id": "msh-059",
@@ -824,11 +633,12 @@
       "title": "Menaxhimi dhe trajtimi i COVID-19",
       "sourceId": "upk-54",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=UK-%20Menaxhimi%20dhe%20trajtimi%20i%20COVID-1939778606.6989.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2021",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-54"
     },
     {
       "id": "msh-060",
@@ -841,7 +651,7 @@
       "sourceStatus": "catalog_entry_only",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2021",
       "clinical": true
     },
     {
@@ -852,11 +662,12 @@
       "title": "Trajtimi me dializë i të rriturve",
       "sourceId": "upk-52",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Trajtimi%20me%20dializ%C3%AB%20i%20t%C3%AB%20rriturve41487085.8149.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2020",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-52"
     },
     {
       "id": "msh-062",
@@ -866,11 +677,12 @@
       "title": "Trajtimi dhe mbikëqyrja e rasteve me HIV/AIDS",
       "sourceId": "upk-24",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Trajtimi%20dhe%20mbik%C3%ABqyrja%20e%20rastit%20me%20HIV-AIDS41606200.4204.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2020",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-24"
     },
     {
       "id": "msh-063",
@@ -880,11 +692,12 @@
       "title": "Përdorimi i metadonit për trajtimin mbajtës zëvendësues me opioide",
       "sourceId": "upk-34",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=P%C3%ABrdorimi%20i%20Metadonit%20p%C3%ABr%20trajtim%20mbajt%C3%ABs%20z%C3%ABvend%C3%ABsues%20me%20opioide%2045370002.8259.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2020",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-34"
     },
     {
       "id": "msh-064",
@@ -894,11 +707,12 @@
       "title": "Menaxhimi i gjakderdhjes akute të traktit të sipërm gastrointestinal",
       "sourceId": "upk-39",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Menaxhimi%20i%20gjakderdhjeve%20akute%20t%C3%AB%20traktit%20t%C3%AB%20sip%C3%ABrm%20gastrointestinal%20te%20t%C3%AB%20rriturit%2045663126.2898.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2020",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-39"
     },
     {
       "id": "msh-065",
@@ -908,11 +722,12 @@
       "title": "Menaxhimi farmakologjik i diabetit tip 2 te të rriturit",
       "sourceId": "upk-12",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Menaxhimi%20farmakologjik%20i%20s%C3%ABmundjes%20s%C3%AB%20sheqerit%20Tip%202%20tek%20t%C3%AB%20rriturit45812721.4552.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2020",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-12"
     },
     {
       "id": "msh-066",
@@ -922,11 +737,12 @@
       "title": "Diagnoza dhe menaxhimi i epilepsisë",
       "sourceId": "upk-28",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Diagnoza%20dhe%20menaxhimi%20i%20Epilepsis%C3%AB%2045572941.1968.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2020",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-28"
     },
     {
       "id": "msh-067",
@@ -936,11 +752,12 @@
       "title": "Menaxhimi i infeksionit latent të tuberkulozit",
       "sourceId": "upk-27",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Menaxhimi%20i%20infeksionit%20latent%20t%C3%AB%20tuberkulozit%20%2040519089.3729.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2020",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-27"
     },
     {
       "id": "msh-068",
@@ -950,11 +767,12 @@
       "title": "Diagnostikimi dhe menaxhimi i tuberkulozit ekstrapulmonar",
       "sourceId": "upk-26",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Diagnostikimi%20dhe%20menaxhimi%20i%20tuberkulozit%20ekstra-pulmonar%2040718461.6423.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2020",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-26"
     },
     {
       "id": "msh-069",
@@ -964,11 +782,12 @@
       "title": "Menaxhimi dhe trajtimi i COVID-19",
       "sourceId": "upk-55",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Menaxhimi%20dhe%20trajtimi%20i%20COVID-19%2041125761.4307.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2020",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-55"
     },
     {
       "id": "msh-070",
@@ -978,11 +797,12 @@
       "title": "Kujdesi dhe trajtimi i personave me hepatit C",
       "sourceId": "upk-25",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Kujdesi%20dhe%20trajtimi%20i%20personave%20t%C3%AB%20diagnostikuar%20me%20Hepatit%20C%2041266873.7919.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2020",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-25"
     },
     {
       "id": "msh-071",
@@ -992,11 +812,12 @@
       "title": "Trajtimi i sëmundjes iskemike trunore (stroke)",
       "sourceId": "upk-19",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Trajtimi%20i%20s%C3%ABmundjes%20iskemike%20trunore%2041404938.7077.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2020",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-19"
     },
     {
       "id": "msh-072",
@@ -1006,11 +827,12 @@
       "title": "Menaxhimi jofarmakologjik i diabetit",
       "sourceId": "upk-11",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Menaxhimi%20jo-farmakologjik%20i%20S%C3%ABmundjes%20s%C3%AB%20Sheqerit%2045905409.0477.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2019",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-11"
     },
     {
       "id": "msh-073",
@@ -1020,11 +842,12 @@
       "title": "Menaxhimi i astmës",
       "sourceId": "upk-09",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Menaxhimi%20i%20Astm%C3%ABs%2046019544.7593.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2019",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-09"
     },
     {
       "id": "msh-074",
@@ -1034,11 +857,12 @@
       "title": "Menaxhimi i hipertensionit arterial",
       "sourceId": "upk-17",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Menaxhimi%20i%20hipertensionit%20arterial46146825.7972.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2019",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-17"
     },
     {
       "id": "msh-075",
@@ -1048,11 +872,12 @@
       "title": "Transporti neonatal",
       "sourceId": "upk-51",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABrr%C3%ABfyesi%20i%20Transportit%20Neonatal%2046259753.2014.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2018",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-51"
     },
     {
       "id": "msh-076",
@@ -1062,11 +887,12 @@
       "title": "Shërbimet e testimit për HIV",
       "sourceId": "upk-23",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Udh%C3%ABrr%C3%ABfyesi%20p%C3%ABr%20sh%C3%ABrbime%20t%C3%AB%20HIV%20testimit46415510.6741.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2018",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-23"
     },
     {
       "id": "msh-077",
@@ -1076,11 +902,12 @@
       "title": "Skrinimi dhe trajtimi i lezioneve prekanceroze të qafës së mitrës",
       "sourceId": "upk-42",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Skrinimi%20dhe%20trajtimi%20i%20lezioneve%20prekanceroze%20t%C3%AB%20qaf%C3%ABs%20s%C3%AB%20mitr%C3%ABs%2046495245.562.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2018",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-42"
     },
     {
       "id": "msh-078",
@@ -1090,11 +917,13 @@
       "title": "Parandalimi dhe menaxhimi i hemorragjisë primare postpartale",
       "sourceId": "upk-47",
       "sourceUrl": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Parandalimi%20dhe%20menaxhimi%20i%20hemorragjis%C3%AB%20primare%20post%20partale%2046787584.2312.pdf",
-      "sourceStatus": "indexed_document_link",
+      "sourceStatus": "local_mirror_available",
       "duplicateOf": null,
       "publicationType": "standard",
-      "catalogUrl": "https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/",
-      "clinical": true
+      "catalogUrl": "https://msh.rks-gov.net/Documents/Index/273?year=2018",
+      "clinical": true,
+      "cachedPath": "/api/protocol-document?id=upk-47"
     }
-  ]
+  ],
+  "countPolicy": "Nga 78 hyrjet e renditura, dokumentet e përsëritura, përkthimet alternative dhe dokumentet jo klinike janë hequr."
 }
