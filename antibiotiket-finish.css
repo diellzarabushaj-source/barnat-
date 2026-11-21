@@ -527,3 +527,137 @@
   margin:0 11px 10px;max-height:188px;
  }
 }
+
+
+/* Clinical UX V7 — quiet, fast, readable. Uses the existing DRx navy/indigo tokens.
+   No novelty animation, new framework, dosing change or third-party asset. */
+.abx-catalog-page .abx-catalog{
+ --abx-focus:#533afd;--abx-ink:#1c1e54;--abx-hairline:#e3e8ee;
+}
+.abx-catalog-page .abx-heading-metrics{
+ border-color:#e3e8ee;background:#fcfdff;
+}
+.abx-catalog-page .abx-heading-metrics .abx-heading-meta b{
+ font-variant-numeric:tabular-nums;letter-spacing:-.7px;
+}
+.abx-catalog-page .abx-catalog-search{
+ border-color:#aebed5;background:#fff;
+ transition:border-color .14s,box-shadow .14s;
+}
+.abx-catalog-page .abx-catalog-search:focus-within{
+ border-color:#533afd;box-shadow:0 0 0 3px rgba(83,58,253,.10);
+}
+.abx-catalog-page .abx-smart-shortcut{border-radius:6px;background:#f6f7fb}
+.abx-catalog-page .abx-discovery-rail{
+ background:#fafbfe;border-color:#e7ebf2;
+}
+.abx-catalog-page .abx-discovery-rail .abx-smart-scope-switch button[aria-pressed="true"]{
+ background:white;color:#382b9b;box-shadow:0 1px 4px rgba(28,30,84,.10);
+}
+.abx-catalog-page .abx-discovery-rail .abx-shortcut-pills button[aria-pressed="true"]{
+ color:#352c93;border-color:#c5bef5;background:#efedff;
+}
+.abx-catalog-page .abx-catalog-item{
+ border-radius:10px;box-shadow:none;
+}
+.abx-catalog-page .abx-catalog-item:hover{
+ transform:none;border-color:#c3baf0;
+ box-shadow:0 3px 12px rgba(28,30,84,.035);
+}
+.abx-catalog-page .abx-catalog-item-row{
+ padding-block:16px;gap:12px;
+}
+.abx-catalog-page .abx-catalog-name{
+ font-size:15px;font-weight:680;color:#20314c;
+}
+.abx-catalog-page .abx-catalog-atc{
+ background:#f7f8fb;border-color:#e9ecf2;color:#63728a;
+}
+.abx-catalog-page .abx-catalog-taxonomy{color:#75839a;line-height:1.5}
+.abx-catalog-page .abx-catalog-summary{
+ color:#4d5e79;font-size:12px;line-height:1.58;
+}
+.abx-catalog-page .abx-catalog-forms{
+ color:#68788e;font-size:11px;line-height:1.55;
+}
+.abx-catalog-page .abx-catalog-details-button{
+ min-height:44px;border-color:#dcd8f5;background:#f5f3ff;
+ color:#4332a0;border-radius:8px;
+}
+.abx-catalog-page .abx-catalog-details-button:hover,
+.abx-catalog-page .abx-catalog-details-button:focus-visible{
+ border-color:#beb4f0;background:#edeaff;
+}
+.abx-catalog-page .abx-catalog-reference-note{
+ background:#fbfcfe;border-left-color:#c1bcef;
+}
+.abx-catalog-page .abx-catalog-pill.is-missing{
+ color:#b42318;border-color:#fecdca;background:#fef3f2;font-weight:640;
+}
+.abx-catalog-page .abx-smart-suggestions button{min-height:46px}
+.abx-catalog-page .abx-smart-suggestions button:focus-visible{
+ outline:2px solid #533afd;outline-offset:-2px;
+}
+.abx-catalog-page .abx-back-to-search{
+ position:fixed;z-index:38;
+ bottom:calc(22px + env(safe-area-inset-bottom));
+ right:22px;
+ display:inline-flex;align-items:center;justify-content:center;gap:9px;
+ min-height:45px;padding:10px 14px;
+ background:#1c1e54;color:#fff;
+ border:1px solid #33347d;border-radius:999px;
+ font:630 12px/1.2 Inter,system-ui,sans-serif;
+ box-shadow:0 5px 16px rgba(15,24,74,.16);
+ cursor:pointer;
+}
+.abx-catalog-page .abx-back-to-search>span:first-child{
+ font-size:19px;font-weight:500;line-height:.7;
+}
+.abx-catalog-page .abx-back-to-search:hover{background:#302a8d}
+.abx-catalog-page .abx-back-to-search:focus-visible{
+ outline:3px solid #b7a8ff;outline-offset:3px;
+}
+.abx-catalog-page .abx-back-to-search[hidden]{display:none!important}
+@media(max-width:760px){
+ .abx-catalog-page .abx-catalog-heading{
+  margin-bottom:14px;padding-bottom:15px;gap:10px;
+ }
+ .abx-catalog-page .abx-catalog-heading h1{
+  font-size:29px;line-height:1.12;
+ }
+ .abx-catalog-page .abx-catalog-heading p{
+  font-size:12px;line-height:1.55;
+ }
+ .abx-catalog-page .abx-catalog-item-row{
+  padding:15px 12px;gap:8px 10px;
+ }
+ .abx-catalog-page .abx-catalog-name{font-size:15px}
+ .abx-catalog-page .abx-catalog-summary{font-size:12px}
+ .abx-catalog-page .abx-catalog-forms{font-size:11px}
+ .abx-catalog-page .abx-catalog-details-button{
+  min-height:44px;padding-inline:12px;
+ }
+ .abx-catalog-page .abx-back-to-search{
+  bottom:calc(85px + env(safe-area-inset-bottom));
+  right:12px;min-height:44px;
+  padding:9px 12px;font-size:11px;
+  box-shadow:0 3px 12px rgba(15,24,74,.13);
+ }
+}
+@media(max-width:420px){
+ .abx-catalog-page .abx-heading-metrics{
+  padding:0;gap:0;
+ }
+ .abx-catalog-page .abx-heading-metrics .abx-heading-meta{padding:9px 11px}
+ .abx-catalog-page .abx-heading-metrics .abx-heading-meta b{font-size:23px}
+ .abx-catalog-page .abx-heading-metrics .abx-heading-meta span{font-size:10px}
+ .abx-catalog-page .abx-catalog-item-actions{
+  align-items:flex-start;gap:6px;
+ }
+ .abx-catalog-page .abx-catalog-details-button{min-width:136px}
+}
+@media(prefers-reduced-motion:reduce){
+ .abx-catalog-page .abx-catalog-item,
+ .abx-catalog-page .abx-catalog-search,
+ .abx-catalog-page .abx-back-to-search{transition:none}
+}
