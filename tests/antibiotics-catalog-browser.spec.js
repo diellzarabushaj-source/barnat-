@@ -254,3 +254,51 @@ test('Smart mobile: scoped tabs, active filter removal and narrow-screen overflo
  await expect(page.locator('#abxCatalogSearch')).toHaveValue('');
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
+
+
+test('Uiverse-inspired quick route filters preserve product-matched route and reset',async({page})=>{
+ await page.setViewportSize({width:1280,height:840});
+ await page.goto(url+'/antibiotiket.html');
+ const rail=page.locator('.abx-shortcuts');
+ await expect(rail).toBeVisible();
+ await expect(page.locator('.abx-shortcut-pills button').first()).toHaveAttribute('aria-pressed','true');
+ const po=page.locator('button[data-shortcut-route="PO"]');
+ await expect(po).toBeVisible();
+ await po.click();
+ await expect(page.locator('#abxCatalogRoute')).toHaveValue('PO');
+ await expect(po).toHaveAttribute('aria-pressed','true');
+ const count=await page.locator('.abx-catalog-item').count();
+ expect(count).toBeGreaterThan(0);
+ expect(count).toBeLessThan(135);
+ await page.locator('button[data-shortcut-route=""]').click();
+ await expect(page.locator('#abxCatalogRoute')).toHaveValue('');
+ await expect(page.locator('.abx-catalog-item')).toHaveCount(135);
+});
+test('Compact density is accessible, persistent and clinically neutral',async({page})=>{
+ await page.setViewportSize({width:390,height:844});
+ await page.goto(url+'/antibiotiket.html');
+ const button=page.locator('.abx-density-button');
+ await expect(button).toBeVisible();
+ await expect(page.locator('.abx-catalog-item')).toHaveCount(135);
+ const before=await page.locator('.abx-catalog-item').first().boundingBox();
+ await button.click();
+ await expect(page.locator('#antibioticsCatalog')).toHaveAttribute('data-density','compact');
+ await expect(page.locator('.abx-catalog-item')).toHaveCount(135);
+ const after=await page.locator('.abx-catalog-item').first().boundingBox();
+ expect(after.height).toBeLessThan(before.height);
+ await page.reload();
+ await expect(page.locator('#antibioticsCatalog')).toHaveAttribute('data-density','compact');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
+test('Search scopes and quick routes support keyboard navigation',async({page})=>{
+ await page.setViewportSize({width:320,height:800});
+ await page.goto(url+'/antibiotiket.html');
+ const all=page.locator('[data-abx-scope-tab="all"]');
+ await all.focus();
+ await all.press('ArrowRight');
+ await expect(page.locator('[data-abx-scope-tab="substance"]')).toHaveAttribute('aria-pressed','true');
+ await page.locator('button[data-shortcut-route=""]').focus();
+ await page.keyboard.press('ArrowRight');
+ await expect(page.locator('button[data-shortcut-route="PO"]')).toBeFocused();
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
