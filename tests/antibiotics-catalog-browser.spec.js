@@ -357,3 +357,33 @@ test('Desktop search shortcut hint matches the current platform',async({page})=>
  const platform=await page.evaluate(()=>navigator.platform||'');
  expect(key).toBe(/Mac|iPhone|iPad/.test(platform)?'⌘ K':'Ctrl K');
 });
+
+
+test('Minimal V8 search hides discovery examples after typing, keeping filters and results',async({page})=>{
+ await page.setViewportSize({width:1280,height:850});
+ await page.goto(url+'/antibiotiket.html');
+ const samples=page.locator('#abxSmartQuick');
+ await expect(samples).toBeVisible();
+ await expect(page.locator('.abx-catalog-item')).toHaveCount(135);
+ await page.locator('#abxCatalogSearch').fill('ceftri');
+ await expect(page.locator('#antibioticsCatalog')).toHaveClass(/abx-has-query/);
+ await expect(samples).toBeHidden();
+ await expect(page.locator('#abxSmartScopes')).toBeVisible();
+ await expect(page.locator('.abx-catalog-item').first()).toBeVisible();
+ await page.locator('#abxSmartClear').click();
+ await expect(page.locator('#antibioticsCatalog')).not.toHaveClass(/abx-has-query/);
+ await expect(samples).toBeVisible();
+ await expect(page.locator('.abx-catalog-item')).toHaveCount(135);
+});
+test('Minimal V8 phone keeps search and route filters visible without extra example row',async({page})=>{
+ for(const width of [320,390]){
+  await page.setViewportSize({width,height:800});
+  await page.goto(url+'/antibiotiket.html');
+  await expect(page.locator('#abxCatalogSearch')).toBeVisible();
+  await expect(page.locator('#abxSmartQuick')).toBeHidden();
+  await expect(page.locator('#abxSmartScopes')).toBeVisible();
+  await expect(page.locator('.abx-shortcuts')).toBeVisible();
+  await expect(page.locator('.abx-catalog-item')).toHaveCount(135);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ }
+});
