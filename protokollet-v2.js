@@ -125,6 +125,7 @@ document.addEventListener('click',function(e){
 var open=e.target.closest('[data-open]');if(open){openDocument(open.dataset.open);return;}
 var fav=e.target.closest('[data-favorite]');if(fav){var id=fav.dataset.favorite;if(favorites.has(id))favorites.delete(id);else favorites.add(id);saveFavorites();if(state.selected)renderReader(library.find(function(d){return d.id===state.selected;}));else renderDirectory();return;}
 if(e.target.closest('#plBack')){backToDirectory();return;}
+if(e.target.closest('#plRetry')){location.reload();return;}
 if(e.target.closest('#plReset')){state.kind='all';state.system='all';state.favorites=false;state.query='';$('#protocolSearch').value='';renderDirectory();return;}
 if(e.target.closest('#plCopyLink')){navigator.clipboard.writeText(location.href).then(function(){showToast('Lidhja u kopjua.');},function(){showToast('Lidhja nuk u kopjua.');});}
 });
@@ -148,10 +149,11 @@ library=data.documents.filter(function(d){if(!d||!/^upk-\d{2}$/.test(d.id)||!val
 $('#plTotal').textContent=library.length;$('#plProtocolCount').textContent=library.filter(function(d){return d.kind==='protocol';}).length;$('#plSystemCount').textContent=systems.length-1;
 $('#syncText').textContent='Burimi MSh';$('#plLoadStatus').textContent='';
 renderDirectory();hashRoute();
-}catch(e){$('#plLoadStatus').textContent='Biblioteka nuk është e qasshme: '+String(e.message||e);$('#protocolList').innerHTML='<div class="pl-empty"><strong>Nuk mund të shfaqen dokumentet.</strong><span>Verifiko lidhjen ose sesionin dhe rifresko faqen.</span><div><button class="pl-link-button" type="button" onclick="location.reload()">Provo përsëri</button></div></div>';$('#plResultsSummary').textContent='Burimi i papërgatitur';$('#syncText').textContent='Lidhja dështoi';}
+}catch(e){$('#plLoadStatus').textContent='Biblioteka nuk është e qasshme: '+String(e.message||e);$('#protocolList').innerHTML='<div class="pl-empty"><strong>Nuk mund të shfaqen dokumentet.</strong><span>Verifiko lidhjen ose sesionin dhe rifresko faqen.</span><div><button class="pl-link-button" type="button" id="plRetry">Provo përsëri</button></div></div>';$('#plResultsSummary').textContent='Burimi i papërgatitur';$('#syncText').textContent='Lidhja dështoi';}
 finally{$('#appShell').setAttribute('aria-busy','false');}
 }
-function boot(){safeLoadFavorites();bind();renderSystems();$('#plLoadStatus').textContent='Duke lexuar dokumentet…';load();}
+function loadSharedSidebarTaxonomy(){if(document.querySelector('script[data-drx-sidebar-taxonomy]'))return;var script=document.createElement('script');script.src='/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v4';script.defer=true;script.setAttribute('data-drx-sidebar-taxonomy','1');document.head.appendChild(script);}
+function boot(){loadSharedSidebarTaxonomy();safeLoadFavorites();bind();renderSystems();$('#plLoadStatus').textContent='Duke lexuar dokumentet…';load();}
 window.DRxProtocolShell=Object.freeze({version:'3',init:boot,validOfficial:validOfficial});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
