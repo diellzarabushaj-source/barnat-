@@ -14,8 +14,21 @@
  const filters={...defaults};let selected=[],storageKey='',authReady=false;const expanded=new Set(),doseConditions=new Map();
  const view=document.createElement('section');view.id='antibioticsCatalog';view.className='abx-catalog';view.setAttribute('aria-label','Katalogu i antibiotikëve');
  view.innerHTML=`
- <header class="abx-catalog-heading"><div><span class="abx-catalog-eyebrow">REFERENCA KLINIKE / AKPPM</span><h1>Antibiotikët<span class="abx-title-dot">.</span></h1><p>Gjej substancën. Shiko indikacionin, format dhe dozimin referencë.</p></div><div class="abx-heading-meta"><b>${all.length}</b><span>substanca dhe kombinime<br>me produkte aktive në eksport</span></div></header>
- <div class="abx-catalog-workspace"><div class="abx-catalog-searchbar"><label class="abx-catalog-search"><span class="sr-only">Kërko substancë, indikacion, produkt ose ATC</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.8"/><path d="m16 16 4.5 4.5"/></svg><input type="search" id="abxCatalogSearch" placeholder="Kërko substancë, infeksion, produkt ose ATC…" autocomplete="off"></label><button type="button" class="abx-filter-toggle" id="abxFilterToggle" aria-expanded="true" aria-controls="abxFilterPanel">Filtrat <span aria-hidden="true">⌄</span></button></div>
+ <header class="abx-catalog-heading">
+  <div class="abx-heading-content">
+   <div class="abx-heading-topline">
+    <span class="abx-heading-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="8" rx="4" transform="rotate(-45 12 12)"/><path d="M9 9l6 6"/></svg></span>
+    <span class="abx-catalog-eyebrow">DRx <span class="abx-heading-divider">/</span> Biblioteka klinike</span>
+   </div>
+   <h1>Antibiotikët<span class="abx-title-dot">.</span></h1>
+   <p>Kërko me emër gjenerik, markë, ATC apo indikacion. Gjej format e regjistruara dhe hap referencat klinike në një vend.</p>
+  </div>
+  <div class="abx-heading-metrics" aria-label="Madhësia e katalogut">
+    <div class="abx-heading-meta"><b>${all.length}</b><span>Substanca<br>në katalog</span></div>
+    <div class="abx-heading-meta"><b>${all.reduce((total,a)=>total+a.products.filter(p=>p.status==='Active').length,0)}</b><span>Produkte aktive<br>në eksport</span></div>
+  </div>
+ </header>
+ <div class="abx-catalog-workspace" aria-label="Kërkimi dhe filtrat e antibiotikëve"><div class="abx-catalog-searchbar"><label class="abx-catalog-search"><span class="sr-only">Kërko substancë, indikacion, produkt ose ATC</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.8"/><path d="m16 16 4.5 4.5"/></svg><input type="search" id="abxCatalogSearch" placeholder="Kërko substancë, infeksion, produkt ose ATC…" autocomplete="off"></label><button type="button" class="abx-filter-toggle" id="abxFilterToggle" aria-expanded="true" aria-controls="abxFilterPanel">Filtrat <span aria-hidden="true">⌄</span></button></div>
  <div id="abxFilterPanel"><div class="abx-catalog-controls">
  <label>Grupi kryesor<select id="abxCatalogGroup"></select></label><label>Nëngrupi<select id="abxCatalogSubgroup"></select></label><label class="abx-condition-field">Infeksioni / indikacioni<select id="abxCatalogIndication"></select></label><label>Rruga<select id="abxCatalogRoute"></select></label><label>Forma<select id="abxCatalogForm"></select></label><label>Popullata e burimit<select id="abxCatalogPopulation"></select></label>
  </div><div class="abx-filter-foot"><span>Forma sipas eksportit · popullata sipas referencës</span><button type="button" id="abxCatalogReset" class="abx-catalog-reset">Pastro filtrat <span aria-hidden="true">↺</span></button></div></div></div>
