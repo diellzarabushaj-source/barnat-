@@ -5,6 +5,7 @@ var $=function(s){return document.querySelector(s);};
 var escapeHtml=function(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
 var fold=function(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();};
 var domains=['msh.rks-gov.net'];
+var OFFICIAL_CATALOG='https://msh.rks-gov.net/udherrefyesit-dhe-protokollet-klinike-upk/';
 var library=[],state={system:'all',kind:'all',query:'',favorites:false,sort:'recent',selected:null};
 var favorites=new Set();
 var systems=[
@@ -20,7 +21,10 @@ var systems=[
 {id:'renal',label:'Nefrologji',icon:'droplet'},
 {id:'musculo',label:'Muskuloskeletal',icon:'bone'},
 {id:'pediatrics',label:'Pediatri / Neonatologji',icon:'baby'},
-{id:'toxicology',label:'Toksikologji',icon:'alert'}
+{id:'toxicology',label:'Toksikologji',icon:'alert'},
+{id:'dermatology',label:'Dermatologji',icon:'layers'},
+{id:'dental',label:'Stomatologji',icon:'file'},
+{id:'administrative',label:'Dokumente administrative',icon:'file'}
 ];
 var paths={
 grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
@@ -40,6 +44,7 @@ star:'<path d="m12 2 3.1 6.3 7 1-5.1 5 1.2 7L12 18l-6.2 3.3 1.2-7-5.1-5 7-1z"/>'
 };
 function icon(name){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(paths[name]||paths.file)+'</svg>';}
 function groupOf(d){
+if(d.system&&systems.some(function(s){return s.id===d.system;}))return d.system;
 var n=parseInt(d.id.replace('upk-',''),10);
 if(n<=2)return 'musculo';if(n===3)return 'infection';if(n===4)return 'toxicology';if(n<=10)return 'pulmonary';
 if(n<=16)return 'endocrine';if(n<=18)return 'cardio';if(n===19)return 'neurology';if(n<=27)return 'infection';
@@ -47,27 +52,28 @@ if(n<=29)return 'neurology';if(n<=38)return 'mental';if(n===39)return 'digestive
 if(n<=50)return 'women';if(n===51)return 'pediatrics';if(n===52)return 'renal';return 'pulmonary';
 }
 var emergencyIds=new Set(['upk-04','upk-10','upk-19','upk-39','upk-45','upk-46','upk-47','upk-53','upk-54','upk-55']);
-function docKind(d){var t=fold(d.title);return t.indexOf('protokoll')!==-1?'protocol':t.indexOf('udherrefyes')!==-1?'guideline':'other';}
+function docKind(d){if(['protocol','guideline','other'].includes(d.kind))return d.kind;var t=fold(d.title);return t.indexOf('protokoll')!==-1?'protocol':t.indexOf('udherrefyes')!==-1?'guideline':'other';}
 function kindLabel(k){return k==='protocol'?'Protokoll klinik':k==='guideline'?'Udhërrëfyes klinik':'Dokument klinik';}
-function validOfficial(url){try{var u=new URL(url);return u.protocol==='https:'&&domains.indexOf(u.hostname)!==-1&&u.pathname==='/Documents/DownloadDocument'&&!!u.searchParams.get('fileName')&&!u.username&&!u.password;}catch(e){return false;}}
-function safeLoadFavorites(){try{var x=JSON.parse(localStorage.getItem('drx:clinical-library:favorites:v3')||'[]');if(Array.isArray(x))favorites=new Set(x.filter(function(id){return /^upk-\d\d$/.test(id);}));}catch(e){favorites=new Set();}}
+function validOfficial(url){try{var u=new URL(url);return u.protocol==='https:'&&domains.indexOf(u.hostname)!==-1&&((u.pathname==='/Documents/DownloadDocument'&&!!u.searchParams.get('fileName'))||u.pathname==='/udherrefyesit-dhe-protokollet-klinike-upk/'||u.pathname==='/Documents/Index/273'||u.pathname.startsWith('/wp-content/uploads/'))&&!u.username&&!u.password;}catch(e){return false;}}
+function safeLoadFavorites(){try{var x=JSON.parse(localStorage.getItem('drx:clinical-library:favorites:v3')||'[]');if(Array.isArray(x))favorites=new Set(x.filter(function(id){return /^(?:upk-\d\d|msh-\d{3})$/.test(id);}));}catch(e){favorites=new Set();}}
 function saveFavorites(){try{localStorage.setItem('drx:clinical-library:favorites:v3',JSON.stringify(Array.from(favorites)));}catch(e){}}
 function labelSystem(id){var s=systems.find(function(x){return x.id===id;});return s?s.label:'Sistemi klinik';}
-function year(d){return /^\d{4}-/.test(d.publishedAt||'')?d.publishedAt.slice(0,4):'Pa datë';}
-function dateLabel(d){return /^\d{4}-\d\d-\d\d$/.test(d.publishedAt||'')?d.publishedAt.split('-').reverse().join('.'): 'Datë e papërcaktuar';}
+function year(d){return Number.isInteger(d.year)?String(d.year):/^\d{4}-/.test(d.publishedAt||'')?d.publishedAt.slice(0,4):'Pa datë';}
+function dateLabel(d){return d.year?'Viti '+d.year:/^\d{4}-\d\d-\d\d$/.test(d.publishedAt||'')?d.publishedAt.split('-').reverse().join('.'): 'Datë e papërcaktuar';}
 function filterDocs(){
 var words=fold(state.query).split(/\s+/).filter(Boolean);
 return library.filter(function(d){
 if(state.system!=='all'&&d.system!==state.system)return false;
 if(state.favorites&&!favorites.has(d.id))return false;
 if(state.kind==='historic'&&!d.archived)return false;
-if(state.kind==='emergency'&&!emergencyIds.has(d.id))return false;
-if(!['all','historic','emergency'].includes(state.kind)&&d.kind!==state.kind)return false;
+if(state.kind==='emergency'&&!emergencyIds.has(d.sourceId||d.id))return false;
+if(state.kind==='consultation'&&d.publicationType!=='draft')return false;
+if(!['all','historic','emergency','consultation'].includes(state.kind)&&d.kind!==state.kind)return false;
 var haystack=fold([d.title,labelSystem(d.system),d.id,year(d),kindLabel(d.kind)].join(' '));
 return words.every(function(w){return haystack.indexOf(w)!==-1;});
 }).sort(function(a,b){
 if(state.sort==='az')return a.title.localeCompare(b.title,'sq');
-var da=a.publishedAt||'0000',db=b.publishedAt||'0000';
+var da=String(a.year||'')+'-'+(a.publishedAt||'0000'),db=String(b.year||'')+'-'+(b.publishedAt||'0000');
 if(state.sort==='oldest')return da.localeCompare(db)||a.title.localeCompare(b.title,'sq');
 return db.localeCompare(da)||a.title.localeCompare(b.title,'sq');
 });
@@ -80,7 +86,7 @@ return '<button type="button" class="pl-system'+(state.system===s.id?' is-select
 }
 function renderFilters(){$('#plFilters').querySelectorAll('[data-kind]').forEach(function(b){var on=b.dataset.kind===state.kind;b.classList.toggle('is-selected',on);b.setAttribute('aria-pressed',String(on));});}
 function docCard(d){
-return '<article class="pl-doc" data-id="'+d.id+'"><div class="pl-doc-mark">'+icon('file')+'</div><div class="pl-doc-main"><div class="pl-doc-top"><span class="pl-tag'+(d.kind==='protocol'?' is-protocol':'')+'">'+escapeHtml(kindLabel(d.kind))+'</span>'+(d.archived?'<span class="pl-tag is-history">Historik · COVID-19</span>':'')+'</div><button type="button" class="pl-doc-title" data-open="'+d.id+'">'+escapeHtml(d.title)+'</button><div class="pl-doc-meta"><span>'+escapeHtml(labelSystem(d.system))+'</span><span>•</span><span>'+escapeHtml(dateLabel(d))+'</span><span>•</span><span>'+escapeHtml(d.type.toUpperCase())+'</span></div></div><div class="pl-doc-actions"><button type="button" class="pl-icon-btn'+(favorites.has(d.id)?' is-on':'')+'" data-favorite="'+d.id+'" title="Ruaje dokumentin" aria-label="'+(favorites.has(d.id)?'Hiqe nga të ruajturat':'Ruaje dokumentin')+'" aria-pressed="'+favorites.has(d.id)+'">'+icon('star')+'</button><button type="button" class="pl-open" data-open="'+d.id+'">Shiko <span aria-hidden="true">↗</span></button></div></article>';
+return '<article class="pl-doc" data-id="'+d.id+'"><div class="pl-doc-mark">'+icon('file')+'</div><div class="pl-doc-main"><div class="pl-doc-top"><span class="pl-tag'+(d.kind==='protocol'?' is-protocol':'')+'">'+escapeHtml(kindLabel(d.kind))+'</span>'+(d.archived?'<span class="pl-tag is-history">Historik · COVID-19</span>':'')+'</div><button type="button" class="pl-doc-title" data-open="'+d.id+'">'+escapeHtml(d.title)+'</button><div class="pl-doc-meta"><span>'+escapeHtml(labelSystem(d.system))+'</span><span>•</span><span>'+escapeHtml(dateLabel(d))+'</span><span>•</span><span>'+escapeHtml(d.mirrorUrl?'Lexo në DRx':d.type==='catalog'?'Katalog / MSh':d.type.toUpperCase())+'</span>'+(d.duplicateOf?'<span>• Publikim i përsëritur</span>':'')+(d.publicationType==='draft'?'<span>• Konsultim publik</span>':'')+'</div></div><div class="pl-doc-actions"><button type="button" class="pl-icon-btn'+(favorites.has(d.id)?' is-on':'')+'" data-favorite="'+d.id+'" title="Ruaje dokumentin" aria-label="'+(favorites.has(d.id)?'Hiqe nga të ruajturat':'Ruaje dokumentin')+'" aria-pressed="'+favorites.has(d.id)+'">'+icon('star')+'</button><button type="button" class="pl-open" data-open="'+d.id+'">Shiko <span aria-hidden="true">↗</span></button></div></article>';
 }
 function renderDirectory(){
 var matches=filterDocs();
@@ -96,9 +102,16 @@ $('#protocolList').innerHTML=matches.length?matches.map(docCard).join(''):'<div 
 $('#plDirectoryView').hidden=false;$('#protocolReader').hidden=true;
 }
 function renderReader(d){
-var related=library.filter(function(x){return x.id!==d.id&&x.system===d.system;}).sort(function(a,b){return (b.publishedAt||'').localeCompare(a.publishedAt||'');}).slice(0,4);
+var related=library.filter(function(x){return x.id!==d.id&&x.system===d.system&&!x.duplicateOf;}).sort(function(a,b){return (b.publishedAt||'').localeCompare(a.publishedAt||'');}).slice(0,4);
 $('#plDirectoryView').hidden=true;$('#protocolReader').hidden=false;
-$('#protocolReader').innerHTML='<button class="pl-back" type="button" id="plBack">← Kthehu te dokumentet</button><article class="pl-reader"><div class="pl-reader-kicker"><span class="pl-tag'+(d.kind==='protocol'?' is-protocol':'')+'">'+escapeHtml(kindLabel(d.kind))+'</span>'+(d.archived?'<span class="pl-tag is-history">Arkivë historike</span>':'')+'</div><h2>'+escapeHtml(d.title)+'</h2><div class="pl-reader-info"><div class="pl-info"><span>Sistemi</span><strong>'+escapeHtml(labelSystem(d.system))+'</strong></div><div class="pl-info"><span>Publikimi</span><strong>'+escapeHtml(dateLabel(d))+'</strong></div><div class="pl-info"><span>Formati</span><strong>'+escapeHtml(d.type.toUpperCase())+'</strong></div><div class="pl-info"><span>Referenca</span><strong>'+escapeHtml(d.id.toUpperCase())+'</strong></div></div><div class="pl-reader-notice"><strong>Lexim nga burimi origjinal</strong><p>Ky ekran paraqet metadatat e bibliotekës, jo përmbledhje të verifikuar të rekomandimeve. Hape dokumentin origjinal për algoritmet, indikacionet, dozimin, kundërindikacionet dhe kriteret e referimit. Vlefshmëria e versionit kontrollohet në faqen zyrtare të MSh-së.</p></div><div class="pl-reader-actions"><a class="pl-primary" href="'+escapeHtml(d.officialUrl)+'" target="_blank" rel="noopener noreferrer external">Hap dokumentin zyrtar ↗</a><button class="pl-secondary" type="button" data-favorite="'+d.id+'">'+(favorites.has(d.id)?'★ Hiqe nga të ruajturat':'☆ Ruaje për më vonë')+'</button><button class="pl-secondary" type="button" id="plCopyLink">Kopjo lidhjen</button></div>'+(related.length?'<div class="pl-related"><h3>Dokumente nga i njëjti sistem</h3><div class="pl-related-grid">'+related.map(function(x){return '<button type="button" class="pl-related-item" data-open="'+x.id+'">'+escapeHtml(x.title)+'<small>'+escapeHtml(year(x))+' · '+escapeHtml(kindLabel(x.kind))+'</small></button>';}).join('')+'</div></div>':'')+'</article>';
+var mainLink=d.mirrorUrl||d.officialUrl;
+var actions='<a class="pl-primary" href="'+escapeHtml(mainLink)+'" target="_blank" rel="noopener noreferrer">'+(d.mirrorUrl?'Lexo dokumentin në DRx ↗':d.isDirect?'Hap PDF në MSh ↗':'Shiko dokumentet në katalog ↗')+'</a>';
+if(d.mirrorUrl&&d.isDirect)actions+='<a class="pl-secondary" href="'+escapeHtml(d.officialUrl)+'" target="_blank" rel="noopener noreferrer external">PDF origjinal në MSh ↗</a>';
+actions+='<a class="pl-secondary" href="'+escapeHtml(d.catalogUrl||OFFICIAL_CATALOG)+'" target="_blank" rel="noopener noreferrer external">Katalogu zyrtar ↗</a>';
+actions+='<button class="pl-secondary" type="button" data-favorite="'+d.id+'">'+(favorites.has(d.id)?'★ Hiqe nga të ruajturat':'☆ Ruaje për më vonë')+'</button>';
+actions+='<button class="pl-secondary" type="button" id="plCopyLink">Kopjo lidhjen</button>';
+var relatedMarkup=related.length?'<div class="pl-related"><h3>Dokumente nga i njëjti sistem</h3><div class="pl-related-grid">'+related.map(function(x){return '<button type="button" class="pl-related-item" data-open="'+x.id+'">'+escapeHtml(x.title)+'<small>'+escapeHtml(year(x))+' · '+escapeHtml(kindLabel(x.kind))+'</small></button>';}).join('')+'</div></div>':'';
+$('#protocolReader').innerHTML='<button class="pl-back" type="button" id="plBack">← Kthehu te dokumentet</button><article class="pl-reader"><div class="pl-reader-kicker"><span class="pl-tag'+(d.kind==='protocol'?' is-protocol':'')+'">'+escapeHtml(kindLabel(d.kind))+'</span>'+(d.archived?'<span class="pl-tag is-history">Dokument historik</span>':'')+(d.publicationType==='draft'?'<span class="pl-tag is-history">Konsultim publik – jo udhëzim i miratuar</span>':'')+'</div><h2>'+escapeHtml(d.title)+'</h2><div class="pl-reader-info"><div class="pl-info"><span>Sistemi</span><strong>'+escapeHtml(labelSystem(d.system))+'</strong></div><div class="pl-info"><span>Publikimi</span><strong>'+escapeHtml(dateLabel(d))+'</strong></div><div class="pl-info"><span>Qasja</span><strong>'+escapeHtml(d.mirrorUrl?'Kopje e indeksuar në DRx':d.isDirect?'Dokument në MSh':'Vetëm katalogu i MSh')+'</strong></div><div class="pl-info"><span>Referenca</span><strong>'+escapeHtml(d.id.toUpperCase())+'</strong></div></div><div class="pl-reader-notice"><strong>Burimi dhe vlefshmëria</strong><p>Dokumentet janë klasifikuar pa përsëritje. Kur lidhja e MSh-së nuk përgjigjet, përdor kopjen e indeksuar në DRx (kur është e disponueshme) ose katalogun e Ministrisë. Për përdorim klinik kontrollo gjithmonë statusin e miratimit, versionin dhe rekomandimet e dokumentit origjinal.</p></div><div class="pl-reader-actions">'+actions+'</div>'+relatedMarkup+'</article>';
 }
 function setSelected(id,scroll){
 var doc=library.find(function(d){return d.id===id;});
@@ -141,12 +154,17 @@ if(!auth.ok||payload.authenticated!==true)throw Error('Sesioni nuk mund të veri
 $('#syncText').textContent='Sesioni aktiv';$('#sourceStatus').textContent='Sesioni aktiv';
 var profile=document.createElement('script');profile.src='/medindex-brand-runtime.js?v=drx-brand-v8-profileguard1';profile.defer=true;profile.onload=function(){window.MedIndexProfile&&window.MedIndexProfile.adoptAccount&&window.MedIndexProfile.adoptAccount(payload);window.dispatchEvent(new CustomEvent('medindex:auth-ready',{detail:payload}));};document.head.appendChild(profile);
 var response=await fetch('/data/protocols.json',{credentials:'same-origin',cache:'no-store'});
-if(!response.ok)throw Error('Regjistri nuk u ngarkua.');
-var data=await response.json();
-if(!Array.isArray(data.documents))throw Error('Regjistri është i pavlefshëm.');
+if(!response.ok)throw Error('Regjistri bazë nuk u ngarkua.');
+var legacy=await response.json();
+if(!Array.isArray(legacy.documents))throw Error('Regjistri bazë është i pavlefshëm.');
+var expanded=await fetch('/data/clinical-catalog-78.json',{credentials:'same-origin',cache:'no-store'});
+if(!expanded.ok)throw Error('Katalogu i plotë nuk u ngarkua.');
+var data=await expanded.json();
+if(!Array.isArray(data.documents)||data.documents.length<50)throw Error('Katalogu i dokumenteve është i paplotë.');
 var seen=new Set();
-library=data.documents.filter(function(d){if(!d||!/^upk-\d{2}$/.test(d.id)||!validOfficial(d.officialUrl)||seen.has(d.id))return false;seen.add(d.id);return true;}).map(function(d){return {id:d.id,title:String(d.title||'').slice(0,500),officialUrl:d.officialUrl,type:d.type==='docx'?'docx':'pdf',publishedAt:d.publishedAt||'',archived:!!d.archived,system:groupOf(d),kind:docKind(d)};});
-$('#plTotal').textContent=library.length;$('#plProtocolCount').textContent=library.filter(function(d){return d.kind==='protocol';}).length;$('#plSystemCount').textContent=systems.length-1;
+library=data.documents.filter(function(d){if(!d||!/^msh-\d{3}$/.test(d.id)||d.duplicateOf||!d.clinical||seen.has(d.id)||!validOfficial(d.sourceUrl||d.catalogUrl)||!validOfficial(d.catalogUrl))return false;seen.add(d.id);return true;}).map(function(d){return {id:d.id,title:String(d.title||'').slice(0,500),officialUrl:d.sourceUrl||d.catalogUrl,catalogUrl:d.catalogUrl,mirrorUrl:/^\/api\/protocol-document\?id=upk-\d{2}$/.test(d.cachedPath||'')?d.cachedPath:null,type:d.sourceUrl?(/\.docx(?:$|\?)/.test(d.sourceUrl)?'docx':'pdf'):'catalog',isDirect:!!d.sourceUrl,sourceId:d.sourceId||null,year:d.year,publishedAt:d.publishedAt||'',archived:d.year<=2021&&fold(d.title).includes('covid'),system:groupOf(d),kind:docKind(d),duplicateOf:d.duplicateOf||null,publicationType:d.publicationType||'standard'};});
+if(library.length!==data.documents.length)throw Error('Katalogu nuk u validua plotësisht.');
+$('#plTotal').textContent=library.length;$('#plProtocolCount').textContent=library.filter(function(d){return d.kind==='protocol'&&!d.duplicateOf;}).length;$('#plSystemCount').textContent=new Set(library.map(function(d){return d.system;})).size;
 $('#syncText').textContent='Burimi MSh';$('#plLoadStatus').textContent='';
 renderDirectory();hashRoute();
 }catch(e){$('#plLoadStatus').textContent='Biblioteka nuk është e qasshme: '+String(e.message||e);$('#protocolList').innerHTML='<div class="pl-empty"><strong>Nuk mund të shfaqen dokumentet.</strong><span>Verifiko lidhjen ose sesionin dhe rifresko faqen.</span><div><button class="pl-link-button" type="button" id="plRetry">Provo përsëri</button></div></div>';$('#plResultsSummary').textContent='Burimi i papërgatitur';$('#syncText').textContent='Lidhja dështoi';}
@@ -154,6 +172,6 @@ finally{$('#appShell').setAttribute('aria-busy','false');}
 }
 function loadSharedSidebarTaxonomy(){if(document.querySelector('script[data-drx-sidebar-taxonomy]'))return;var script=document.createElement('script');script.src='/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v4';script.defer=true;script.setAttribute('data-drx-sidebar-taxonomy','1');document.head.appendChild(script);}
 function boot(){loadSharedSidebarTaxonomy();safeLoadFavorites();bind();renderSystems();$('#plLoadStatus').textContent='Duke lexuar dokumentet…';load();}
-window.DRxProtocolShell=Object.freeze({version:'3',init:boot,validOfficial:validOfficial});
+window.DRxProtocolShell=Object.freeze({version:'4',init:boot,validOfficial:validOfficial});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
