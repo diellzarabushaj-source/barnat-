@@ -502,3 +502,28 @@
   height:32px;max-height:32px;min-height:32px;
  }
 }
+
+
+/* Smart combobox must never cover scope, route or clinical filter controls.
+   Its suggestions participate in the document flow directly under the search. */
+.abx-catalog-page .abx-catalog-workspace>.abx-smart-suggestions{
+ position:relative;top:auto;left:auto;right:auto;
+ display:block;box-sizing:border-box;grid-column:1/-1;
+ width:auto;max-width:none;min-width:0;
+ margin:0 16px 12px;max-height:208px;overflow-y:auto;overflow-x:hidden;
+ border:1px solid #dfe4ef;border-radius:9px;background:#fff;
+ box-shadow:0 3px 12px rgba(26,34,80,.055);z-index:1;
+}
+.abx-catalog-page .abx-catalog-workspace>.abx-smart-suggestions[hidden]{display:none!important}
+.abx-catalog-page .abx-catalog-workspace>.abx-smart-suggestions button{
+ max-width:100%;min-width:0;min-height:44px;
+}
+.abx-catalog-page .abx-catalog-workspace>.abx-smart-suggestions:not([hidden]){
+ animation:none;transform:none;
+}
+@media(max-width:760px){
+ .abx-catalog-page .abx-catalog-workspace>.abx-smart-suggestions{
+  width:auto;max-width:none;right:auto;left:auto;
+  margin:0 11px 10px;max-height:188px;
+ }
+}
