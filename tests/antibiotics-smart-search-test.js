@@ -110,3 +110,18 @@ test('search scope UI is functional and keyboard-accessible',()=>{
  assert.match(css,/\.abx-smart-scopes/);
  assert.match(css,/min-height:44px/);
 });
+
+test('commercial names stay literal, and matched source fields appear in result context',()=>{
+ const synthetic={
+  id:'coamoxiclav-test',
+  name:'Amoxicillin + Clavulanic acid',
+  atc:'J01CR02',
+  group:'Beta-Laktamët',subgroup:'Penicilinat',
+  indications:['Cistit'],conditionIds:['cistit'],populations:[],
+  products:[{status:'Active',brand:'Amoxiclav',route:'PO',form:'Tabletë',formLabel:'Tabletë',activeIngredient:'Amoxicillin + Clavulanic acid',strength:'500 mg / 125 mg'}]
+ };
+ assert.equal(smart.filterAntibiotics([synthetic],{search:'Amoxiclav',scope:'product'},[],core).length,1);
+ assert.deepEqual(smart.matchContext(synthetic,'Amoxiclav','product'),{scope:'product',label:'Amoxiclav'});
+ assert.deepEqual(smart.matchContext(synthetic,'Cistit','indication'),{scope:'indication',label:'Cistit'});
+ assert.equal(smart.filterAntibiotics([synthetic],{search:'Cistit',scope:'substance'},[],core).length,0);
+});
