@@ -80,6 +80,8 @@ const init=()=>{
  function update(){
   highlightMatches();
   const state=readState();clear.hidden=!state.search;
+  // Keep example suggestions out of the way once a clinician starts typing.
+  quick.hidden=Boolean(state.search.trim());
   const used=[];
   if(state.search.trim())used.push({key:'search',label:'Kërkim: '+state.search.trim().slice(0,45)});
   for(const [key,[id,label]] of Object.entries(facetMap)){if(!state[key])continue;const option=[...$(id).options].find(o=>o.value===state[key]);used.push({key,label:label+': '+(option?.textContent||state[key])});}
