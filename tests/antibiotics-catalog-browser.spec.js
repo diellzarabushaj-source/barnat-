@@ -29,6 +29,28 @@ test.beforeEach(async ({page}) => {
   await page.route('**/api/auth*', route => route.fulfill({json:phase5AuthenticatedSession()}));
 });
 
+test('Antibiotikët header cannot be covered by an oversized capsule icon at desktop or 320px',async({page})=>{
+ for(const width of [1440,390,320]){
+  await page.setViewportSize({width,height:900});
+  await page.goto(url+'/antibiotiket.html');
+  const icon=page.locator('.abx-heading-symbol');
+  await expect(icon).toBeVisible();
+  await expect(icon).toHaveText('Rx');
+  await expect(icon.locator('svg')).toHaveCount(0);
+  const rect=await icon.boundingBox();
+  expect(rect).toBeTruthy();
+  expect(rect.width).toBeLessThanOrEqual(36);
+  expect(rect.height).toBeLessThanOrEqual(36);
+  const heading=await page.locator('.abx-catalog-heading').boundingBox();
+  const search=await page.locator('#abxCatalogSearch').boundingBox();
+  expect(heading.height).toBeLessThan(330);
+  expect(search.width).toBeGreaterThan(90);
+  expect(search.y).toBeGreaterThan(heading.y);
+  expect(search.y).toBeLessThan(650);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ }
+});
+
 test('Catalog desktop: all substances in a vertical list, filters above, no NICE calculator', async ({page}) => {
   await page.setViewportSize({width:1440,height:900});
   await page.goto(url + '/antibiotiket.html');
