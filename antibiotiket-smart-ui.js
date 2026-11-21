@@ -32,7 +32,7 @@ const init=()=>{
  const raise=(el,type)=>el?.dispatchEvent(new Event(type,{bubbles:true}));
  let suggestionData=[],lastStamp='',pending=false;
  const close=()=>{suggestionData=[];suggestions.hidden=true;suggestions.replaceChildren();search.setAttribute('aria-expanded','false');};
- function choose(query){search.value=query;raise(search,'input');close();search.focus({preventScroll:true});}
+ function choose(query){search.value=query;raise(search,'input');search.focus({preventScroll:true});close();}
  function show(){
   if(document.activeElement!==search||smart.fold(search.value).length<2){close();return;}
   const state=readState();state.selectedOnly=false;
@@ -98,7 +98,6 @@ const init=()=>{
    event.preventDefault();search.focus();search.select();
   }
  });
- resultCount.addEventListener('DOMSubtreeModified',schedule); // guarded by stamp; fallback for older browser fixtures
  const observer=new MutationObserver(schedule);observer.observe(resultCount,{childList:true,characterData:true,subtree:true});
  update();
 };
