@@ -42,6 +42,7 @@ test('Catalog desktop: all substances in a vertical list, filters above, no NICE
   // Substring search also correctly finds CO-ALMACIN combination products.
   await expect(page.locator('.abx-catalog-item')).toHaveCount(2);
   await expect(page.locator('.abx-catalog-name')).toHaveText(['Amoxicillin','Amoxicillin + Clavulanic acid']);
+  await expect(page.locator('.abx-search-hit').first()).toContainText('ALMACIN');
 });
 
 for (const width of [320,390,1440]) test(`Catalog mobile/desktop ${width}px: selection persists and list fits screen`, async ({page}) => {
