@@ -211,3 +211,44 @@ test('Ceftazidime uses the selected product SmPC and requires renal review witho
  await calc.locator('[data-calc-field="productId"]').selectOption('PRD-3f67ae13e70a80');await expect(calc.locator('.abx-calculator-source')).toHaveCount(0);await expect(calc).toContainText('ende nuk ka skemë numerike');await expect(calc.locator('input, [data-calc-result]')).toHaveCount(0);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
+
+
+test('Smart search: keyboard suggestions and evidence-bound search domains',async({page})=>{
+ await page.setViewportSize({width:1280,height:850});
+ await page.goto(url+'/antibiotiket.html');
+ await expect(page.locator('#abxSmartScopes')).toBeVisible();
+ const search=page.locator('#abxCatalogSearch');
+ await search.fill('ceftri');
+ await expect(page.locator('#abxSmartSuggestions [data-abx-index]').first()).toBeVisible();
+ await search.press('ArrowDown');
+ await page.keyboard.press('Enter');
+ await expect(search).toHaveValue('Ceftriaxone');
+ await page.locator('[data-abx-scope-tab="substance"]').click();
+ await expect(page.locator('[data-abx-scope-tab="substance"]')).toHaveAttribute('aria-pressed','true');
+ await expect(page.locator('.abx-catalog-name').first()).toContainText('Ceftriaxone');
+ await page.locator('[data-abx-scope-tab="product"]').click();
+ await search.fill('ALMACIN');
+ await expect(page.locator('#abxCatalogCount')).toContainText('rezultate');
+ await expect(page.locator('.abx-catalog-item')).toHaveCount(2);
+ await page.locator('[data-abx-scope-tab="indication"]').click();
+ await search.fill('Cistit');
+ expect(await page.locator('.abx-catalog-item').count()).toBeGreaterThan(0);
+ await page.locator('[data-abx-scope-tab="substance"]').click();
+ await expect(page.locator('.abx-catalog-item')).toHaveCount(0);
+ await page.locator('[data-remove-filter="scope"]').click();
+ await expect(page.locator('.abx-catalog-item').first()).toBeVisible();
+});
+test('Smart mobile: scoped tabs, active filter removal and narrow-screen overflow',async({page})=>{
+ await page.setViewportSize({width:320,height:780});
+ await page.goto(url+'/antibiotiket.html');
+ const scope=page.locator('.abx-smart-scope-switch');
+ await expect(scope).toBeVisible();
+ await scope.locator('[data-abx-scope-tab="indication"]').click();
+ await page.locator('#abxCatalogSearch').fill('Cistit');
+ await expect(page.locator('#abxActiveFilterChips [data-remove-filter="scope"]')).toBeVisible();
+ await page.locator('#abxActiveFilterChips [data-remove-filter="scope"]').click();
+ await expect(page.locator('[data-abx-scope-tab="all"]')).toHaveAttribute('aria-pressed','true');
+ await page.locator('#abxSmartClear').click();
+ await expect(page.locator('#abxCatalogSearch')).toHaveValue('');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
