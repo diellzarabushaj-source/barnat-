@@ -79,3 +79,8 @@
  .abx-catalog-page .abx-shortcut-pills button,.abx-catalog-page .abx-smart-scope-switch button{transition:none}
  .abx-catalog-page .abx-catalog-item::before{transition:none;display:none}
 }
+
+/* Keep the pointer spotlight above the card background, below all readable clinical text. */
+.abx-catalog-page .abx-catalog-item::before{z-index:0}
+.abx-catalog-page .abx-catalog-item>.abx-catalog-item-row,
+.abx-catalog-page .abx-catalog-item>div[id^="detail-"]{position:relative;z-index:1}
