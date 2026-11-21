@@ -29,6 +29,29 @@ test.beforeEach(async ({page}) => {
   await page.route('**/api/auth*', route => route.fulfill({json:phase5AuthenticatedSession()}));
 });
 
+test('Quiet clinical search hides only example chips while typing and restores them on clear',async({page})=>{
+ for(const width of [320,390,1280]){
+  await page.setViewportSize({width,height:900});
+  await page.goto(url+'/antibiotiket.html');
+  const catalog=page.locator('#antibioticsCatalog');
+  const search=page.locator('#abxCatalogSearch');
+  await expect(catalog).toHaveAttribute('data-query-active','false');
+  await expect(page.locator('#abxSmartQuick')).toBeVisible();
+  await expect(page.locator('.abx-catalog-item')).toHaveCount(135);
+  await search.fill('Ceftriaxone');
+  await expect(catalog).toHaveAttribute('data-query-active','true');
+  await expect(page.locator('#abxSmartQuick')).toBeHidden();
+  await expect(page.locator('#abxCatalogCount')).toContainText('rezultate');
+  await expect(page.locator('.abx-catalog-item').first()).toBeVisible();
+  await page.locator('#abxSmartClear').click();
+  await expect(search).toHaveValue('');
+  await expect(catalog).toHaveAttribute('data-query-active','false');
+  await expect(page.locator('#abxSmartQuick')).toBeVisible();
+  await expect(page.locator('.abx-catalog-item')).toHaveCount(135);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ }
+});
+
 test('Antibiotikët header cannot be covered by an oversized capsule icon at desktop or 320px',async({page})=>{
  for(const width of [1440,390,320]){
   await page.setViewportSize({width,height:900});
