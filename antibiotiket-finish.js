@@ -27,6 +27,31 @@ function init(){
  filter.prepend(facetHeading);
  // Leave the editorial header and both source-derived metrics untouched.
  search.placeholder='Substanca, marka, ATC ose indikacioni…';
+ // Respect the operating system in the existing search shortcut hint.
+ const key=root.querySelector('.abx-smart-shortcut');
+ if(key)key.textContent=/Mac|iPhone|iPad/.test(navigator.platform||'')?'⌘ K':'Ctrl K';
+
+ // The directory holds 135 substances: offer a nonintrusive return to search
+ // only after the clinician has scrolled down, with keyboard and reduced-motion support.
+ const back=document.createElement('button');
+ back.type='button';
+ back.className='abx-back-to-search';
+ back.setAttribute('aria-label','Kthehu te kërkimi i antibiotikëve');
+ back.innerHTML='<span aria-hidden="true">↑</span><span>Kthehu te kërkimi</span>';
+ back.hidden=true;
+ root.appendChild(back);
+ const motionReduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+ const onScroll=()=>{
+  if(!back.isConnected)return;
+  const top=search.getBoundingClientRect().top;
+  back.hidden=top>-420;
+ };
+ back.addEventListener('click',()=>{
+  search.scrollIntoView({behavior:motionReduced.matches?'auto':'smooth',block:'center'});
+  if(window.matchMedia('(pointer: fine)').matches)search.focus({preventScroll:true});
+ });
+ window.addEventListener('scroll',onScroll,{passive:true});
+ onScroll();
  root.dataset.finishReady='true';
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});

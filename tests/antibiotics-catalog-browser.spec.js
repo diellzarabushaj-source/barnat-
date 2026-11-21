@@ -331,3 +331,29 @@ test('Search scopes and quick routes support keyboard navigation',async({page})=
  await expect(page.locator('button[data-shortcut-route="PO"]')).toBeFocused();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
+
+
+test('Long list offers an accessible return to search without hiding clinical content',async({page})=>{
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await page.setViewportSize({width:390,height:820});
+ await page.goto(url+'/antibiotiket.html');
+ const back=page.locator('.abx-back-to-search');
+ await expect(back).toBeHidden();
+ await expect(page.locator('.abx-catalog-item')).toHaveCount(135);
+ await page.evaluate(()=>window.scrollTo(0,document.documentElement.scrollHeight));
+ await expect(back).toBeVisible();
+ const rect=await back.boundingBox();
+ expect(rect.width).toBeLessThan(210);
+ expect(rect.x+rect.width).toBeLessThanOrEqual(390);
+ await back.click();
+ await expect.poll(()=>page.evaluate(()=>Math.abs(document.querySelector('#abxCatalogSearch').getBoundingClientRect().top)<innerHeight)).toBe(true);
+ await expect(page.locator('#abxCatalogSearch')).toBeVisible();
+ await expect(page.locator('.abx-catalog-item')).toHaveCount(135);
+});
+test('Desktop search shortcut hint matches the current platform',async({page})=>{
+ await page.setViewportSize({width:1440,height:900});
+ await page.goto(url+'/antibiotiket.html');
+ const key=await page.locator('.abx-smart-shortcut').innerText();
+ const platform=await page.evaluate(()=>navigator.platform||'');
+ expect(key).toBe(/Mac|iPhone|iPad/.test(platform)?'⌘ K':'Ctrl K');
+});
