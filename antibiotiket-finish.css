@@ -144,3 +144,68 @@
 }
 @media(hover:none),(pointer:coarse){.abx-catalog-page .abx-catalog-item:hover{transform:none}}
 @media(prefers-reduced-motion:reduce){.abx-catalog-page .abx-catalog-item,.abx-catalog-page .abx-filter-toggle,.abx-catalog-page .abx-smart-scope-switch button{transition:none!important}}
+
+
+/* Clinical Atlas + Clinical Edition convergence: one coherent grid and source-backed metrics. */
+.abx-catalog-page .abx-catalog-heading{
+ grid-template-columns:minmax(0,1fr) auto;min-width:0;
+}
+.abx-catalog-page .abx-heading-content{min-width:0}
+.abx-catalog-page .abx-heading-metrics{
+ display:flex;flex-direction:row;align-items:stretch;
+ justify-content:flex-end;max-width:100%;min-width:0;
+ border:1px solid #e7eaf2;border-radius:11px;background:#fff;
+ padding:5px 0;box-shadow:none;
+}
+.abx-catalog-page .abx-heading-metrics .abx-heading-meta{
+ display:flex;flex-direction:column;align-items:flex-start;
+ min-width:121px;max-width:none;gap:5px;
+ border:0;padding:10px 15px;background:transparent;
+}
+.abx-catalog-page .abx-heading-metrics .abx-heading-meta+.abx-heading-meta{
+ border-left:1px solid #e7eaf2;
+}
+.abx-catalog-page .abx-heading-metrics .abx-heading-meta b{
+ font-size:28px;line-height:1.08;font-weight:430;color:#1c1e54;
+ font-variant-numeric:tabular-nums;
+}
+.abx-catalog-page .abx-heading-metrics .abx-heading-meta span{
+ font-size:10px;line-height:1.44;color:#74829b;
+ white-space:normal;max-width:120px;
+}
+.abx-catalog-page .abx-catalog-workspace{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.abx-catalog-page .abx-catalog-workspace>.abx-discovery-rail{
+ grid-column:1/-1;width:100%;min-width:0;
+}
+.abx-catalog-page .abx-discovery-rail .abx-smart-scopes,
+.abx-catalog-page .abx-discovery-rail .abx-shortcuts{grid-column:auto;min-width:0}
+.abx-catalog-page .abx-discovery-rail .abx-shortcuts{
+ display:block;align-self:stretch;
+}
+.abx-catalog-page .abx-catalog-workspace>#abxFilterPanel{grid-column:1/-1}
+@media(max-width:1050px){
+ .abx-catalog-page .abx-catalog-heading{grid-template-columns:minmax(0,1fr)}
+ .abx-catalog-page .abx-heading-metrics{justify-content:flex-start;width:min(100%,390px)}
+ .abx-catalog-page .abx-discovery-rail .abx-smart-scopes,
+ .abx-catalog-page .abx-discovery-rail .abx-shortcuts{grid-column:1}
+}
+@media(max-width:760px){
+ .abx-catalog-page .abx-catalog-heading{display:grid;grid-template-columns:minmax(0,1fr)}
+ .abx-catalog-page .abx-heading-metrics{width:100%;justify-content:space-around;padding:0}
+ .abx-catalog-page .abx-heading-metrics .abx-heading-meta{
+  flex:1;min-width:0;max-width:none;padding:10px 13px;
+ }
+ .abx-catalog-page .abx-catalog-workspace{grid-template-columns:minmax(0,1fr)}
+ .abx-catalog-page .abx-catalog-workspace>.abx-discovery-rail,
+ .abx-catalog-page .abx-catalog-workspace>#abxFilterPanel{grid-column:1}
+}
+@media(max-width:420px){
+ .abx-catalog-page .abx-heading-metrics .abx-heading-meta{
+  display:flex;flex-direction:column;align-items:flex-start;
+  border-top:0;width:auto;gap:5px;
+ }
+ .abx-catalog-page .abx-heading-metrics .abx-heading-meta+.abx-heading-meta{
+  border-left:1px solid #e7eaf2;
+ }
+ .abx-catalog-page .abx-heading-metrics .abx-heading-meta b{font-size:25px}
+}
