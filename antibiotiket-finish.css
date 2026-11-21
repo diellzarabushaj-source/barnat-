@@ -471,3 +471,7 @@
  .abx-catalog-page .abx-catalog-item,.abx-catalog-page .abx-catalog-search,
  .abx-catalog-page .abx-catalog-details-button{transition:none!important}
 }
+
+/* Semantic clinical safety: red for blocked/unverified dosing; indigo is interaction-only. */
+.abx-catalog-page .abx-catalog-pill.is-missing{background:#fef3f2;color:#b42318;border-color:#fecdca;font-weight:640}
+.abx-catalog-page .abx-catalog-pill.is-missing::before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:#d92d20;margin:0 6px 1px 0}
