@@ -54,7 +54,29 @@ const init=()=>{
   suggestions.innerHTML=suggestionData.map((s,i)=>'<button type="button" role="option" aria-selected="false" data-abx-index="'+i+'"><span class="abx-smart-kind">'+escape(s.kind)+'</span><strong>'+escape(s.value)+'</strong><span aria-hidden="true">↗</span></button>').join('');
   suggestions.hidden=false;search.setAttribute('aria-expanded','true');
  }
+ function highlightMatches(){
+  const tokens=smart.queryWords(search.value).filter(x=>x.length>=3).slice(0,5);
+  if(!tokens.length)return;
+  const regex=new RegExp(tokens.join('|'),'gi'); // search tokens are normalized a-z0-9
+  for(const parent of root.querySelectorAll('.abx-catalog-name,.abx-catalog-atc,.abx-catalog-summary')){
+   const walker=document.createTreeWalker(parent,4),parts=[];
+   while(walker.nextNode())parts.push(walker.currentNode);
+   for(const node of parts){
+    if(node.parentElement?.closest('.abx-smart-highlight'))continue;
+    const source=node.nodeValue||'';regex.lastIndex=0;
+    if(!regex.test(source))continue;
+    regex.lastIndex=0;const fragment=document.createDocumentFragment();let end=0,match;
+    while((match=regex.exec(source))){
+     if(match.index>end)fragment.appendChild(document.createTextNode(source.slice(end,match.index)));
+     const mark=document.createElement('mark');mark.className='abx-smart-highlight';mark.textContent=match[0];fragment.appendChild(mark);end=match.index+match[0].length;
+    }
+    if(end<source.length)fragment.appendChild(document.createTextNode(source.slice(end)));
+    node.replaceWith(fragment);
+   }
+  }
+ }
  function update(){
+  highlightMatches();
   const state=readState();clear.hidden=!state.search;
   const used=[];
   if(state.search.trim())used.push({key:'search',label:'Kërkim: '+state.search.trim().slice(0,45)});
