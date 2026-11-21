@@ -136,7 +136,7 @@ test('saved selections load when authentication finishes before the catalog scri
 });
 test('mobile expanded detail and empty results fit at 320 px',async({page})=>{
  await page.setViewportSize({width:320,height:880});await page.goto(url+'/antibiotiket.html');
- await page.locator('#abxCatalogSearch').fill('Vancomycin');await page.getByRole('button',{name:'Shiko detajet'}).click();
+ await page.locator('#abxCatalogSearch').fill('Vancomycin');await page.getByRole('button',{name:'Shiko detajet'}).first().click();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  await page.locator('#abxCatalogSearch').fill('no-such-antibiotic');await expect(page.getByText('Nuk u gjetën rezultate',{exact:true})).toBeVisible();
  await page.locator('[data-reset]').click();await expect(page.locator('.abx-catalog-item')).toHaveCount(135);
@@ -254,7 +254,14 @@ test('Smart search: keyboard suggestions and evidence-bound search domains',asyn
  await search.fill('ALMACIN');
  await expect(page.locator('#abxCatalogCount')).toContainText('rezultate');
  await expect(page.locator('.abx-catalog-item')).toHaveCount(2);
+ // The suggestion list stays in flow; it must not intercept the scope switch.
+ const beforeScope=await page.locator('[data-abx-scope-tab="indication"]').boundingBox();
+ const suggestion=await page.locator('#abxSmartSuggestions').boundingBox();
+ if(suggestion){
+  expect(suggestion.y+suggestion.height).toBeLessThanOrEqual(beforeScope.y+2);
+ }
  await page.locator('[data-abx-scope-tab="indication"]').click();
+ await expect(page.locator('#abxSmartSuggestions')).toBeHidden();
  await search.fill('Cistit');
  expect(await page.locator('.abx-catalog-item').count()).toBeGreaterThan(0);
  await page.locator('[data-abx-scope-tab="substance"]').click();
