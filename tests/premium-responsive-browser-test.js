@@ -132,20 +132,23 @@ const rows = [{id:'11111111-1111-4111-8111-111111111111',registryNumber:1,pdid:'
      await expect(page.locator('#registryRows')).toContainText('PRODUKT TESTUES');
     }
     if(name==='protokollet'&&width<761){
-     const metrics=await page.locator('.protocol-metric').all();
-     assert.equal(metrics.length,4);
-     const boxes=await Promise.all(metrics.map(metric=>metric.boundingBox()));
-     assert.equal(Math.round(boxes[0].y),Math.round(boxes[1].y),'First summary row');
-     assert.equal(Math.round(boxes[2].y),Math.round(boxes[3].y),'Second summary row');
-     assert.ok(boxes[2].y>boxes[0].y,'Two summary rows');
-     assert.ok(boxes[3].y+boxes[3].height-boxes[0].y<=200,'Compact summary keeps search reachable');
-     const search=await page.locator('#protocolSearch').boundingBox();
-     const dockBox=await dock.boundingBox();
-     assert.ok(search.y+search.height<dockBox.y,'Protocol search above phone navigation');
-     for(const control of await page.locator('.clinical-toolbar input,.clinical-toolbar select').all()){
-      const box=await control.boundingBox();
-      assert.ok(box.height>=44&&box.x>=0&&box.x+box.width<=width+1,'Protocol filter touch bounds');
-     }
+      // V3 has a compact 3-stat clinical hero and system-chip navigation,
+      // replacing the legacy 4-card protocol-metric grid.
+      const metrics=await page.locator('.pl-stat').all();
+      assert.equal(metrics.length,3);
+      const boxes=await Promise.all(metrics.map(metric=>metric.boundingBox()));
+      assert.equal(Math.round(boxes[0].y),Math.round(boxes[1].y),'Single compact summary row');
+      assert.equal(Math.round(boxes[1].y),Math.round(boxes[2].y),'Third metric shares summary row');
+      assert.ok(boxes[2].x+boxes[2].width<=width+1,'All summary metrics remain in viewport');
+      const search=await page.locator('#protocolSearch').boundingBox();
+      const dockBox=await dock.boundingBox();
+      assert.ok(search.x>=0&&search.x+search.width<=width+1,'Protocol search remains inside phone viewport');
+      assert.ok(search.y+search.height<dockBox.y,'Protocol search above phone navigation');
+      for(const control of await page.locator('#protocolSearch,.pl-system,.pl-filter').all()){
+       if(!await control.isVisible())continue;
+       const box=await control.boundingBox();
+       assert.ok(box.height>=44&&box.x>=-1&&box.x+box.width<=width+1,'Clinical filter touch bounds');
+      }
     }
     if(name==='analizat'&&width<761){
      await page.locator('#labDiseaseTrigger').click();

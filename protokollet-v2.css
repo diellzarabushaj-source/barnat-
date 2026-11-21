@@ -14,3 +14,6 @@
 .pl-systems{max-width:100%}
 @media(max-width:900px){.pl-layout{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:580px){.pl-heading{flex-wrap:wrap}.pl-heading-actions{max-width:100%;width:100%;justify-content:flex-end;flex-wrap:wrap}.pl-feature-content{min-width:0}.pl-hero,.pl-feature,.pl-layout{min-width:0}}
+
+/* V3 mobile clinical touch-target ergonomics. */
+@media(max-width:760px){.pl-system,.pl-filter{min-height:44px}.pl-searchbar input{min-height:44px}}
