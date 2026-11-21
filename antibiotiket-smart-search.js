@@ -112,6 +112,24 @@ function suggestions(all,filters={},selected=[],core,limit=6){
  }
  return candidates.sort((a,b)=>b.score-a.score||a.value.localeCompare(b.value,'sq')).slice(0,limit);
 }
+function matchContext(item,search,scope='all'){
+ if(!search||!String(search).trim())return null;
+ const tokens=scope==='product'||scope==='indication'?words(search):queryWords(search);
+ if(!tokens.length)return null;
+ const fields=getRecord(item).fields.filter(f=>(
+  (scope==='product'||scope==='all')&&f.scope==='product'||
+  (scope==='indication'||scope==='all')&&f.scope==='indication'
+ ));
+ let best=null;
+ for(const field of fields){
+  let points=0,valid=true;
+  for(const word of tokens){const rank=tokenScore(field,word);if(!rank){valid=false;break;}points+=rank;}
+  if(valid&&(!best||points>best.rank)){
+   best={scope:field.scope,value:field.value,rank:points};
+  }
+ }
+ return best?{scope:best.scope,label:String(best.value)}:null;
+}
 function optionCounts(all,filters={},selected=[],core,field,values){
  const alt={...filters,[field]:''};
  if(field==='group')alt.subgroup='';
@@ -121,5 +139,5 @@ function optionCounts(all,filters={},selected=[],core,field,values){
   return {value,count:core.filterAntibiotics(pool,{...f,search:''},selected).length};
  });
 }
-return Object.freeze({fold,words,queryWords,score,filterAntibiotics,suggestions,optionCounts});
+return Object.freeze({fold,words,queryWords,score,filterAntibiotics,suggestions,optionCounts,matchContext});
 });
