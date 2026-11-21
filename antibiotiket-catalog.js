@@ -17,7 +17,7 @@
  <header class="abx-catalog-heading">
   <div class="abx-heading-content">
    <div class="abx-heading-topline">
-    <span class="abx-heading-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="8" rx="4" transform="rotate(-45 12 12)"/><path d="M9 9l6 6"/></svg></span>
+    <span class="abx-heading-symbol" aria-hidden="true">Rx</span>
     <span class="abx-catalog-eyebrow">DRx <span class="abx-heading-divider">/</span> Biblioteka klinike</span>
    </div>
    <h1>Antibiotikët<span class="abx-title-dot">.</span></h1>
