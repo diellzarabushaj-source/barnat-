@@ -58,20 +58,25 @@ assert.equal(sidebar.inert,false); assert.equal(main.inert,false); assert.equal(
   search.value=''; input(); assert.equal(immediate,''); assert.equal(pending,null);
 }
 
-// Native Event.currentTarget becomes null before clipboard promises resolve.
+// V3 protocols copy an official deep link, not the removed V2 draft-prescription workspace.
+// Exercise the actual delegated clipboard handler, including async success/failure.
 async function testCopy(fails) {
   const source=read('protokollet-v2.js');
-  const start=source.indexOf("async event => {",source.indexOf("root.querySelector('[data-pc-copy-rx]')"));
-  const end=source.indexOf("\n    });",start);
-  const callback=source.slice(start,end)+'}';
-  const button={textContent:'Kopjo recetën e punës',disabled:false};
-  const status={textContent:''}; let resolve; let reset;
-  const promise=new Promise((yes,no)=>{resolve=()=>fails?no(new Error('denied')):yes();});
-  const handler=vm.runInNewContext('('+callback+')',{root:{querySelector:()=>status},rxClipboardText:()=>'Draft',navigator:{clipboard:{writeText:()=>promise}},window:{setTimeout:fn=>{reset=fn;}}});
-  const event={currentTarget:button}; const pending=handler(event); event.currentTarget=null;
-  assert.equal(button.disabled,true); resolve(); await pending;
-  assert.match(status.textContent,fails?/nuk u lejua/:/Drafti u kopjua/);
-  if(!fails) assert.equal(button.textContent,'U kopjua');
-  reset(); assert.equal(button.disabled,false); assert.equal(button.textContent,'Kopjo recetën e punës');
+  const line=source.split('\n').find(value=>value.includes("if(e.target.closest('#plCopyLink'))"));
+  assert.ok(line, 'The V3 protocol reader must expose its source-link clipboard action');
+  const expected='https://barnat-six.vercel.app/protokollet.html#protokoll/upk-01';
+  const copied=[]; let message='';
+  const handler=vm.runInNewContext('(function(e){'+line+'})',{
+    location:{href:expected},
+    navigator:{clipboard:{writeText:href=>{
+      copied.push(href);
+      return fails?Promise.reject(new Error('denied')):Promise.resolve();
+    }}},
+    showToast:status=>{message=status;},
+  });
+  handler({target:{closest:selector=>selector==='#plCopyLink'}});
+  await new Promise(resolve=>setImmediate(resolve));
+  assert.deepEqual(copied,[expected]);
+  assert.match(message,fails?/nuk u kopjua/:/Lidhja u kopjua/);
 }
-(async()=>{await testCopy(false);await testCopy(true);console.log('Workspace interaction polish: drawer focus, resize recovery, clipboard success/failure passed.');})().catch(error=>{console.error(error);process.exitCode=1;});
+(async()=>{await testCopy(false);await testCopy(true);console.log('Workspace interaction polish: drawer focus, resize recovery and V3 protocol-link clipboard success/failure passed.');})().catch(error=>{console.error(error);process.exitCode=1;});
