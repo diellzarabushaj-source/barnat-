@@ -357,3 +357,24 @@ test('Desktop search shortcut hint matches the current platform',async({page})=>
  const platform=await page.evaluate(()=>navigator.platform||'');
  expect(key).toBe(/Mac|iPhone|iPad/.test(platform)?'⌘ K':'Ctrl K');
 });
+
+
+test('V8 focused search hides example chips while typing and restores them when cleared',async({page})=>{
+ await page.setViewportSize({width:390,height:844});
+ await page.goto(url+'/antibiotiket.html');
+ const quick=page.locator('#abxSmartQuick');
+ const search=page.locator('#abxCatalogSearch');
+ await expect(quick).toBeVisible();
+ await search.fill('amoxicillin');
+ await expect(quick).toBeHidden();
+ await expect(page.locator('.abx-catalog-item').first()).toBeVisible();
+ await page.locator('#abxSmartClear').click();
+ await expect(search).toHaveValue('');
+ await expect(quick).toBeVisible();
+ const target=page.locator('.abx-catalog-item-check').first();
+ const touch=await target.boundingBox();
+ expect(touch.width).toBeGreaterThanOrEqual(44);
+ expect(touch.height).toBeGreaterThanOrEqual(44);
+ await expect(page.locator('.abx-catalog-item')).toHaveCount(135);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
