@@ -72,3 +72,41 @@ test('UI uses approved local Stripe shell and is accessible without third-party 
  assert.doesNotMatch(html,/https:\/\/fonts\.googleapis\.com|cdn\.tailwindcss\.com/);
  assert.doesNotThrow(()=>new Function(js));
 });
+
+
+test('search scopes separate substances, brand products and source indications',()=>{
+ const c=byName('Ceftriaxone');
+ assert(c);
+ assert(smart.filterAntibiotics(all,{search:'Ceftriaxone',scope:'substance'},[],core).includes(c));
+ assert(smart.filterAntibiotics(all,{search:'Cistit',scope:'indication'},[],core).length>0);
+ assert.equal(smart.filterAntibiotics(all,{search:'Cistit',scope:'substance'},[],core).length,0);
+ assert(smart.filterAntibiotics(all,{search:'ALMACIN',scope:'product'},[],core).some(a=>a.name==='Amoxicillin'));
+ assert.equal(smart.filterAntibiotics(all,{search:'ALMACIN',scope:'indication'},[],core).length,0);
+});
+test('multiword suggestions match a single real record, with no made-up suggestions',()=>{
+ const picks=smart.suggestions(all,{search:'amoxicillin clavulanic'},[],core,10);
+ assert(picks.some(x=>x.value==='Amoxicillin + Clavulanic acid'));
+ assert(!picks.some(x=>!x.value.toLowerCase().includes('amoxicillin')&&!x.value.toLowerCase().includes('clavulanic')));
+ assert.equal(smart.suggestions(all,{search:'completely-fabricated-antibiotic'},[],core).length,0);
+});
+test('Albanian connecting words and licensed medical synonyms do not bypass clinical core',()=>{
+ const generic=smart.filterAntibiotics(all,{search:'amoksiklav'},[],core);
+ assert(generic.some(x=>x.name==='Amoxicillin + Clavulanic acid'));
+ const cist=smart.filterAntibiotics(all,{search:'cistit ne'},[],core);
+ const base=smart.filterAntibiotics(all,{search:'cistit'},[],core);
+ assert.deepEqual(cist.map(x=>x.id),base.map(x=>x.id));
+ assert.equal(smart.filterAntibiotics(all,{search:'amoksiklav',route:'IV',form:'Tabletë'},[],core).length,0);
+});
+test('search scope UI is functional and keyboard-accessible',()=>{
+ const js=fs.readFileSync(path.join(root,'antibiotiket-smart-ui.js'),'utf8');
+ const css=fs.readFileSync(path.join(root,'antibiotiket-smart-ui.css'),'utf8');
+ const catalog=fs.readFileSync(path.join(root,'antibiotiket-catalog.js'),'utf8');
+ assert.match(js,/data-abx-scope-tab="product"/);
+ assert.match(js,/data-abx-scope-tab="indication"/);
+ assert.match(js,/aria-pressed/);
+ assert.match(js,/event\.key==='Enter'/);
+ assert.match(js,/setScope\(/);
+ assert.match(catalog,/scope:view\.dataset\.searchScope/);
+ assert.match(css,/\.abx-smart-scopes/);
+ assert.match(css,/min-height:44px/);
+});
