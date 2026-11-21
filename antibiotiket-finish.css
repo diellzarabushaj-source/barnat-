@@ -475,3 +475,30 @@
 /* Semantic clinical safety: red for blocked/unverified dosing; indigo is interaction-only. */
 .abx-catalog-page .abx-catalog-pill.is-missing{background:#fef3f2;color:#b42318;border-color:#fecdca;font-weight:640}
 .abx-catalog-page .abx-catalog-pill.is-missing::before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:#d92d20;margin:0 6px 1px 0}
+
+
+/* P1 screenshot regression: cap all header decorations so no graphic can
+   expand the clinical hero or hide search and results at any viewport. */
+.abx-catalog-page .abx-heading-content,
+.abx-catalog-page .abx-heading-topline{min-width:0;max-width:100%}
+.abx-catalog-page .abx-heading-symbol{
+ display:inline-grid;place-items:center;
+ flex:0 0 34px;width:34px;height:34px;
+ min-width:34px;max-width:34px;min-height:34px;max-height:34px;
+ overflow:hidden;border-radius:9px;
+ color:#4a36a5;background:#f3f1ff;border:1px solid #e4dfff;
+ font:750 11px/1 Inter,system-ui,-apple-system,sans-serif;
+ letter-spacing:-.5px;
+}
+.abx-catalog-page .abx-heading-symbol svg,
+.abx-catalog-page .abx-heading-symbol img{
+ display:block;width:18px;height:18px;max-width:18px;max-height:18px;
+}
+.abx-catalog-page .abx-heading-content h1,
+.abx-catalog-page .abx-heading-content p{overflow-wrap:break-word}
+@media(max-width:760px){
+ .abx-catalog-page .abx-heading-symbol{
+  flex-basis:32px;width:32px;max-width:32px;min-width:32px;
+  height:32px;max-height:32px;min-height:32px;
+ }
+}
