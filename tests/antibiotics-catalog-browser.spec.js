@@ -219,6 +219,7 @@ test('Smart search: keyboard suggestions and evidence-bound search domains',asyn
  await expect(page.locator('#abxSmartScopes')).toBeVisible();
  const search=page.locator('#abxCatalogSearch');
  await search.fill('ceftri');
+ await expect(page.locator('.abx-catalog-name mark.abx-smart-highlight').first()).toBeVisible();
  await expect(page.locator('#abxSmartSuggestions [data-abx-index]').first()).toBeVisible();
  await search.press('ArrowDown');
  await page.keyboard.press('Enter');
