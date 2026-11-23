@@ -13,7 +13,13 @@
   const state = {
     workspace:'plan',
     datasetLoading:true,
-    catalog:{kind:'',limit:CATALOG_PAGE,tests:[],exams:[]},
+    catalog:{
+      tests:[],exams:[],
+      filters:{
+        analiza:{query:'',group:'',limit:CATALOG_PAGE},
+        ekzaminime:{query:'',group:'',limit:CATALOG_PAGE},
+      },
+    },
     data:null,
     testsById:new Map(),
     categoriesById:new Map(),
@@ -240,7 +246,12 @@
       .sort((a,b) => collator.compare(a.title,b.title));
     $('#labCatalogCategory').innerHTML = '<option value="">Të gjitha kategoritë</option>' + categories
       .map(category => `<option value="${esc(category.id)}">${esc(category.title)}</option>`).join('');
-    state.catalog.tests = data.tests.map(test => ({test,search:catalogWords(testSearchText(test))}))
+    state.catalog.tests = data.tests.map(test => ({
+      test,
+      name:catalogWords(test.formName),
+      names:catalogWords([test.formName,test.albanianName,test.englishName].join(' ')),
+      search:catalogWords(testSearchText(test)),
+    }))
       .sort((a,b) => collator.compare(a.test.formName,b.test.formName));
 
     const exams = new Map();
@@ -252,6 +263,10 @@
         exams.get(key).contexts.push({exam,profile});
       }
     }
+    const examGroups = new Set(data.indications.filter(profile => profileExams(profile).length).map(profile => profile.group));
+    $('#labCatalogProfileGroup').innerHTML = '<option value="">Të gjitha grupet klinike</option>'
+      + (data.profileGroups || []).filter(group => examGroups.has(group.id))
+        .map(group => `<option value="${esc(group.id)}">${esc(group.label)}</option>`).join('');
     state.catalog.exams = [...exams.values()].map(row => {
       const text = catalogWords(row.name);
       const aliases = [
@@ -262,10 +277,11 @@
         /\b(ekokardiografi|ekokardiografia)\b/.test(text) ? 'eko zemre echo ekokardiografi' : '',
         /\b(radiografi|radiografia)\b/.test(text) ? 'rrezet x ray rtg radiografi' : '',
       ].join(' ');
-      const contexts = row.contexts.map(({exam,profile}) => catalogWords(
-        [profile.title,profile.titleEn,...(profile.aliases || []),exam.when,exam.finding].join(' ')
-      ));
-      return {...row,search:`${text} ${aliases}`,contexts:row.contexts.map((item,index) => ({...item,search:contexts[index]}))};
+      const contexts = row.contexts.map(({exam,profile}) => ({
+        exam,profile,
+        search:catalogWords([profile.title,profile.titleEn,...(profile.aliases || []),exam.when,exam.finding].join(' ')),
+      }));
+      return {...row,nameKey:text,search:`${text} ${aliases}`,contexts};
     }).sort((a,b) => collator.compare(a.name,b.name));
   }
 
@@ -288,13 +304,11 @@
       button.setAttribute('aria-pressed',String(button.dataset.labView === view));
     }
     if (!showPlan) {
-      if (state.catalog.kind !== view) {
-        state.catalog.kind = view;
-        state.catalog.limit = CATALOG_PAGE;
-        $('#labCatalogSearch').value = '';
-        $('#labCatalogCategory').value = '';
-      }
+      const filter = state.catalog.filters[view];
       const labs = view === 'analiza';
+      $('#labCatalogSearch').value = filter.query;
+      $('#labCatalogCategory').value = labs ? filter.group : '';
+      $('#labCatalogProfileGroup').value = labs ? '' : filter.group;
       $('#labCatalogTitle').textContent = labs ? 'Katalogu i analizave' : 'Ekzaminimet shtesë';
       $('#labCatalogIntro').textContent = labs
         ? 'Shfleto të gjitha analizat dhe shtoji në plan sipas nevojës.'
@@ -303,6 +317,7 @@
       $('#labCatalogSearchLabel').textContent = searchLabel;
       $('#labCatalogSearch').placeholder = searchLabel + '…';
       $('#labCatalogCategory').hidden = !labs;
+      $('#labCatalogProfileGroup').hidden = labs;
       renderCatalog();
     }
     if (updateUrl) {
@@ -316,6 +331,7 @@
   function catalogTestMarkup(test, selected, covered) {
     const planned = selected.has(test.id);
     const inPanel = !planned && covered.has(test.id);
+    const action = planned ? 'Hiq nga plani' : inPanel ? 'Në panelin e zgjedhur' : 'Shto në plan';
     const category = state.categoriesById.get(test.categoryId)?.title || test.category || 'Laborator';
     const alternateName = [test.albanianName,test.englishName].find(name => name && catalogWords(name) !== catalogWords(test.formName));
     const note = test.referenceOnly ? 'Referencë klinike. Konfirmo metodën dhe disponueshmërinë me laboratorin.' : '';
@@ -331,7 +347,12 @@
         ${note ? `<p>${esc(note)}</p>` : ''}
         ${/^https:\/\//i.test(test.sourceUrl || '') ? `<a href="${esc(test.sourceUrl)}" target="_blank" rel="noopener noreferrer">Burimi i analizës ↗</a>` : ''}
       </div></details>` : ''}
-      <button class="lab-catalog-action" type="button" data-catalog-add="${esc(test.id)}" aria-disabled="${planned || inPanel}">${planned ? '✓ Në plan' : inPanel ? 'Në panelin e zgjedhur' : '+ Shto në plan'}</button>
+      <div class="lab-catalog-card-actions">
+        ${planned ? `<span class="lab-catalog-selected">✓ Në plan</span>` : ''}
+        <button class="lab-catalog-action" type="button" data-catalog-add="${esc(test.id)}"
+          data-selected="${planned}" aria-disabled="${inPanel}"
+          aria-label="${esc(action + ' ' + test.formName)}">${planned || inPanel ? '' : '+ '}${action}</button>
+      </div>
     </li>`;
   }
 
@@ -339,12 +360,16 @@
     return `<li class="lab-catalog-card lab-catalog-exam">
       <h3>${esc(row.name)}</h3>
       <details ${row.contexts.length === 1 ? 'open' : ''}><summary>Kur përdoret <span>${row.contexts.length}</span></summary>
-        <ul class="lab-catalog-contexts">${row.contexts.map(({exam,profile}) => `<li>
-          <strong>${esc(profile.title)}</strong>
-          ${exam.when ? `<p>${esc(exam.when)}</p>` : ''}
-          ${exam.finding ? `<p>${esc(exam.finding)}</p>` : ''}
-          <button type="button" class="lab-catalog-profile-link" data-catalog-profile="${esc(profile.id)}">Hap profilin klinik <span aria-hidden="true">→</span></button>
-        </li>`).join('')}</ul></details>
+        <ul class="lab-catalog-contexts">${row.contexts.map(({exam,profile}) => {
+          const action = state.selectedIndicationIds.has(profile.id) ? 'Shih në plan' : 'Shto profilin në plan';
+          return `<li>
+            <strong>${esc(profile.title)}</strong>
+            ${exam.when ? `<p><b>Indikacioni</b> ${esc(exam.when)}</p>` : ''}
+            ${exam.finding ? `<p><b>Çfarë të vlerësosh</b> ${esc(exam.finding)}</p>` : ''}
+            <button type="button" class="lab-catalog-profile-link" data-catalog-profile="${esc(profile.id)}"
+              aria-label="${esc(action + ' ' + profile.title)}">${action} <span aria-hidden="true">→</span></button>
+          </li>`;
+        }).join('')}</ul></details>
     </li>`;
   }
 
@@ -360,19 +385,32 @@
       return;
     }
     const labs = state.workspace === 'analiza';
-    const tokens = catalogWords($('#labCatalogSearch').value).split(' ').filter(Boolean);
-    const matches = text => tokens.every(token => token.length <= 3 ? text.split(' ').includes(token) : text.includes(token));
-    const category = $('#labCatalogCategory').value;
+    const filter = state.catalog.filters[state.workspace];
+    const query = catalogWords(filter.query);
+    const tokens = query.split(' ').filter(Boolean);
+    const matches = text => {
+      const words = text.split(' ');
+      return tokens.every(token => token.length <= 3 ? words.includes(token) : text.includes(token));
+    };
+    const rank = (name,names) => {
+      if (!query || name === query) return 0;
+      if (name.startsWith(query)) return 1;
+      return matches(names) ? 2 : 3;
+    };
+    $('#labCatalogReset').hidden = !filter.query && !filter.group;
     const entries = buildPlanEntries().filter(isEntrySelected);
     const selected = new Set(entries.map(entry => entry.test.id));
     const covered = new Set(entries.flatMap(entry => entry.test.containsTestIds || []));
     $('#labCatalogPlanCount').textContent = $('#labSelectedTestCount').textContent;
     $('.lab-catalog-go-plan').hidden = !entries.length;
 
-    const rows = labs ? state.catalog.tests.filter(row => (!category || row.test.categoryId === category) && matches(row.search))
-      : state.catalog.exams.map(row => ({...row,contexts:row.contexts.filter(context => matches(row.search + ' ' + context.search))}))
+    const rows = labs ? state.catalog.tests.filter(row => (!filter.group || row.test.categoryId === filter.group) && matches(row.search))
+      : state.catalog.exams.map(row => ({...row,contexts:row.contexts.filter(context =>
+        (!filter.group || context.profile.group === filter.group) && matches(row.search + ' ' + context.search))}))
         .filter(row => row.contexts.length);
-    const page = rows.slice(0,state.catalog.limit);
+    rows.sort((a,b) => labs ? rank(a.name,a.names) - rank(b.name,b.names)
+      : rank(a.nameKey,a.search) - rank(b.nameKey,b.search));
+    const page = rows.slice(0,filter.limit);
     status.textContent = rows.length
       ? `${page.length} nga ${rows.length} ${labs ? 'analiza' : 'ekzaminime'}`
       : 'Nuk u gjetën rezultate. Provo një emër tjetër ose hiq filtrin.';
@@ -384,11 +422,15 @@
     const add = event.target.closest('[data-catalog-add]');
     if (add && add.getAttribute('aria-disabled') === 'false') {
       const id = add.dataset.catalogAdd;
-      if (buildPlanEntries().some(entry => entry.test.id === id)) togglePlannedTest(id,true);
+      const selected = add.dataset.selected === 'true';
+      if (selected) {
+        if (state.manualTestIds.has(id)) removeManualTest(id);
+        if (buildPlanEntries().some(entry => entry.test.id === id)) togglePlannedTest(id,false);
+      } else if (buildPlanEntries().some(entry => entry.test.id === id)) togglePlannedTest(id,true);
       else addManualTest(id);
       renderCatalog();
       [...$('#labCatalogResults').querySelectorAll('[data-catalog-add]')].find(button => button.dataset.catalogAdd === id)?.focus();
-      showToast('Analiza u shtua në plan.');
+      showToast(selected ? 'Analiza u hoq nga plani.' : 'Analiza u shtua në plan.');
     }
     const open = event.target.closest('[data-catalog-profile]');
     if (open && state.indicationsById.has(open.dataset.catalogProfile)) {
@@ -949,15 +991,27 @@
       });
     }
     const updateCatalog = () => {
-      state.catalog.limit = CATALOG_PAGE;
+      const filter = state.catalog.filters[state.workspace];
+      filter.query = $('#labCatalogSearch').value;
+      filter.group = $(state.workspace === 'analiza' ? '#labCatalogCategory' : '#labCatalogProfileGroup').value;
+      filter.limit = CATALOG_PAGE;
       renderCatalog();
     };
     $('#labCatalogSearch').addEventListener('input',updateCatalog);
     $('#labCatalogCategory').addEventListener('change',updateCatalog);
+    $('#labCatalogProfileGroup').addEventListener('change',updateCatalog);
+    $('#labCatalogReset').addEventListener('click', () => {
+      $('#labCatalogSearch').value = '';
+      $('#labCatalogCategory').value = '';
+      $('#labCatalogProfileGroup').value = '';
+      updateCatalog();
+      $('#labCatalogSearch').focus();
+    });
     $('#labCatalogResults').addEventListener('click',onCatalogClick);
     $('#labCatalogMore').addEventListener('click', () => {
-      const next = state.catalog.limit;
-      state.catalog.limit += CATALOG_PAGE;
+      const filter = state.catalog.filters[state.workspace];
+      const next = filter.limit;
+      filter.limit += CATALOG_PAGE;
       renderCatalog();
       const firstNew = $('#labCatalogResults').children[next];
       if (firstNew) {

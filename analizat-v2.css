@@ -400,7 +400,7 @@ a{color:inherit}
 }
 .lab-workspace-nav button:hover {background:#eceefa;color:#2c2768}
 .lab-workspace-nav button[aria-pressed="true"] {
-  border-color:#dcdcf1;
+  border-color:#cac4ed;
   background:#fff;
   color:#35277f;
   box-shadow:var(--shadow-xs);
@@ -445,7 +445,6 @@ a{color:inherit}
   align-items:center;
 }
 .lab-catalog-search {position:relative;min-width:0}
-.lab-catalog-controls:has(select[hidden]) {grid-template-columns:1fr}
 .lab-catalog-search svg {position:absolute;left:13px;top:14px;color:#556780;pointer-events:none}
 .lab-catalog-controls :is(input,select) {
   display:block;
@@ -462,7 +461,9 @@ a{color:inherit}
 }
 .lab-catalog-search input {padding-left:40px}
 .lab-catalog-search input::placeholder {color:#586b81}
-.lab-catalog-status {min-height:20px;margin:13px 0 9px}
+.lab-catalog-resultbar {display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px}
+.lab-catalog-status {margin:0}
+#labCatalogReset {flex:none}
 .lab-catalog-grid {
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(min(100%,242px),1fr));
@@ -516,7 +517,8 @@ a{color:inherit}
 }
 .lab-catalog-detail a {display:inline-flex;align-items:center;min-height:44px;color:#45318e;font-size:13px;font-weight:570}
 .lab-catalog-contexts {display:grid;gap:6px;margin:0;padding:0;list-style:none}
-.lab-catalog-contexts li>strong {font-size:13px;font-weight:650;color:#263b60}
+.lab-catalog-contexts li>strong {font-size:14px;font-weight:680;color:#263b60}
+.lab-catalog-contexts p b {display:block;color:#465674;font-size:12px;font-weight:630;margin-top:5px}
 .lab-catalog-exam {border-top:2px solid #7470aa}
 .lab-catalog-profile-link {
   min-height:44px;
@@ -546,9 +548,11 @@ a{color:inherit}
   font-weight:650;
   cursor:pointer;
 }
-.lab-catalog-action {justify-self:start;margin-top:4px}
+.lab-catalog-card-actions {display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;margin-top:5px}
+.lab-catalog-selected {color:#235e51;font-size:12px;font-weight:660}
+.lab-catalog-action[data-selected="true"] {background:#fff;border-color:#dce3ee;color:#34475c}
 .lab-catalog-action:hover,.lab-catalog-more:hover,.lab-catalog-go-plan:hover {background:#e7e2fa}
-.lab-catalog-action[aria-disabled="true"] {border-color:#d0e5df;background:#eff8f5;color:#245e51;cursor:default}
+.lab-catalog-action[aria-disabled="true"] {border-color:#dce3ee;background:#f2f5f8;color:#455b6d;cursor:default}
 .lab-catalog-more {display:flex;margin:14px auto 0}
 .lab-catalog-go-plan strong {font-variant-numeric:tabular-nums}
 .lab-clinical-profile summary {
