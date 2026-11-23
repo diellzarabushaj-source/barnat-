@@ -341,10 +341,28 @@ a{color:inherit}
 .lab-clinical-profile-head>span{font-size:11px;color:#52657c}
 .lab-clinical-profile p{margin:6px 0}
 .lab-clinical-profile .lab-profile-urgent{padding:8px 11px;border-left:3px solid #b42318;background:#fff5f4;color:#82251d;border-radius:0 6px 6px 0;font-weight:450}
+.lab-profile-urgent strong{display:block;margin-bottom:2px}
 .lab-clinical-profile summary{display:flex;gap:10px;align-items:center;min-height:44px;cursor:pointer;color:#4338a0;font-weight:550}
 .lab-clinical-profile summary>span{display:inline-grid;place-items:center;width:21px;height:21px;border:1px solid #d9d6ff;border-radius:50%;font-size:12px}
 .lab-clinical-profile ul{padding-left:20px;margin:6px 0}
 .lab-clinical-profile a,.lab-test-detail-body>a{display:flex;align-items:center;min-height:44px;color:#4338a0;text-underline-offset:3px;font-size:12px;overflow-wrap:anywhere}
+.lab-clinical-profile .lab-exam-list{display:grid;gap:8px;margin:4px 0 10px;padding:0;list-style:none}
+.lab-exam-list li{padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:#f8fafc}
+.lab-exam-list li strong{color:var(--ink)}
+.lab-exam-list li p{margin:3px 0 0}
+.lab-profile-sources{display:flex;flex-wrap:wrap;gap:0 16px}
+.lab-profile-interpretation{padding:8px 0;border-bottom:1px solid var(--line)}
+.lab-test-details summary{min-height:44px;font-size:12px;color:#4338a0}
+.lab-test-details summary::before{content:'▸';font-size:12px}
+.lab-test-details[open] summary::before{content:'▾'}
+.lab-test-detail-body{font-size:12px;color:#35475b}
+.lab-result-context{padding:8px 0;border-top:1px solid #e0e5ee}
+.lab-result-context>strong{color:var(--ink)}
+.lab-result-context dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));gap:8px;margin:6px 0 0}
+.lab-result-context dl>div{min-width:0;padding:8px 10px;border-radius:7px;background:#eef3fa}
+.lab-result-context dl>div[data-direction="high"]{background:#f4effa}
+.lab-result-context dt{font-weight:650;color:#2e4266}
+.lab-result-context dd{margin:3px 0 0;overflow-wrap:anywhere}
 .lab-test-row{grid-template-columns:44px minmax(0,1fr) auto;gap:10px}
 .lab-test-toggle{width:44px;min-height:44px;align-self:start;padding:0;cursor:pointer}
 .lab-test-toggle input{width:19px;height:19px}

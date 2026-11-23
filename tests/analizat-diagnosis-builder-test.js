@@ -46,7 +46,7 @@ const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi
 const pageRuntimes = scripts.filter(src => !/(?:drx-runtime-telemetry|sidebar-taxonomy-v3)\.js/.test(src));
 
 assert.equal(styles.length, 2, 'Analizat V2 must load only page CSS + canonical Stripe shell');
-assert.ok(styles[0].includes('analizat-v2.css?v=1-symptoms-20261029'));
+assert.ok(styles[0].includes('analizat-v2.css?v=1-workups-20261123'));
 assert.ok(styles[1].includes('drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8'));
 assert.ok(scripts.includes('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012'), 'Analizat V2 shared sidebar runtime is missing');
 assert.equal(pageRuntimes.length, 1, 'Analizat V2 must own one page runtime in addition to the shared sidebar runtime');
@@ -54,7 +54,7 @@ assert.ok(pageRuntimes[0].includes('analizat-v2.js?v=3'));
 assert.doesNotMatch(html, /tailadmin-|analizat-polish|medical-hub\.css|lab-sheet-data|auth-client\.js|clean-medindex-ui|clinical-density|app-polish|performance\.css/);
 assert.doesNotMatch(html, /<\/div>\s*<\/div>\s*<\/main>/, 'Analizat V2 main wrapper must stay balanced');
 
-assert.match(js, /fetch\('\/api\/icd\?dataset=labs&revision=lab-symptoms-20261029-v1'/);
+assert.match(js, /fetch\('\/api\/icd\?dataset=labs&revision=lab-workups-20261123-v2'/);
 assert.match(js, /function loadSharedSidebarTaxonomy\(\)/);
 assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v4/);
 assert.match(js, /const TIER_ORDER = Object\.freeze\(\{ core:0, recommended:1, conditional:2, manual:3 \}\)/);

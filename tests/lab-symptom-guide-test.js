@@ -1,14 +1,22 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
-const {enrichLabDataset,PROFILES,ADDITIONS}=require('../lib/lab-symptom-guide');
+const {enrichLabDataset,PROFILES,ADDITIONS,VERSION}=require('../lib/lab-symptom-guide');
 const {base,data}=require('./lab-symptom-fixture');
 assert.equal(PROFILES.length,20);assert.equal(new Set(PROFILES.map(p=>p.slug)).size,20);
-assert.equal(ADDITIONS.length,27);assert.equal(data.indications.length,base.indications.length+20);
+const {PROFILES:WORKUPS}=require('../lib/lab-workup-profiles');
+assert.equal(ADDITIONS.length,33);
+assert.equal(WORKUPS.length,35);
+assert.equal(data.indications.length,base.indications.length+PROFILES.length+WORKUPS.length);
+assert.equal(new Set(data.indications.map(p=>p.slug)).size,data.indications.length);
+assert.equal(new Set(data.indications.map(p=>p.id)).size,data.indications.length);
 assert.equal(new Set(data.tests.map(t=>t.id)).size,data.tests.length);
 assert.deepEqual(enrichLabDataset(data),data,'Overlay must be idempotent and preserve DB profiles');
 assert.equal(base.tests.some(t=>t.id==='lab-ref-cbc'),false,'Do not mutate the database dataset');
-for(const p of data.indications.filter(p=>p.kind==='symptom')){
-  assert.ok(p.summary&&p.interpretation&&p.sources.length,p.slug);
+for(const p of data.indications){
+  assert.ok(p.sources.length&&p.exams.length,p.slug);
+  assert.ok(p.exams.every(exam=>exam.name),p.slug);
+  assert.ok(p.tests.every(test=>test.resultFindings.length),p.slug+' must have interpreted results');
+  assert.ok(p.tests.every(test=>test.resultFindings.every(result=>result.label&&result.text)),p.slug);
   assert.ok(p.sources.every(s=>s.url.startsWith('https://')));
   assert.deepEqual(p.catalogGaps,[],p.slug+' must resolve against the test catalog');
   assert.equal(new Set(p.tests.map(t=>t.testId)).size,p.tests.length,p.slug+' duplicates a test');
@@ -21,7 +29,8 @@ const keySource=worker.match(/function queryKey\(url\) \{[\s\S]*?\n\}/)[0];
 const key=vm.runInNewContext('('+keySource+')',{URL,requestFor:value=>value});
 const endpoint='https://example.test/api/icd?dataset=labs';
 assert.notEqual(key(new URL(endpoint)),key(new URL(endpoint+'&revision=lab-symptoms-20261029-v1')));
-assert.equal(key(new URL(endpoint+'&revision=lab-symptoms-20261029-v1')),key(new URL(endpoint+'&revision=lab-symptoms-20261029-v1&__drx_worker=1')));
+assert.notEqual(key(new URL(endpoint+'&revision=lab-symptoms-20261029-v1')),key(new URL(endpoint+'&revision='+VERSION)));
+assert.equal(key(new URL(endpoint+'&revision='+VERSION)),key(new URL(endpoint+'&revision='+VERSION+'&__drx_worker=1')));
 for(const [slug,term] of [['lodhja','lodhje'],['dhimbja-fytit','dhimbje fyti'],['humbja-peshes','humbje peshe'],['verdheza','verdheze'],['nyjet','dhimbje nyje']]){
   assert.ok(symptom(slug).aliases.includes(term),'Search must cover common Albanian inflections: '+term);
 }
@@ -37,6 +46,15 @@ assert.match(symptom('dhimbja-gjoksit').interpretation,/jo domosdoshmërisht inf
 assert.ok(symptom('dhimbja-gjoksit').tests.some(t=>t.testId==='lab-ref-hsctn'));
 assert.ok(!symptom('dhimbja-gjoksit').tests.some(t=>t.testId==='existing-ckmb'));
 assert.match(symptom('nyjet').urgentNote,/septik/);
+const workup = slug => data.indications.find(p=>p.slug===slug);
+const pe = workup('embolia-pulmonare');
+assert.equal(pe.tests[0].tier,'conditional');
+assert.match(pe.tests[0].resultFindings.find(f=>f.direction==='low').text,/probabilitet/);
+assert.ok(pe.exams.some(exam=>exam.name.includes('Angio-CT')));
+assert.match(workup('dka-hhs').tests.find(t=>t.testId==='existing-glucose').resultFindings[0].text,/SGLT2/);
+assert.ok(workup('preeklampsia').tests.some(t=>t.testId==='lab-ref-pcrUrine'));
+assert.equal(workup('otiti-akut').tests.length,0);
+assert.ok(workup('otiti-akut').exams.some(exam=>exam.name==='Otoskopi'));
 assert.match(symptom('menstruacionet').tests.find(t=>t.testId==='lab-ref-tsh').rationale,/Vetëm/);
 // Test the actual UI selection and merge functions without starting the DOM.
 const js=fs.readFileSync(require('node:path').join(__dirname,'../analizat-v2.js'),'utf8').replace(/  if \(document.readyState === 'loading'\)[\s\S]*$/, 'window.engine={state,buildPlanEntries,visiblePlanEntries,isEntrySelected,copyPlanText};})();');
@@ -52,4 +70,4 @@ e.state.selectedIndicationIds.add(symptom('lodhja').id);e.state.selectedIndicati
 assert.ok(e.visiblePlanEntries().some(x=>x.test.id==='lab-ref-cbc'));
 assert.ok(!e.visiblePlanEntries().some(x=>x.test.id==='hemoglobin'),'CBC covers its component rather than duplicating it in the order');
 e.state.excludedTestIds.add('lab-ref-cbc');assert.ok(e.visiblePlanEntries().some(x=>x.test.id==='hemoglobin'),'Unchecking CBC restores independently requested components');
-console.log('PASS: 20 symptom profiles, 27 reference identities, exact specimens/methods, missing-panel reconciliation, opt-in conditions and CBC component coverage.');
+console.log('PASS: 55 versioned workup profiles, legacy profiles, 33 reference identities, contextual results, exams, and deliberate laboratory selection.');

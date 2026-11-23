@@ -163,7 +163,7 @@
     const timer = setTimeout(() => controller.abort(), 9000);
     try {
       // Keep this catalog revision separate from the device's older lab dataset.
-      const response = await fetch('/api/icd?dataset=labs&revision=lab-symptoms-20261029-v1', {
+      const response = await fetch('/api/icd?dataset=labs&revision=lab-workups-20261123-v2', {
         credentials:'same-origin',
         cache:'no-store',
         headers:{ Accept:'application/json' },
@@ -261,6 +261,7 @@
             icdCodes:indication.icdCodes || [],
             rationale:link.rationale || '',
             contextNote:link.contextNote || '',
+            resultFindings:link.resultFindings || [],
           });
         }
       }
@@ -411,18 +412,25 @@
   }
 
   function renderClinicalGuide() {
-    const root = $('#labClinicalGuide');if(!root)return;
-    const profiles = selectedIndications().filter(p=>p.interpretation || p.assessments?.length || p.urgentNote);
+    const root = $('#labClinicalGuide');
+    if (!root) return;
+    const profiles = selectedIndications().filter(p => p.interpretation || p.exams?.length || p.assessments?.length || p.urgentNote);
+    const openProfiles = new Set([...root.querySelectorAll('details[open]')].map(details => details.closest('article').dataset.guideId));
     root.hidden = !profiles.length;
-    root.innerHTML = profiles.map(p=>`<article class="lab-clinical-profile">
-      <div class="lab-clinical-profile-head"><strong>${esc(p.title)}</strong><span>${p.kind==='symptom'?'Vlerësim sipas simptomës':'Udhëzim klinik'}</span></div>
-      ${p.summary?`<p>${esc(p.summary)}</p>`:''}
-      ${p.urgentNote?`<p class="lab-profile-urgent">${esc(p.urgentNote)}</p>`:''}
-      <details><summary>Interpretimi dhe ekzaminimet <span aria-hidden="true">?</span></summary>
-        ${p.interpretation?`<p>${esc(p.interpretation)}</p>`:''}
-        ${(p.assessments||[]).length?`<ul>${p.assessments.map(s=>`<li>${esc(s)}</li>`).join('')}</ul>`:''}
-        ${(p.sources||[]).filter(s=>/^https:\/\//.test(s.url||'')).map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.title)} ↗</a>`).join('')}
-      </details></article>`).join('');
+    root.innerHTML = profiles.map(profile => {
+      const exams = profile.exams || (profile.assessments || []).map(name => ({name}));
+      const sources = (profile.sources || []).filter(source => /^https:\/\//.test(source.url || ''));
+      return `<article class="lab-clinical-profile" data-guide-id="${esc(profile.id)}">
+        <div class="lab-clinical-profile-head"><strong>${esc(profile.title)}</strong><span>${profile.kind==='symptom'?'Simptomë':'Diagnozë / gjendje'}</span></div>
+        ${profile.summary ? `<p>${esc(profile.summary)}</p>` : ''}
+        ${profile.urgentNote ? `<p class="lab-profile-urgent"><strong>Shenja alarmi</strong> ${esc(profile.urgentNote)}</p>` : ''}
+        <details ${openProfiles.has(profile.id) ? 'open' : ''}><summary>Ekzaminimet shtesë dhe burimet${exams.length ? ` <span>${exams.length}</span>` : ''}</summary>
+          ${exams.length ? `<ul class="lab-exam-list">${exams.map(exam => `<li><strong>${esc(exam.name)}</strong>
+            ${exam.when ? `<p>${esc(exam.when)}</p>` : ''}${exam.finding ? `<p>${esc(exam.finding)}</p>` : ''}</li>`).join('')}</ul>` : ''}
+          ${profile.interpretation ? `<p class="lab-profile-interpretation">${esc(profile.interpretation)}</p>` : ''}
+          ${sources.length ? `<div class="lab-profile-sources">${sources.map(source => `<a href="${esc(source.url)}" target="_blank" rel="noopener noreferrer">${esc(source.title)} ↗</a>`).join('')}</div>` : ''}
+        </details></article>`;
+    }).join('');
   }
 
   function pruneExcludedTests() {
@@ -515,7 +523,7 @@
     renderManualResults();
   }
 
-  function tierSectionMarkup(tier, entries) {
+  function tierSectionMarkup(tier, entries, openDetails) {
     if (!entries.length) return '';
     const meta = TIER_META[tier] || TIER_META.recommended;
 
@@ -530,20 +538,25 @@
           <span>${entries.length} analiza</span>
         </header>
         <div class="lab-test-list">
-          ${entries.map(testRowMarkup).join('')}
+          ${entries.map(entry => testRowMarkup(entry, openDetails)).join('')}
         </div>
       </section>`;
   }
 
-  function testRowMarkup(entry) {
+  function testRowMarkup(entry, openDetails) {
     const test = entry.test;
     const selected = isEntrySelected(entry);
     const category = state.categoriesById.get(test.categoryId);
+    const contextual = entry.reasons.filter(reason => reason.resultFindings.length);
     const detailLines = [
       test.whatItShows ? `<p><strong>Çfarë tregon:</strong> ${esc(test.whatItShows)}</p>` : '',
       test.referenceOnly ? '<p>Referencë klinike: konfirmo metodën dhe disponueshmërinë me laboratorin.</p>' : '',
-      test.highPositiveAbnormal ? `<p><strong>Kur rritet / jonormale:</strong> ${esc(test.highPositiveAbnormal)}</p>` : '',
-      test.lowNegativeNormal ? `<p><strong>Kur ulet / normale:</strong> ${esc(test.lowNegativeNormal)}</p>` : '',
+      ...contextual.map(reason => `<div class="lab-result-context">
+        <strong>${esc(reason.disease)}</strong>
+        <dl>${reason.resultFindings.map(finding => `<div data-direction="${esc(finding.direction)}"><dt>${esc(finding.label)}</dt><dd>${esc(finding.text)}</dd></div>`).join('')}</dl>
+      </div>`),
+      !contextual.length && test.highPositiveAbnormal ? `<p><strong>Kur rritet / jonormale:</strong> ${esc(test.highPositiveAbnormal)}</p>` : '',
+      !contextual.length && test.lowNegativeNormal ? `<p><strong>Kur ulet / normale:</strong> ${esc(test.lowNegativeNormal)}</p>` : '',
     ].filter(Boolean).join('');
 
     return `
@@ -572,8 +585,8 @@
           ` : '<p class="lab-test-context">Shtuar manualisht nga katalogu i analizave.</p>'}
 
           ${detailLines ? `
-            <details class="lab-test-details">
-              <summary>Detajet e analizës ↓</summary>
+            <details class="lab-test-details" ${openDetails?.has(test.id) ? 'open' : ''}>
+              <summary>${contextual.length ? 'Si interpretohet rezultati?' : 'Detajet e analizës'}</summary>
               <div class="lab-test-detail-body">${detailLines}${/^https:\/\//.test(test.sourceUrl || '') ? `<a href="${esc(test.sourceUrl)}" target="_blank" rel="noopener noreferrer">Burimi klinik ↗</a>` : ''}</div>
             </details>
           ` : ''}
@@ -586,6 +599,7 @@
     const root = $('#labPlanSections');
     if (!root) return;
     const entries = visiblePlanEntries();
+    const openDetails = new Set([...root.querySelectorAll('details[open]')].map(details => details.closest('[data-test-id]').dataset.testId));
     const selectedEntries = entries.filter(isEntrySelected);
     const dxCount = state.selectedIndicationIds.size;
 
@@ -610,8 +624,8 @@
           <span class="lab-empty-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/><path d="M7.5 16h9"/></svg>
           </span>
-          <strong>Zgjidh simptomën ose diagnozën sipër.</strong>
-          <span>DRx do t’i bashkojë analizat e nevojshme dhe do ta shpjegojë pse sugjerohet secila.</span>
+          <strong>${dxCount ? 'Ky profil zakonisht vlerësohet me ekzaminim klinik.' : 'Zgjidh simptomën ose diagnozën sipër.'}</strong>
+          <span>${dxCount ? 'Hap “Ekzaminimet shtesë dhe burimet” te profili i zgjedhur.' : 'DRx i bashkon analizat e mundshme dhe shpjegon kur indikohet secila.'}</span>
         </div>`;
       return;
     }
@@ -623,7 +637,7 @@
     });
 
     root.innerHTML = [...grouped.entries()]
-      .map(([tier, rows]) => tierSectionMarkup(tier, rows))
+      .map(([tier, rows]) => tierSectionMarkup(tier, rows, openDetails))
       .join('');
   }
 

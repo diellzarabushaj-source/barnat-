@@ -8,5 +8,8 @@ tests.push({id:'hemoglobin',englishName:'Hemoglobin',formName:'Hemoglobina',cate
   {id:'creatinine-clearance',englishName:'Creatinine Clearance',formName:'Klirensi i kreatininës',categoryId:'category-5'});
 const base={source:'Supabase',categories,tests,indications:[{id:'old-anemia',slug:'anemia-mungese-hekurit',title:'Anemia nga mungesa e hekurit',icdCodes:['D50'],sortOrder:1,tests:[{testId:'hemoglobin',tier:'core',rationale:'Vlerësim i anemisë.'}],catalogGaps:[{name:'Ferritina'}]},
   {id:'old-uti',slug:'infeksion-urinar',title:'Infeksion urinar',tests:[],catalogGaps:[{name:'Urinokultura'}]},
-  {id:'old-ckd',slug:'semundja-kronike-veshkave',title:'Sëmundja kronike e veshkave',tests:[],catalogGaps:[{name:'eGFR'},{name:'Raporti albuminë/kreatininë në urinë (ACR)'}]}]};
+  {id:'old-ckd',slug:'semundja-kronike-veshkave',title:'Sëmundja kronike e veshkave',tests:[],catalogGaps:[{name:'eGFR'},{name:'Raporti albuminë/kreatininë në urinë (ACR)'}]},
+  {id:'old-diabetes',slug:'diabeti-tip-2',title:'Diabeti tip 2',tests:[{testId:'existing-glucose',tier:'core'}]},
+  {id:'old-lipid',slug:'dislipidemia',title:'Dislipidemia',tests:[{testId:'existing-ldl',tier:'core'}]},
+  {id:'old-liver',slug:'semundje-hepatike',title:'Sëmundje hepatike',tests:[{testId:'existing-alp',tier:'core'}]}]};
 module.exports={base,data:enrichLabDataset(base)};
