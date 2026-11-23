@@ -97,3 +97,19 @@ diagnoses. The original profile slugs and legacy diagnosis IDs remain valid.
 - Verification covers exact identities, profile and assay uniqueness,
   idempotence, contextual results, examination-only profiles, intentional
   ordering, access failure, and 320/390/1440 px browser layouts.
+
+## Catalog and navigation
+
+The Analizat page offers a clinical plan, a laboratory catalog, and an
+examinations catalog. The laboratory catalog reads every assay from the same
+authenticated dataset used by the plan. The search accepts Albanian or English
+names, and category filtering and progressive paging make the catalog
+available on small screens. Adding a linked assay selects it in its original
+clinical context. The catalog marks already selected assays and components
+covered by a selected panel.
+
+The examinations catalog indexes the examinations in all loaded profiles.
+Identically named examinations share a card with the applicable clinical
+contexts. Opening a context takes the user to its examination guidance in
+the plan. Examination entries are never added to the laboratory order.
+The views are linkable with `?view=analiza` and `?view=ekzaminime`.

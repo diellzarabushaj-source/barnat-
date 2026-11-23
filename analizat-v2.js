@@ -9,7 +9,11 @@
     manual:{ label:'Shtuar manualisht', description:'Të shtuara nga katalogu' },
   });
 
+  const CATALOG_PAGE = 24;
   const state = {
+    workspace:'plan',
+    datasetLoading:true,
+    catalog:{kind:'',limit:CATALOG_PAGE,tests:[],exams:[]},
     data:null,
     testsById:new Map(),
     categoriesById:new Map(),
@@ -153,7 +157,7 @@
 
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault();
-        $('#labManualSearch')?.focus();
+        $(state.workspace === 'plan' ? '#labManualSearch' : '#labCatalogSearch')?.focus();
       }
     });
   }
@@ -197,8 +201,10 @@
     const groupSelect = $('#labProfileGroup');
     if(groupSelect) groupSelect.innerHTML = '<option value="">Të gjitha grupet</option>' + (data.profileGroups || []).map(group=>`<option value="${esc(group.id)}">${esc(group.label)}</option>`).join('');
 
+    indexCatalog(data);
     restoreUrl();
     renderAll();
+    renderCatalog();
   }
 
   function selectedIndications() {
@@ -226,6 +232,174 @@
       test.category,
       test.whatItShows,
     ].join(' '));
+  }
+
+  function indexCatalog(data) {
+    const collator = new Intl.Collator('sq', {sensitivity:'base',numeric:true});
+    const categories = [...data.categories].filter(category => category.count > 0)
+      .sort((a,b) => collator.compare(a.title,b.title));
+    $('#labCatalogCategory').innerHTML = '<option value="">Të gjitha kategoritë</option>' + categories
+      .map(category => `<option value="${esc(category.id)}">${esc(category.title)}</option>`).join('');
+    state.catalog.tests = data.tests.map(test => ({test,search:catalogWords(testSearchText(test))}))
+      .sort((a,b) => collator.compare(a.test.formName,b.test.formName));
+
+    const exams = new Map();
+    for (const profile of data.indications) {
+      for (const exam of profileExams(profile)) {
+        const key = catalogWords(exam.name);
+        if (!key) continue;
+        if (!exams.has(key)) exams.set(key,{name:exam.name,contexts:[]});
+        exams.get(key).contexts.push({exam,profile});
+      }
+    }
+    state.catalog.exams = [...exams.values()].map(row => {
+      const text = catalogWords(row.name);
+      const aliases = [
+        /\b(ekg|ecg)\b/.test(text) ? 'ekg ecg elektrokardiogram' : '',
+        /\b(ct|cta|angio ct)\b/.test(text) ? 'ct kt skaner tomografi' : '',
+        /\b(mri|irm)\b/.test(text) ? 'mri irm rezonance magnetike' : '',
+        /\b(ekografi|ultrazeri|eko)\b/.test(text) ? 'ekografi eko ultraze ultrasound' : '',
+        /\b(ekokardiografi|ekokardiografia)\b/.test(text) ? 'eko zemre echo ekokardiografi' : '',
+        /\b(radiografi|radiografia)\b/.test(text) ? 'rrezet x ray rtg radiografi' : '',
+      ].join(' ');
+      const contexts = row.contexts.map(({exam,profile}) => catalogWords(
+        [profile.title,profile.titleEn,...(profile.aliases || []),exam.when,exam.finding].join(' ')
+      ));
+      return {...row,search:`${text} ${aliases}`,contexts:row.contexts.map((item,index) => ({...item,search:contexts[index]}))};
+    }).sort((a,b) => collator.compare(a.name,b.name));
+  }
+
+  function catalogWords(value) {
+    return normalize(value).replace(/[^\p{L}\p{N}]+/gu,' ').trim();
+  }
+
+  function profileExams(profile) {
+    return profile.exams || (profile.assessments || []).map(name => ({name}));
+  }
+
+  function setWorkspaceView(view, updateUrl = true) {
+    if (!['plan','analiza','ekzaminime'].includes(view)) view = 'plan';
+    state.workspace = view;
+    const showPlan = view === 'plan';
+    $('#labPlanWorkspace').hidden = !showPlan;
+    $('#labCatalog').hidden = showPlan;
+    $('#labSkip').href = showPlan ? '#labPlan' : '#labCatalogTitle';
+    for (const button of document.querySelectorAll('.lab-workspace-nav [data-lab-view]')) {
+      button.setAttribute('aria-pressed',String(button.dataset.labView === view));
+    }
+    if (!showPlan) {
+      if (state.catalog.kind !== view) {
+        state.catalog.kind = view;
+        state.catalog.limit = CATALOG_PAGE;
+        $('#labCatalogSearch').value = '';
+        $('#labCatalogCategory').value = '';
+      }
+      const labs = view === 'analiza';
+      $('#labCatalogTitle').textContent = labs ? 'Katalogu i analizave' : 'Ekzaminimet shtesë';
+      $('#labCatalogIntro').textContent = labs
+        ? 'Shfleto të gjitha analizat dhe shtoji në plan sipas nevojës.'
+        : 'Gjej ekzaminimin dhe shih kur përdoret për secilën simptomë ose diagnozë.';
+      const searchLabel = labs ? 'Kërko analizë' : 'Kërko ekzaminim ose profil';
+      $('#labCatalogSearchLabel').textContent = searchLabel;
+      $('#labCatalogSearch').placeholder = searchLabel + '…';
+      $('#labCatalogCategory').hidden = !labs;
+      renderCatalog();
+    }
+    if (updateUrl) {
+      const url = new URL(window.location.href);
+      if (showPlan) url.searchParams.delete('view');
+      else url.searchParams.set('view',view);
+      history.replaceState(null,'',url.pathname + url.search + url.hash);
+    }
+  }
+
+  function catalogTestMarkup(test, selected, covered) {
+    const planned = selected.has(test.id);
+    const inPanel = !planned && covered.has(test.id);
+    const category = state.categoriesById.get(test.categoryId)?.title || test.category || 'Laborator';
+    const alternateName = [test.albanianName,test.englishName].find(name => name && catalogWords(name) !== catalogWords(test.formName));
+    const note = test.referenceOnly ? 'Referencë klinike. Konfirmo metodën dhe disponueshmërinë me laboratorin.' : '';
+    const detail = test.highPositiveAbnormal || test.lowNegativeNormal || note || test.sourceUrl;
+    return `<li class="lab-catalog-card">
+      <small class="lab-catalog-type">${esc(category)}</small>
+      <h3>${esc(test.formName)}</h3>
+      ${alternateName ? `<p class="lab-catalog-alt">${esc(alternateName)}</p>` : ''}
+      ${test.whatItShows ? `<p class="lab-catalog-purpose">${esc(test.whatItShows)}</p>` : ''}
+      ${detail ? `<details><summary>Interpretimi dhe burimi</summary><div class="lab-catalog-detail">
+        ${test.highPositiveAbnormal ? `<p><strong>Rritur / pozitiv</strong> ${esc(test.highPositiveAbnormal)}</p>` : ''}
+        ${test.lowNegativeNormal ? `<p><strong>Ulur / negativ</strong> ${esc(test.lowNegativeNormal)}</p>` : ''}
+        ${note ? `<p>${esc(note)}</p>` : ''}
+        ${/^https:\/\//i.test(test.sourceUrl || '') ? `<a href="${esc(test.sourceUrl)}" target="_blank" rel="noopener noreferrer">Burimi i analizës ↗</a>` : ''}
+      </div></details>` : ''}
+      <button class="lab-catalog-action" type="button" data-catalog-add="${esc(test.id)}" aria-disabled="${planned || inPanel}">${planned ? '✓ Në plan' : inPanel ? 'Në panelin e zgjedhur' : '+ Shto në plan'}</button>
+    </li>`;
+  }
+
+  function examMarkup(row) {
+    return `<li class="lab-catalog-card lab-catalog-exam">
+      <h3>${esc(row.name)}</h3>
+      <details ${row.contexts.length === 1 ? 'open' : ''}><summary>Kur përdoret <span>${row.contexts.length}</span></summary>
+        <ul class="lab-catalog-contexts">${row.contexts.map(({exam,profile}) => `<li>
+          <strong>${esc(profile.title)}</strong>
+          ${exam.when ? `<p>${esc(exam.when)}</p>` : ''}
+          ${exam.finding ? `<p>${esc(exam.finding)}</p>` : ''}
+          <button type="button" class="lab-catalog-profile-link" data-catalog-profile="${esc(profile.id)}">Hap profilin klinik <span aria-hidden="true">→</span></button>
+        </li>`).join('')}</ul></details>
+    </li>`;
+  }
+
+  function renderCatalog() {
+    if (state.workspace === 'plan') return;
+    const root = $('#labCatalogResults');
+    const status = $('#labCatalogStatus');
+    const more = $('#labCatalogMore');
+    if (!state.data) {
+      status.textContent = state.datasetLoading ? 'Duke ngarkuar katalogun…' : 'Katalogu nuk u ngarkua. Provo ta rifreskosh faqen.';
+      root.innerHTML = '';
+      more.hidden = true;
+      return;
+    }
+    const labs = state.workspace === 'analiza';
+    const tokens = catalogWords($('#labCatalogSearch').value).split(' ').filter(Boolean);
+    const matches = text => tokens.every(token => token.length <= 3 ? text.split(' ').includes(token) : text.includes(token));
+    const category = $('#labCatalogCategory').value;
+    const entries = buildPlanEntries().filter(isEntrySelected);
+    const selected = new Set(entries.map(entry => entry.test.id));
+    const covered = new Set(entries.flatMap(entry => entry.test.containsTestIds || []));
+    $('#labCatalogPlanCount').textContent = $('#labSelectedTestCount').textContent;
+    $('.lab-catalog-go-plan').hidden = !entries.length;
+
+    const rows = labs ? state.catalog.tests.filter(row => (!category || row.test.categoryId === category) && matches(row.search))
+      : state.catalog.exams.map(row => ({...row,contexts:row.contexts.filter(context => matches(row.search + ' ' + context.search))}))
+        .filter(row => row.contexts.length);
+    const page = rows.slice(0,state.catalog.limit);
+    status.textContent = rows.length
+      ? `${page.length} nga ${rows.length} ${labs ? 'analiza' : 'ekzaminime'}`
+      : 'Nuk u gjetën rezultate. Provo një emër tjetër ose hiq filtrin.';
+    root.innerHTML = page.map(row => labs ? catalogTestMarkup(row.test,selected,covered) : examMarkup(row)).join('');
+    more.hidden = page.length >= rows.length;
+  }
+
+  function onCatalogClick(event) {
+    const add = event.target.closest('[data-catalog-add]');
+    if (add && add.getAttribute('aria-disabled') === 'false') {
+      const id = add.dataset.catalogAdd;
+      if (buildPlanEntries().some(entry => entry.test.id === id)) togglePlannedTest(id,true);
+      else addManualTest(id);
+      renderCatalog();
+      [...$('#labCatalogResults').querySelectorAll('[data-catalog-add]')].find(button => button.dataset.catalogAdd === id)?.focus();
+      showToast('Analiza u shtua në plan.');
+    }
+    const open = event.target.closest('[data-catalog-profile]');
+    if (open && state.indicationsById.has(open.dataset.catalogProfile)) {
+      const id = open.dataset.catalogProfile;
+      if (!state.selectedIndicationIds.has(id)) toggleIndication(id);
+      setWorkspaceView('plan');
+      const guide = $('#labClinicalGuide');
+      const article = [...guide.querySelectorAll('[data-guide-id]')].find(item => item.dataset.guideId === id);
+      if (article) article.querySelector('details').open = true;
+      guide.focus();
+    }
   }
 
   function tierOf(current, incoming) {
@@ -418,13 +592,13 @@
     const openProfiles = new Set([...root.querySelectorAll('details[open]')].map(details => details.closest('article').dataset.guideId));
     root.hidden = !profiles.length;
     root.innerHTML = profiles.map(profile => {
-      const exams = profile.exams || (profile.assessments || []).map(name => ({name}));
+      const exams = profileExams(profile);
       const sources = (profile.sources || []).filter(source => /^https:\/\//.test(source.url || ''));
       return `<article class="lab-clinical-profile" data-guide-id="${esc(profile.id)}">
         <div class="lab-clinical-profile-head"><strong>${esc(profile.title)}</strong><span>${profile.kind==='symptom'?'Simptomë':'Diagnozë / gjendje'}</span></div>
         ${profile.summary ? `<p>${esc(profile.summary)}</p>` : ''}
         ${profile.urgentNote ? `<p class="lab-profile-urgent"><strong>Shenja alarmi</strong> ${esc(profile.urgentNote)}</p>` : ''}
-        <details ${openProfiles.has(profile.id) ? 'open' : ''}><summary>Ekzaminimet shtesë dhe burimet${exams.length ? ` <span>${exams.length}</span>` : ''}</summary>
+        <details ${openProfiles.has(profile.id) ? 'open' : ''}><summary>Shih ekzaminimet shtesë${exams.length ? ` <span>${exams.length}</span>` : ''}</summary>
           ${exams.length ? `<ul class="lab-exam-list">${exams.map(exam => `<li><strong>${esc(exam.name)}</strong>
             ${exam.when ? `<p>${esc(exam.when)}</p>` : ''}${exam.finding ? `<p>${esc(exam.finding)}</p>` : ''}</li>`).join('')}</ul>` : ''}
           ${profile.interpretation ? `<p class="lab-profile-interpretation">${esc(profile.interpretation)}</p>` : ''}
@@ -625,7 +799,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/><path d="M7.5 16h9"/></svg>
           </span>
           <strong>${dxCount ? 'Ky profil zakonisht vlerësohet me ekzaminim klinik.' : 'Zgjidh simptomën ose diagnozën sipër.'}</strong>
-          <span>${dxCount ? 'Hap “Ekzaminimet shtesë dhe burimet” te profili i zgjedhur.' : 'DRx i bashkon analizat e mundshme dhe shpjegon kur indikohet secila.'}</span>
+          <span>${dxCount ? 'Hap “Shih ekzaminimet shtesë” te profili i zgjedhur.' : 'DRx i bashkon analizat e mundshme dhe shpjegon kur indikohet secila.'}</span>
         </div>`;
       return;
     }
@@ -767,6 +941,30 @@
   }
 
   function bindEvents() {
+    for (const button of document.querySelectorAll('[data-lab-view]')) {
+      button.addEventListener('click', () => {
+        if (state.workspace === button.dataset.labView) return;
+        setWorkspaceView(button.dataset.labView);
+        if (button.closest('#labCatalog')) $('#labBuilderTitle').focus();
+      });
+    }
+    const updateCatalog = () => {
+      state.catalog.limit = CATALOG_PAGE;
+      renderCatalog();
+    };
+    $('#labCatalogSearch').addEventListener('input',updateCatalog);
+    $('#labCatalogCategory').addEventListener('change',updateCatalog);
+    $('#labCatalogResults').addEventListener('click',onCatalogClick);
+    $('#labCatalogMore').addEventListener('click', () => {
+      const next = state.catalog.limit;
+      state.catalog.limit += CATALOG_PAGE;
+      renderCatalog();
+      const firstNew = $('#labCatalogResults').children[next];
+      if (firstNew) {
+        firstNew.tabIndex = -1;
+        firstNew.focus();
+      }
+    });
     $('#labProfileGroup')?.addEventListener('change',event=>{state.profileGroup=event.target.value;renderDiseaseList();});
     $('#labPickerDone')?.addEventListener('click',()=>{closeDiseasePicker();$('#labDiseaseTrigger')?.focus();});
     $('#labDiseaseTrigger')?.addEventListener('click', toggleDiseasePicker);
@@ -876,15 +1074,19 @@
     loadSharedSidebarTaxonomy();
     bindShell();
     bindEvents();
+    setWorkspaceView(new URLSearchParams(location.search).get('view'),false);
 
     try {
       const authPayload = await ensureAuth();
       await syncProfileChrome(authPayload);
       const data = await loadDataset();
+      state.datasetLoading = false;
       installDataset(data);
       $('#appShell')?.setAttribute('aria-busy', 'false');
     } catch (error) {
       console.error('[Analizat v2]', error);
+      state.datasetLoading = false;
+      renderCatalog();
       $('#syncText').textContent = 'Gabim';
       $('#labTestTotal').textContent = '—';
       $('#labIndicationTotal').textContent = '—';
