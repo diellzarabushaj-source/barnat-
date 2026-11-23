@@ -67,3 +67,33 @@ a new clinical approval status to existing records.
 
 The versioned additions are maintained in code and returned with the existing
 catalog, rather than inserted as newly approved laboratory database records.
+
+## 23 November 2026 expansion
+
+The guide now covers 55 versioned profiles (20 original symptom profiles and
+35 additional presentations or diagnoses), alongside six existing Supabase
+diagnoses. The original profile slugs and legacy diagnosis IDs remain valid.
+
+- `lib/lab-workup-profiles.js` contains the new profiles, additional examinations
+  and profile-level references. It cites the Kosovo Ministry of Health for local
+  UTI, asthma and hypertension guidance, supplemented by international references
+  with the relevant recommendation section where available.
+- `lib/lab-result-findings.js` contains interpretation by assay identity. Profiles
+  can override either direction for the specific presentation. A result direction
+  without clinical meaning is omitted. Qualitative tests use positive/negative
+  terminology. A low result, a normal result and a result below a decision
+  threshold have different meanings where stated in the interpretation.
+- The order builder still includes only selected laboratory entries. Additional
+  examinations such as ECG, ultrasound, CT, spirometry and otoscopy are displayed
+  in the clinical profile with their indications. Profiles that usually need
+  examination alone give an explicit empty laboratory plan.
+- Conditional orders, including D-dimer, hs-cTn, and acute-care investigations,
+  start unchecked. Selecting multiple profiles deduplicates the test while
+  keeping each indication and its own result interpretation.
+- The API catalog revision is `lab-workups-20261123-v2`. There is no database
+  migration. Reference-only assays do not assert local stock, availability,
+  methods or reference intervals. The sourced content is clinical decision
+  support and has not been formally approved as a new local protocol.
+- Verification covers exact identities, profile and assay uniqueness,
+  idempotence, contextual results, examination-only profiles, intentional
+  ordering, access failure, and 320/390/1440 px browser layouts.

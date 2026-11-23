@@ -1,5 +1,6 @@
 const {test,expect}=require('@playwright/test');
 const {data}=require('./lab-symptom-fixture');
+const {VERSION}=require('../lib/lab-symptom-guide');
 const {phase5AuthenticatedSession}=require('./phase5-browser-fixture');
 const fs=require('node:fs'),path=require('node:path'),http=require('node:http');
 const ROOT=path.resolve(__dirname,'..');let server,baseURL;
@@ -17,14 +18,14 @@ test.beforeEach(async({page})=>{
   await page.route('**/api/auth*',route=>route.fulfill({json:phase5AuthenticatedSession()}));
   await page.route('**/api/icd?dataset=labs**',route=>{
     const revision=new URL(route.request().url()).searchParams.get('revision');
-    return route.fulfill({json:{data:revision==='lab-symptoms-20261029-v1'?data:{...data,indications:[],tests:[]}}});
+    return route.fulfill({json:{data:revision===VERSION?data:{...data,indications:[],tests:[]}}});
   });
 });
 
 for(const width of [320,390,1440])test(`Symptom search, grouped picker and deliberate orders at ${width}px`,async({page},info)=>{
   await page.setViewportSize({width,height:900});
   await page.goto(baseURL+'/analizat.html');
-  await expect(page.locator('#labIndicationTotal')).toHaveText('23');
+  await expect(page.locator('#labIndicationTotal')).toHaveText(String(data.indications.length));
   await page.locator('#labDiseaseTrigger').click();
   await page.locator('#labProfileGroup').selectOption('general');
   await expect(page.locator('#labDiseaseList .lab-disease-option')).toHaveCount(5);
@@ -77,14 +78,15 @@ test('Typical headache does not silently order blood tests',async({page})=>{
   await expect(page.locator('#labSelectedTestCount')).toHaveText('1');
   await page.locator('#labClinicalGuide summary').click();
   await expect(page.locator('#labClinicalGuide details')).toContainText('nuk konfirmojnë diagnozën');
-  await expect(page.locator('#labClinicalGuide a')).toHaveAttribute('href',/nice\.org\.uk/);
+  await expect(page.locator('#labClinicalGuide a').first()).toHaveAttribute('href',/nice\.org\.uk/);
 });
 
-test('Every supplied symptom renders with linked tests and no implicit conditional choices',async({page})=>{
-  test.setTimeout(90000);const errors=[];page.on('pageerror',error=>errors.push(error.message));
-  for(const p of data.indications.filter(p=>p.kind==='symptom')){
+test('Every profile renders with its exams and no implicit conditional choices',async({page})=>{
+  test.setTimeout(150000);const errors=[];page.on('pageerror',error=>errors.push(error.message));
+  for(const p of data.indications){
     await page.goto(baseURL+'/analizat.html?dx='+p.slug);
     await expect(page.locator('.lab-clinical-profile-head>strong')).toHaveText(p.title);
+    await expect(page.locator('.lab-exam-list li')).toHaveCount(p.exams.length);
     for(const link of p.tests)if(link.tier==='conditional')await expect(page.locator(`[data-test-id="${link.testId}"] input`)).not.toBeChecked();
   }
   expect(errors).toEqual([]);
@@ -96,4 +98,30 @@ test('An unavailable source cannot produce a fabricated order',async({page})=>{
   await expect(page.getByText('Analizat nuk u ngarkuan.',{exact:true})).toBeVisible();
   await expect(page.locator('#labCopyPlan')).toBeDisabled();
   await expect(page.locator('#labPlanSections [data-test-id]')).toHaveCount(0);
+});
+
+test('Contextual results and additional examinations stay distinct from the laboratory order',async({page})=>{
+  await page.setViewportSize({width:320,height:900});
+  await page.goto(baseURL+'/analizat.html?dx=embolia-pulmonare');
+  await expect(page.locator('.lab-profile-urgent')).toContainText('sinkopa');
+  await page.locator('#labClinicalGuide summary').click();
+  await expect(page.getByText('Angio-CT pulmonare ose V/Q')).toBeVisible();
+  const dDimer=page.locator('[data-test-id="lab-ref-dDimer"]');
+  await dDimer.getByText('Si interpretohet rezultati?').click();
+  await expect(dDimer.getByText('I ulët / nën prag')).toBeVisible();
+  await expect(dDimer.getByText('I lartë / mbi prag')).toBeVisible();
+  await expect(dDimer.getByText(/pa konfirmuar trombozën/)).toBeVisible();
+  await expect(page.locator('#labCopyPlan')).toBeDisabled();
+  await dDimer.getByRole('checkbox').check();
+  await expect(dDimer.locator('details')).toHaveAttribute('open','');
+  await expect(page.locator('#labCopyPlan')).toBeEnabled();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
+
+test('An examination-only profile keeps the lab order empty',async({page})=>{
+  await page.goto(baseURL+'/analizat.html?dx=otiti-akut');
+  await expect(page.locator('#labPlanStatus')).toContainText('Nuk ka analiza laboratorike rutinë');
+  await page.locator('#labClinicalGuide summary').click();
+  await expect(page.getByText('Otoskopi',{exact:true})).toBeVisible();
+  await expect(page.locator('#labCopyPlan')).toBeDisabled();
 });
