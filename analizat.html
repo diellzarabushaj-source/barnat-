@@ -8,7 +8,7 @@
   <title>DRx | Analizat</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/analizat-v2.css?v=1-catalog-20261124">
+  <link rel="stylesheet" href="/analizat-v2.css?v=1-catalog-ui-20261124">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107">
 </head>
 <body>
@@ -132,8 +132,13 @@
             </div>
             <label class="sr-only" for="labCatalogCategory">Kategoria e analizës</label>
             <select id="labCatalogCategory"><option value="">Të gjitha kategoritë</option></select>
+            <label class="sr-only" for="labCatalogProfileGroup">Grupi klinik</label>
+            <select id="labCatalogProfileGroup" hidden><option value="">Të gjitha grupet klinike</option></select>
           </div>
-          <p id="labCatalogStatus" class="lab-catalog-status" role="status"></p>
+          <div class="lab-catalog-resultbar">
+            <p id="labCatalogStatus" class="lab-catalog-status" role="status"></p>
+            <button type="button" id="labCatalogReset" class="lab-catalog-profile-link" hidden>Pastro filtrat</button>
+          </div>
           <ul id="labCatalogResults" class="lab-catalog-grid"></ul>
           <button type="button" id="labCatalogMore" class="lab-catalog-more" hidden>Shfaq më shumë</button>
         </section>
@@ -242,6 +247,6 @@
   </div>
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
-<script src="/analizat-v2.js?v=3-catalog-20261124" defer></script>
+<script src="/analizat-v2.js?v=3-catalog-ui-20261124" defer></script>
 </body>
 </html>

@@ -104,12 +104,15 @@ The Analizat page offers a clinical plan, a laboratory catalog, and an
 examinations catalog. The laboratory catalog reads every assay from the same
 authenticated dataset used by the plan. The search accepts Albanian or English
 names, and category filtering and progressive paging make the catalog
-available on small screens. Adding a linked assay selects it in its original
-clinical context. The catalog marks already selected assays and components
-covered by a selected panel.
+available on small screens. Searches give matches in names priority over
+matches in clinical context, and each catalog retains its query, filter and
+loaded pages during the visit. Adding or removing a linked assay updates its
+selection in the plan. The catalog identifies components covered by a panel.
 
 The examinations catalog indexes the examinations in all loaded profiles.
 Identically named examinations share a card with the applicable clinical
-contexts. Opening a context takes the user to its examination guidance in
-the plan. Examination entries are never added to the laboratory order.
+contexts. Contexts can be filtered by clinical group. The card shows the
+existing indication and findings. The user can explicitly add the profile to
+the plan or return to its guidance when it is already selected. Examination
+entries are never added to the laboratory order.
 The views are linkable with `?view=analiza` and `?view=ekzaminime`.
