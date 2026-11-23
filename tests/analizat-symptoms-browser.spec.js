@@ -144,6 +144,7 @@ test('Browse all tests and add a contextual test from the catalog on mobile',asy
   await page.locator('#labCatalogCategory').selectOption('category-1');
   await expect(page.locator('#labCatalogStatus')).toContainText('Nuk u gjetën rezultate');
   await page.locator('#labCatalogCategory').selectOption('');
+  await expect(page.locator('#labCatalogStatus')).toHaveText('1 analizë');
   const ferritin=catalog.locator('[data-catalog-add="lab-ref-ferritin"]');
   await ferritin.click();
   await expect(ferritin).toHaveText('Hiq nga plani');

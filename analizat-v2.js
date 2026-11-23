@@ -359,7 +359,7 @@
   function examMarkup(row) {
     return `<li class="lab-catalog-card lab-catalog-exam">
       <h3>${esc(row.name)}</h3>
-      <details ${row.contexts.length === 1 ? 'open' : ''}><summary>Kur përdoret <span>${row.contexts.length}</span></summary>
+      <details ${row.contexts.length === 1 ? 'open' : ''}><summary>Kur përdoret${row.contexts.length > 1 ? ` <span>${row.contexts.length} profile</span>` : ''}</summary>
         <ul class="lab-catalog-contexts">${row.contexts.map(({exam,profile}) => {
           const action = state.selectedIndicationIds.has(profile.id) ? 'Shih në plan' : 'Shto profilin në plan';
           return `<li>
@@ -411,8 +411,10 @@
     rows.sort((a,b) => labs ? rank(a.name,a.names) - rank(b.name,b.names)
       : rank(a.nameKey,a.search) - rank(b.nameKey,b.search));
     const page = rows.slice(0,filter.limit);
+    const noun = labs ? (rows.length === 1 ? 'analizë' : 'analiza') : (rows.length === 1 ? 'ekzaminim' : 'ekzaminime');
+    const shown = page.length < rows.length ? `${page.length} nga ` : '';
     status.textContent = rows.length
-      ? `${page.length} nga ${rows.length} ${labs ? 'analiza' : 'ekzaminime'}`
+      ? `${shown}${rows.length} ${noun}`
       : 'Nuk u gjetën rezultate. Provo një emër tjetër ose hiq filtrin.';
     root.innerHTML = page.map(row => labs ? catalogTestMarkup(row.test,selected,covered) : examMarkup(row)).join('');
     more.hidden = page.length >= rows.length;
