@@ -369,3 +369,203 @@ a{color:inherit}
 .lab-test-row[data-selected=false]{background:#fafbfc}
 .lab-test-row[data-selected=true]{background:#fff}
 @media(max-width:760px){.lab-disease-popover{height:calc(100dvh - 88px - env(safe-area-inset-bottom));max-height:calc(100dvh - 88px - env(safe-area-inset-bottom));width:auto}#labProfileGroup{font-size:16px}.lab-disease-option{min-height:58px}.lab-clinical-profile{padding:12px}.lab-test-row{grid-template-columns:44px minmax(0,1fr);gap:8px}.lab-test-row>span:last-child:empty{display:none}.lab-test-remove{grid-column:2}.lab-clinical-profile-head>strong{font-size:14px}}
+
+/* Shared workspace navigation and the laboratory/examination catalog. */
+.lab-workspace-nav {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:5px;
+  padding:5px;
+  margin:0 0 16px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  background:#f3f5fa;
+}
+.lab-workspace-nav button {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  min-width:0;
+  min-height:48px;
+  padding:8px 10px;
+  border:1px solid transparent;
+  border-radius:9px;
+  background:transparent;
+  color:#465875;
+  font-size:13px;
+  font-weight:620;
+  line-height:1.3;
+  cursor:pointer;
+}
+.lab-workspace-nav button:hover {background:#eceefa;color:#2c2768}
+.lab-workspace-nav button[aria-pressed="true"] {
+  border-color:#dcdcf1;
+  background:#fff;
+  color:#35277f;
+  box-shadow:var(--shadow-xs);
+}
+.lab-workspace-nav button:focus-visible,.lab-catalog :is(button,input,select,summary,a):focus-visible,.lab-clinical-profile summary:focus-visible {
+  outline:2px solid #5345c9;
+  outline-offset:2px;
+}
+.lab-catalog {
+  min-width:0;
+  padding:clamp(13px,2.5vw,25px);
+  border:1px solid var(--line);
+  border-radius:15px;
+  background:#fff;
+  box-shadow:var(--shadow-sm);
+}
+.lab-catalog-heading {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:17px;
+}
+.lab-catalog-heading h2 {
+  margin:0;
+  color:var(--ink);
+  font-size:clamp(19px,2vw,24px);
+  font-weight:670;
+  letter-spacing:-.025em;
+}
+.lab-catalog-heading p,.lab-catalog-status {
+  margin:4px 0 0;
+  color:#52657a;
+  font-size:13px;
+  font-weight:430;
+}
+.lab-catalog-controls {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,.48fr);
+  gap:9px;
+  align-items:center;
+}
+.lab-catalog-search {position:relative;min-width:0}
+.lab-catalog-controls:has(select[hidden]) {grid-template-columns:1fr}
+.lab-catalog-search svg {position:absolute;left:13px;top:14px;color:#556780;pointer-events:none}
+.lab-catalog-controls :is(input,select) {
+  display:block;
+  width:100%;
+  min-width:0;
+  min-height:46px;
+  padding:8px 12px;
+  border:1px solid var(--line-strong);
+  border-radius:9px;
+  background:#fafbfe;
+  color:var(--ink);
+  font-size:16px;
+  font-weight:440;
+}
+.lab-catalog-search input {padding-left:40px}
+.lab-catalog-search input::placeholder {color:#586b81}
+.lab-catalog-status {min-height:20px;margin:13px 0 9px}
+.lab-catalog-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,242px),1fr));
+  align-items:start;
+  gap:10px;
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+.lab-catalog-card {
+  min-width:0;
+  display:grid;
+  gap:4px;
+  padding:14px;
+  border:1px solid #dce3ee;
+  border-radius:11px;
+  background:#fff;
+  color:#34475c;
+  overflow-wrap:anywhere;
+}
+.lab-catalog-card:focus {outline:2px solid #5345c9;outline-offset:3px}
+.lab-catalog-card h3 {margin:0;color:var(--ink);font-size:15px;font-weight:670;line-height:1.4}
+.lab-catalog-type {color:#4a5380;font-size:11px;font-weight:600}
+.lab-catalog-card p {margin:3px 0;font-size:13px;font-weight:420;line-height:1.55}
+.lab-catalog-card .lab-catalog-alt {margin:0;color:#596b80;font-size:12px}
+.lab-catalog-card summary {
+  display:flex;
+  align-items:center;
+  gap:7px;
+  min-height:44px;
+  color:#3f347e;
+  font-size:13px;
+  font-weight:610;
+  cursor:pointer;
+  list-style:none;
+}
+.lab-catalog-card summary::-webkit-details-marker {display:none}
+.lab-catalog-card summary::before {content:'▸'}
+.lab-catalog-card details[open] summary::before {content:'▾'}
+.lab-catalog-card summary span {
+  padding:1px 6px;
+  border-radius:6px;
+  background:#eceafd;
+  color:#3f347e;
+  font-size:11px;
+}
+.lab-catalog-detail,.lab-catalog-contexts li {
+  padding:9px 11px;
+  border-radius:7px;
+  background:#f5f7fc;
+}
+.lab-catalog-detail a {display:inline-flex;align-items:center;min-height:44px;color:#45318e;font-size:13px;font-weight:570}
+.lab-catalog-contexts {display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.lab-catalog-contexts li>strong {font-size:13px;font-weight:650;color:#263b60}
+.lab-catalog-exam {border-top:2px solid #7470aa}
+.lab-catalog-profile-link {
+  min-height:44px;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:#45318e;
+  font-size:13px;
+  font-weight:650;
+  text-align:left;
+  cursor:pointer;
+}
+.lab-catalog-profile-link:hover {text-decoration:underline}
+.lab-catalog-action,.lab-catalog-more,.lab-catalog-go-plan {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  min-height:44px;
+  max-width:100%;
+  padding:7px 13px;
+  border:1px solid #ddd9f6;
+  border-radius:8px;
+  background:#f1effc;
+  color:#392b7b;
+  font-size:13px;
+  font-weight:650;
+  cursor:pointer;
+}
+.lab-catalog-action {justify-self:start;margin-top:4px}
+.lab-catalog-action:hover,.lab-catalog-more:hover,.lab-catalog-go-plan:hover {background:#e7e2fa}
+.lab-catalog-action[aria-disabled="true"] {border-color:#d0e5df;background:#eff8f5;color:#245e51;cursor:default}
+.lab-catalog-more {display:flex;margin:14px auto 0}
+.lab-catalog-go-plan strong {font-variant-numeric:tabular-nums}
+.lab-clinical-profile summary {
+  justify-content:space-between;
+  margin-top:8px;
+  padding:6px 10px;
+  border:1px solid #dedaf4;
+  border-radius:8px;
+  background:#f6f4fd;
+}
+.lab-clinical-profile summary:hover {background:#eeeafd}
+.lab-clinical-profile details[open] summary {margin-bottom:8px}
+.lab-clinical-profile .lab-exam-list {grid-template-columns:repeat(auto-fit,minmax(min(100%,265px),1fr))}
+#labClinicalGuide,#labBuilderTitle {scroll-margin-top:82px}
+@media(max-width:600px) {
+  .lab-workspace-nav button {flex-direction:column;gap:4px;padding:7px 3px;font-size:11.5px}
+  .lab-workspace-nav .icon {width:17px;height:17px}
+  .lab-catalog-controls {grid-template-columns:1fr}
+  .lab-catalog-card {padding:12px}
+}

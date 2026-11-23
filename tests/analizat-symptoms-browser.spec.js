@@ -125,3 +125,51 @@ test('An examination-only profile keeps the lab order empty',async({page})=>{
   await expect(page.getByText('Otoskopi',{exact:true})).toBeVisible();
   await expect(page.locator('#labCopyPlan')).toBeDisabled();
 });
+
+test('Browse all tests and add a contextual test from the catalog on mobile',async({page})=>{
+  await page.setViewportSize({width:320,height:900});
+  await page.goto(baseURL+'/analizat.html?view=analiza&dx=simptoma-lodhja');
+  const catalog=page.locator('#labCatalog');
+  const search=page.getByRole('searchbox',{name:'Kërko analizë'});
+  await expect(catalog).toBeVisible();
+  await expect(page.locator('#labPlanWorkspace')).toBeHidden();
+  await expect(page.locator('#labCatalogStatus')).toHaveText(`24 nga ${data.tests.length} analiza`);
+  const more=page.getByRole('button',{name:'Shfaq më shumë'});
+  for(let i=24;i<data.tests.length;i+=24) await more.click();
+  await expect(catalog.locator('[data-catalog-add]')).toHaveCount(data.tests.length);
+  const counts=await catalog.locator('[data-catalog-add]').evaluateAll(buttons=>new Set(buttons.map(button=>button.dataset.catalogAdd)).size);
+  expect(counts).toBe(data.tests.length);
+  await search.fill('Ferritina');
+  await expect(catalog.getByRole('heading',{name:'Ferritina',exact:true})).toBeVisible();
+  await page.locator('#labCatalogCategory').selectOption('category-1');
+  await expect(page.locator('#labCatalogStatus')).toContainText('Nuk u gjetën rezultate');
+  await page.locator('#labCatalogCategory').selectOption('');
+  const ferritin=catalog.locator('[data-catalog-add="lab-ref-ferritin"]');
+  await ferritin.click();
+  await expect(ferritin).toHaveText('✓ Në plan');
+  await expect(ferritin).toHaveAttribute('aria-disabled','true');
+  await catalog.getByRole('button',{name:/Shih planin/}).click();
+  await expect(page.locator('[data-test-id="lab-ref-ferritin"] input')).toBeChecked();
+  await expect(page.locator('#labSelectedTestCount')).toHaveText('2');
+  await page.getByRole('button',{name:'Katalogu i analizave',exact:true}).click();
+  await expect(search).toHaveValue('Ferritina');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+});
+
+test('Search extra examinations and open their clinical context',async({page})=>{
+  await page.setViewportSize({width:390,height:900});
+  await page.goto(baseURL+'/analizat.html');
+  await page.getByRole('button',{name:'Ekzaminimet shtesë',exact:true}).click();
+  await expect(page.locator('#labCatalogCategory')).toBeHidden();
+  const search=page.getByRole('searchbox',{name:'Kërko ekzaminim ose profil'});
+  await search.fill('otoskopi otit');
+  const row=page.locator('.lab-catalog-exam').filter({has:page.getByRole('heading',{name:'Otoskopi',exact:true})});
+  await expect(row.getByText('Otiti i mesëm akut',{exact:true})).toBeVisible();
+  await expect(row).toContainText('efuzionin');
+  await row.getByRole('button',{name:'Hap profilin klinik'}).click();
+  await expect(page.locator('#labClinicalGuide details')).toHaveAttribute('open','');
+  await expect(page.locator('#labClinicalGuide').getByText('Otoskopi',{exact:true})).toBeVisible();
+  await expect(page.locator('#labSelectedTestCount')).toHaveText('0');
+  await expect(page.locator('#labCopyPlan')).toBeDisabled();
+  await expect(page).toHaveURL(/dx=otiti-akut/);
+});
