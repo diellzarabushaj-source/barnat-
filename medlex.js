@@ -726,6 +726,11 @@
     $('medlexStudySwipeHint').hidden = false;
     $('medlexStudyTerm').closest('article').setAttribute('aria-labelledby', 'medlexStudyTerm');
     $('medlexStudyTerm').focus();
+
+    const session = $('medlexStudySession');
+    if (window.matchMedia('(min-width:1024px)').matches && !session.classList.contains('is-immersive')) {
+      session.querySelector('.medlex-study-action-dock').scrollIntoView({block:'nearest', behavior:'instant'});
+    }
   }
 
   function resetStudyDrag(clearOffset = true) {
