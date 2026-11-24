@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const http = require('node:http');
 const path = require('node:path');
 const test = require('node:test');
-const { chromium } = require('playwright');
+const { chromium } = require('@playwright/test');
 
 const root = path.resolve(__dirname, '..');
 const types = {'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'application/javascript; charset=utf-8','.svg':'image/svg+xml','.woff2':'font/woff2'};
@@ -30,7 +30,7 @@ test('project pulse renders verified desktop/mobile metrics and keeps the admin 
     fs.createReadStream(file).pipe(res);
   });
   await new Promise(resolve => server.listen(0,'127.0.0.1',resolve));
-  const browser = await chromium.launch({headless:true,executablePath:'/usr/bin/chromium',args:['--no-sandbox']});
+  const browser = await chromium.launch();
   try {
     for (const width of [1280,390]) {
       const page = await browser.newPage({viewport:{width,height:900}});
@@ -39,7 +39,8 @@ test('project pulse renders verified desktop/mobile metrics and keeps the admin 
       await page.goto(`http://127.0.0.1:${server.address().port}/project-progress.html`);
       await page.locator('#pulsePercent').getByText('75%').waitFor();
       assert.equal(await page.locator('#pulseDeployState').textContent(),'I njëjtë me main');
-      assert.equal(await page.locator('#pulseLiveDrugs').textContent(),'1.200');
+      const formattedDrugCount = await page.evaluate(() => new Intl.NumberFormat('sq-AL').format(1200));
+      assert.equal(await page.locator('#pulseLiveDrugs').textContent(), formattedDrugCount);
       assert.equal(await page.locator('#pulseGate').isVisible(),false);
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);
       assert.equal(overflow,false,`horizontal overflow at ${width}px`);

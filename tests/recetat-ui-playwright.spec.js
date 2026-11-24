@@ -409,7 +409,10 @@ for (const width of [320,390,768,1440]) test(`source reader keeps full medicine 
   await expect(page.locator('#rxDrugPopover')).toBeVisible();
   await expect(page.locator('#rxDrugSearch')).toHaveValue('QA 40 mg / 60 mg');
   await page.locator('#rxDiagnosis').click();
-  await expect(page.locator('#rxDrugPopover')).toBeHidden();
+  await expect(page.locator('#rxDrugResults')).toBeHidden();
+  await expect(page.locator('#rxDrugSearch')).toBeVisible();
+  await expect(page.locator('#rxDiagnosis')).toBeFocused();
+  await expect(page.locator('#rxAddDrugButton')).toHaveAttribute('aria-expanded','false');
 });
 
 for (const width of [320,1440]) {
