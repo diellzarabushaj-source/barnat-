@@ -121,22 +121,23 @@
   }
 
   function renderFolder(folder) {
-    const external = folder.kind === 'folder-link';
-    const card = external ? driveAnchor(folder.url, 'books-folder-card') : folderAnchor(folder.id, 'books-folder-card');
+    const targetId = folder.targetFolder || folder.id;
+    const external = folder.kind === 'folder-link' && !folder.targetFolder;
+    const card = external ? driveAnchor(folder.url, 'books-folder-card') : folderAnchor(targetId, 'books-folder-card');
     card.dataset.slot = 'card';
 
     const label = create('div', 'books-folder-label');
     label.dataset.slot = 'card-header';
     const title = create('strong', '', folder.title);
     title.dataset.slot = 'card-title';
-    const contents = children.get(folder.id) || [];
+    const contents = children.get(targetId) || [];
     const internalBooks = contents.filter(item => item.kind === 'book').length;
     const subfolders = contents.length - internalBooks;
     const contentsLabel = [
       subfolders && countLabel(subfolders, 'nëndosje', 'nëndosje'),
       internalBooks && countLabel(internalBooks, 'libër', 'libra'),
     ].filter(Boolean).join(' · ');
-    const description = create('span', '', external ? 'Dosje në Drive' : contentsLabel || 'Dosje');
+    const description = create('span', '', external ? 'Gjeje te dosja burimore në Drive' : contentsLabel || 'Dosje');
     description.dataset.slot = 'card-description';
 
     label.append(title, description);
@@ -150,15 +151,19 @@
     const item = create('li');
     const link = driveAnchor(book.url, 'books-book-row');
     const title = create('strong', 'books-book-title', book.title);
+    const throughFolder = book.linkMode === 'source-folder';
     const text = create('span', 'books-book-copy');
     text.append(title);
     if (showPath && book.folderLabel) text.append(create('small', 'books-book-path', book.folderLabel));
+    if (throughFolder) text.append(create('small', 'books-book-path books-link-note', 'Gjeje në dosjen burimore'));
 
     const action = create('span', 'books-book-action');
-    action.append(create('span', '', 'Hap në Drive'), glyph('external'));
+    action.append(create('span', '', throughFolder ? 'Hap dosjen' : 'Hap në Drive'), glyph('external'));
     action.setAttribute('aria-hidden', 'true');
-    link.setAttribute('aria-label', book.title + ' (hapet në Google Drive në skedë të re)');
-    link.append(glyph('book', 'books-book-icon'), text, action);
+    link.setAttribute('aria-label', book.title + (throughFolder
+      ? ' (hap dosjen burimore në Google Drive në skedë të re)'
+      : ' (hap librin në Google Drive në skedë të re)'));
+    link.append(glyph(throughFolder ? 'folder' : 'book', 'books-book-icon'), text, action);
     item.append(link);
     return item;
   }
@@ -251,7 +256,7 @@
     $('booksRetry').hidden = true;
     $('booksStatus').textContent = 'Po ngarkohet katalogu…';
     try {
-      const response = await fetch('/data/medical-books.json', { headers:{ Accept:'application/json' } });
+      const response = await fetch('/data/medical-books.json?v=20261125-drive-links', { headers:{ Accept:'application/json' } });
       if (!response.ok) throw new Error('Katalogu nuk u ngarkua.');
       indexCatalog(await response.json());
       setFolderFromUrl();
