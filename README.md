@@ -49,7 +49,7 @@ Rrjedha kryesore është e thjeshtë:
 
 ## Librat mjekësorë
 
-Katalogu në `/librat-mjekesore.html` shfaq dosjet në shqip dhe ruan titujt e skedarëve siç figurojnë në Google Drive. Ai lexon inventarin `data/medical-books.json`; përditësoje këtë inventar kur ndryshon koleksioni. Faqja ruan hierarkinë e dosjeve dhe i hap skedarët e shkurtoret në Google Drive me lejet ekzistuese. PDF-të mbeten te burimi.
+Katalogu në `/librat-mjekesore.html` shfaq dosjet në shqip dhe ruan titujt e skedarëve siç figurojnë në Google Drive. Ai lexon inventarin `data/medical-books.json`; përditësoje këtë inventar kur ndryshon koleksioni. Faqja ruan hierarkinë e dosjeve dhe hap PDF-të në Google Drive me lejet ekzistuese. Kur adresa e skedarit origjinal nuk mund të verifikohet, `linkMode: source-folder` e çon lexuesin te dosja ku ndodhet shkurtorja. Një shkurtore drejt një dosjeje të kataloguar përdor `targetFolder` për navigimin e brendshëm.
 
 Pamja përdor përshtatje HTML/CSS të komponentëve Card, Input dhe Button të shadcn/ui për runtime-in statik. Licenca e komponentëve gjendet te `vendor/shadcn/LICENSE`.
 
