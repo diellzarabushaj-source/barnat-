@@ -137,7 +137,7 @@
       subfolders && countLabel(subfolders, 'nëndosje', 'nëndosje'),
       internalBooks && countLabel(internalBooks, 'libër', 'libra'),
     ].filter(Boolean).join(' · ');
-    const description = create('span', '', external ? 'Gjeje te dosja burimore në Drive' : contentsLabel || 'Dosje');
+    const description = create('span', '', external ? 'Dosje në Google Drive' : contentsLabel || 'Dosje');
     description.dataset.slot = 'card-description';
 
     label.append(title, description);
@@ -155,13 +155,14 @@
     const text = create('span', 'books-book-copy');
     text.append(title);
     if (showPath && book.folderLabel) text.append(create('small', 'books-book-path', book.folderLabel));
-    if (throughFolder) text.append(create('small', 'books-book-path books-link-note', 'Gjeje në dosjen burimore'));
+    const status = book.availability === 'deleted' ? 'Origjinali është fshirë në Drive' : 'Origjinali është i paarritshëm në Drive';
+    if (throughFolder) text.append(create('small', 'books-book-path books-link-note', status));
 
     const action = create('span', 'books-book-action');
-    action.append(create('span', '', throughFolder ? 'Hap dosjen' : 'Hap në Drive'), glyph('external'));
+    action.append(create('span', '', throughFolder ? 'Shiko burimin' : 'Hap në Drive'), glyph('external'));
     action.setAttribute('aria-hidden', 'true');
     link.setAttribute('aria-label', book.title + (throughFolder
-      ? ' (hap dosjen burimore në Google Drive në skedë të re)'
+      ? ' (' + status + '. Hap dosjen burimore në skedë të re)'
       : ' (hap librin në Google Drive në skedë të re)'));
     link.append(glyph(throughFolder ? 'folder' : 'book', 'books-book-icon'), text, action);
     item.append(link);
@@ -256,7 +257,7 @@
     $('booksRetry').hidden = true;
     $('booksStatus').textContent = 'Po ngarkohet katalogu…';
     try {
-      const response = await fetch('/data/medical-books.json?v=20261125-drive-links', { headers:{ Accept:'application/json' } });
+      const response = await fetch('/data/medical-books.json?v=20261125-drive-audit', { headers:{ Accept:'application/json' } });
       if (!response.ok) throw new Error('Katalogu nuk u ngarkua.');
       indexCatalog(await response.json());
       setFolderFromUrl();
