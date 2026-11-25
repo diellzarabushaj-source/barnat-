@@ -96,7 +96,8 @@
     const atc = nav.querySelector('#atcNavGroup');
     const icd = nav.querySelector('#icdNavGroup') || find('/icd.html');
     const medlex = ensureMedLexLink(nav);
-    const clinical = [find('/index.html'), atc, icd, medlex, find('/dozologjia.html'), find('/protokollet.html'), find('/urgjencat.html')].filter(Boolean);
+    const books = ensureMedicalBooksLink(nav);
+    const clinical = [find('/index.html'), atc, icd, medlex, books, find('/dozologjia.html'), find('/protokollet.html'), find('/urgjencat.html')].filter(Boolean);
     const work = [find('/index.html#favorites'), find('/index.html#notes'), find('/recetat.html'), find('/analizat.html'), find('/medical-hub.html')].filter(Boolean);
 
     if (labelClinical) {
@@ -118,6 +119,22 @@
       link.innerHTML = '<span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 5.5A2.5 2.5 0 0 1 7 3h5v17H7a2.5 2.5 0 0 0-2.5 2.5v-17Z"/><path d="M19.5 5.5A2.5 2.5 0 0 0 17 3h-5v17h5a2.5 2.5 0 0 1 2.5 2.5v-17Z"/><path d="M7.5 8h2M14.5 8h2M7.5 12h2M14.5 12h2"/></svg></span><span>MedLex · Termat</span>';
     }
     const active = currentPath() === '/medlex.html';
+    link.classList.toggle('is-active', active);
+    if (active) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
+    return link;
+  }
+
+  function ensureMedicalBooksLink(nav) {
+    const href = '/librat-mjekesore.html';
+    let link = nav.querySelector(`a.nav-item[href="${href}"]`);
+    if (!link) {
+      link = document.createElement('a');
+      link.className = 'nav-item';
+      link.href = href;
+      link.innerHTML = '<span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h13v16H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm-2 13a2 2 0 0 1 2-2h13M21 6v12M8 8h6"/></svg></span><span>Librat mjekësorë</span>';
+    }
+    const active = currentPath() === href;
     link.classList.toggle('is-active', active);
     if (active) link.setAttribute('aria-current', 'page');
     else link.removeAttribute('aria-current');
