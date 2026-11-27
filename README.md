@@ -51,6 +51,8 @@ Rrjedha kryesore është e thjeshtë:
 
 Katalogu në `/librat-mjekesore.html` shfaq dosjet në shqip dhe ruan titujt e skedarëve siç figurojnë në Google Drive. Ai lexon inventarin `data/medical-books.json`; përditësoje këtë inventar kur ndryshon koleksioni. Faqja ruan hierarkinë e dosjeve dhe hap PDF-të në Google Drive me lejet ekzistuese. Kur Google Drive shënon origjinalin si të fshirë ose të paarritshëm, fusha `availability` ruan këtë status dhe `linkMode: source-folder` lidh dosjen burimore. Shkurtoret aktive i hap Drive përmes ridrejtimit te skedari origjinal. Një shkurtore drejt një dosjeje të kataloguar përdor `targetFolder` për navigimin e brendshëm.
 
+Kërkimi përdor titullin dhe shtegun e dosjes. Shtyp `/` për ta fokusuar kërkimin. Te lista e librave mund të filtrosh sipas lidhjeve direkte ose origjinaleve të paarritshme dhe të ndryshosh renditjen alfabetike.
+
 Pamja përdor përshtatje HTML/CSS të komponentëve Card, Input dhe Button të shadcn/ui për runtime-in statik. Licenca e komponentëve gjendet te `vendor/shadcn/LICENSE`.
 
 ## API-të

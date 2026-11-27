@@ -12,10 +12,10 @@
   <script src="/theme-preload.js?v=1.8.0"></script>
   <link rel="stylesheet" href="/protokollet-v2.css?v=2-audit-20261009">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107">
-  <link rel="stylesheet" href="/librat-mjekesore.css?v=20261125">
+  <link rel="stylesheet" href="/librat-mjekesore.css?v=20261127-library">
   <script src="/auth-client.js?v=20261108-remembered-device-v3" defer></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
-  <script src="/librat-mjekesore.js?v=20261125-drive-audit" defer></script>
+  <script src="/librat-mjekesore.js?v=20261127-library" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#medicalBooks">Kalo te librat mjekësorë</a>
@@ -100,57 +100,87 @@
 
       <section class="page-wrap books-page" id="medicalBooks" aria-labelledby="booksTitle" tabindex="-1">
         <header class="books-hero">
+          <div class="books-hero-art" aria-hidden="true"></div>
           <div class="books-hero-copy">
             <h1 id="booksTitle">Librat mjekësorë</h1>
-            <p>Shfleto dosjet sipas lëndës ose kërko një titull. Librat hapen në Google Drive. Titujt me origjinal të paarritshëm janë të shënuar.</p>
+            <p>Referenca klinike, tekste universitare dhe materiale për provime.</p>
+            <dl class="books-stats" id="booksStats" hidden>
+              <div>
+                <dt>libra</dt><dd><span data-books-icon="book" aria-hidden="true"></span><span id="booksTotal"></span></dd>
+              </div>
+              <div>
+                <dt>dosje</dt><dd><span data-books-icon="folder" aria-hidden="true"></span><span id="booksFolderTotal"></span></dd>
+              </div>
+            </dl>
           </div>
-          <dl class="books-stats" id="booksStats" hidden>
-            <div><dt>Libra</dt><dd id="booksTotal"></dd></div>
-            <div><dt>Dosje</dt><dd id="booksFolderTotal"></dd></div>
-          </dl>
           <div class="books-toolbar" id="booksToolbar" hidden>
             <div class="books-search" role="search" aria-label="Katalogu i librave">
-              <label class="sr-only" for="booksSearch">Kërko sipas titullit ose lëndës</label>
+              <label class="sr-only" id="booksSearchLabel" for="booksSearch">Kërko sipas titullit ose lëndës</label>
               <span class="books-search-icon" data-books-icon="search" aria-hidden="true"></span>
-              <input id="booksSearch" data-slot="input" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko titull ose lëndë…">
+              <input id="booksSearch" data-slot="input" type="search" autocomplete="off" spellcheck="false" aria-keyshortcuts="/" aria-controls="booksCatalog" placeholder="Kërko titull ose lëndë…">
+              <kbd class="books-search-key" id="booksSearchKey" aria-hidden="true">/</kbd>
               <button id="booksClear" data-slot="button" data-variant="ghost" data-size="icon" type="button" aria-label="Pastro kërkimin" hidden>
                 <span data-books-icon="close" aria-hidden="true"></span>
               </button>
             </div>
-            <a id="booksSource" data-slot="button" data-variant="outline" target="_blank" rel="noopener noreferrer">
-              <span data-books-icon="external" aria-hidden="true"></span> Hap dosjen në Drive
+            <a id="booksSource" class="books-drive-link" data-slot="button" target="_blank" rel="noopener noreferrer">
+              <span data-books-icon="drive" aria-hidden="true"></span>
+              <span>Hap dosjen në Drive</span>
+              <span data-books-icon="external" aria-hidden="true"></span>
             </a>
           </div>
         </header>
 
-        <p id="booksStatus" class="books-status" role="status">Po ngarkohet katalogu…</p>
-        <button id="booksRetry" data-slot="button" data-variant="outline" type="button" hidden>Provo përsëri</button>
+        <div class="books-load" id="booksLoad">
+          <p id="booksStatus" role="status">Po ngarkohet katalogu…</p>
+          <button id="booksRetry" data-slot="button" data-variant="outline" type="button" hidden>Provo përsëri</button>
+        </div>
 
-        <div id="booksCatalog" hidden>
+        <div class="books-catalog" id="booksCatalog" hidden>
           <nav id="booksBreadcrumb" class="books-breadcrumb" aria-label="Shtegu i dosjes" hidden><ol></ol></nav>
           <section id="booksFolders" class="books-section" aria-labelledby="booksFolderHeading" hidden>
             <div class="books-section-heading">
-              <h2 id="booksFolderHeading">Dosjet</h2>
+              <h2 id="booksFolderHeading" tabindex="-1">Dosjet</h2>
+              <span id="booksFolderCount" class="books-folder-count"></span>
             </div>
             <ul class="books-folders" id="booksFolderGrid"></ul>
           </section>
-          <section class="books-section" aria-labelledby="booksResultsHeading">
+          <section class="books-section" id="booksResults" aria-labelledby="booksResultsHeading">
             <div class="books-section-heading books-results-heading">
               <div>
                 <h2 id="booksResultsHeading" tabindex="-1">Të gjithë librat</h2>
                 <p id="booksResultsCount" class="books-results-count" role="status"></p>
               </div>
-              <label for="booksSort" class="books-sort"><span>Renditja</span>
-                <select id="booksSort">
-                  <option value="asc">A–Z</option>
-                  <option value="desc">Z–A</option>
-                </select>
-              </label>
+              <div class="books-results-controls" id="booksControls">
+                <label class="books-select">
+                  <span class="sr-only">Filtro sipas disponueshmërisë</span>
+                  <select id="booksAvailability">
+                    <option value="all">Të gjitha statuset</option>
+                    <option value="direct">Me lidhje direkte</option>
+                    <option value="source">Origjinal i paarritshëm</option>
+                  </select>
+                  <span data-books-icon="down" aria-hidden="true"></span>
+                </label>
+                <label class="books-select">
+                  <span class="sr-only">Rendit librat</span>
+                  <select id="booksSort">
+                    <option value="asc">A–Z</option>
+                    <option value="desc">Z–A</option>
+                  </select>
+                  <span data-books-icon="down" aria-hidden="true"></span>
+                </label>
+              </div>
             </div>
-            <p id="booksEmpty" class="books-empty" data-slot="card" hidden></p>
+            <div id="booksEmpty" class="books-empty" data-slot="card" hidden>
+              <span class="books-empty-icon" data-books-icon="book" aria-hidden="true"></span>
+              <div>
+                <strong id="booksEmptyTitle"></strong>
+                <p id="booksEmptyMessage"></p>
+              </div>
+            </div>
             <ul class="books-list" id="booksList"></ul>
-            <div class="books-pagination">
-              <button id="booksMore" type="button" data-slot="button" data-variant="outline" hidden>Shfaq më shumë</button>
+            <div class="books-pagination" id="booksPagination" hidden>
+              <button id="booksMore" type="button" data-slot="button" data-variant="outline">Shfaq më shumë</button>
             </div>
           </section>
         </div>
