@@ -184,7 +184,7 @@
     image.fetchPriority = 'low';
     image.addEventListener('error', () => image.remove(), { once:true });
     cover.append(image);
-    image.src = COVER_BASE + book.cover;
+    image.src = COVER_BASE + book.cover + '?fm=webp';
 
     const text = create('span', 'books-book-copy');
     text.append(create('strong', 'books-book-title', book.title));
