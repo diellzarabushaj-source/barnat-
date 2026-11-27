@@ -32,12 +32,9 @@ html.drx-unified-sidebar[data-drx-app="medlex-v1"][data-theme="dark"] {
   --drx-shell-canvas: var(--ml-soft);
   --drx-finish-border: var(--ml-border);
 }
-html.drx-unified-sidebar[data-drx-app="medlex-v1"][data-theme="dark"] :is(.topbar,.drx-mobile-nav) {
+html.drx-unified-sidebar[data-drx-app="medlex-v1"][data-theme="dark"] .drx-mobile-nav {
   background: var(--ml-surface) !important;
   border-color: var(--ml-border) !important;
-}
-html.drx-unified-sidebar[data-drx-app="medlex-v1"][data-theme="dark"] .breadcrumbs strong {
-  color: var(--ml-ink) !important;
 }
 html[data-drx-app="medlex-v1"][data-theme="dark"] .drx-mobile-nav :is(a,button) { color: var(--ml-muted); }
 html[data-drx-app="medlex-v1"][data-theme="dark"] .drx-mobile-nav :is([aria-current="page"],.is-active) {

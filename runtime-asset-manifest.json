@@ -6,57 +6,78 @@
     "registry-column-filter.js": "registry-smooth-20261103",
     "drx-modal-focus.js": "p1-20261008",
     "drx-runtime-telemetry.js": "20261009-rum-v1",
-    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v9-worker-ready-20261012"
+    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v10-topbar-20261127",
+    "drx-dashboard-stripe.css": "drx-dashboard-stripe-v8-topbar-20261127"
   },
   "recetat.html": {
     "recetat-v2.css": "42-direct-prescription-20261103",
     "recetat-v2.js": "42-direct-prescription-20261103",
     "drx-modal-focus.js": "p1-20261008",
     "drx-runtime-telemetry.js": "20261009-rum-v1",
-    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v9-worker-ready-20261012"
+    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v10-topbar-20261127",
+    "drx-dashboard-stripe.css": "drx-dashboard-stripe-v8-topbar-20261127"
   },
   "klasifikimi.html": {
     "drx-runtime-telemetry.js": "20261009-rum-v1",
-    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v9-worker-ready-20261012"
+    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v10-topbar-20261127",
+    "drx-dashboard-stripe.css": "drx-dashboard-stripe-v8-topbar-20261127"
   },
   "icd.html": {
     "drx-runtime-telemetry.js": "20261009-rum-v1",
-    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v9-worker-ready-20261012",
+    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v10-topbar-20261127",
     "icd-v2.css": "icd-clarification-20261025",
     "icd-v2.js": "icd-resilience-20261103",
-    "icd-search-lexical.js": "icd-resilience-20261103"
+    "icd-search-lexical.js": "icd-resilience-20261103",
+    "drx-dashboard-stripe.css": "drx-dashboard-stripe-v8-topbar-20261127"
   },
   "dozologjia.html": {
     "drx-runtime-telemetry.js": "20261009-rum-v1",
     "phase9-personal-entities-client.js": "drx-phase9-personal-v4",
-    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v9-worker-ready-20261012",
+    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v10-topbar-20261127",
     "dozologjia-v2.css": "67-market-dose-clarity-20261017",
-    "dozologjia-v2.js": "67-market-dose-clarity-20261017"
+    "dozologjia-v2.js": "67-market-dose-clarity-20261017",
+    "drx-dashboard-stripe.css": "drx-dashboard-stripe-v8-topbar-20261127"
   },
   "antibiotiket.html": {
     "phase9-personal-entities-client.js": "drx-phase9-personal-v4",
-    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v9-worker-ready-20261012"
+    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v10-topbar-20261127",
+    "drx-dashboard-stripe.css": "drx-dashboard-stripe-v8-topbar-20261127"
   },
   "protokollet.html": {
     "drx-runtime-telemetry.js": "20261009-rum-v1",
-    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v9-worker-ready-20261012"
+    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v10-topbar-20261127",
+    "drx-dashboard-stripe.css": "drx-dashboard-stripe-v8-topbar-20261127"
   },
   "urgjencat.html": {
     "drx-runtime-telemetry.js": "20261009-rum-v1",
-    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v9-worker-ready-20261012"
+    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v10-topbar-20261127",
+    "drx-dashboard-stripe.css": "drx-dashboard-stripe-v8-topbar-20261127"
   },
   "analizat.html": {
     "drx-runtime-telemetry.js": "20261009-rum-v1",
-    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v9-worker-ready-20261012"
+    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v10-topbar-20261127",
+    "drx-dashboard-stripe.css": "drx-dashboard-stripe-v8-topbar-20261127"
   },
   "medical-hub.html": {
     "drx-runtime-telemetry.js": "20261009-rum-v1",
-    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v9-worker-ready-20261012"
+    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v10-topbar-20261127",
+    "drx-dashboard-stripe.css": "drx-dashboard-stripe-v8-topbar-20261127"
   },
   "sistemi.html": {
     "drx-runtime-telemetry.js": "20261009-rum-v1",
-    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v9-worker-ready-20261012",
+    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v10-topbar-20261127",
     "sistemi-v2.css": "2-admin-20261014",
-    "sistemi-v2.js": "2-admin-20261014"
+    "sistemi-v2.js": "2-admin-20261014",
+    "drx-dashboard-stripe.css": "drx-dashboard-stripe-v8-topbar-20261127"
+  },
+  "medlex.html": {
+    "medlex.css": "20261127-shared-topbar",
+    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v10-topbar-20261127",
+    "drx-dashboard-stripe.css": "drx-dashboard-stripe-v8-topbar-20261127"
+  },
+  "librat-mjekesore.html": {
+    "librat-mjekesore.css": "20261127-library-topbar",
+    "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v10-topbar-20261127",
+    "drx-dashboard-stripe.css": "drx-dashboard-stripe-v8-topbar-20261127"
   }
 }

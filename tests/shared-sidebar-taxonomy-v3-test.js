@@ -13,12 +13,12 @@ const sharedLoader = read('sidebar-taxonomy-v3.js');
 // which owns the taxonomy, the worker cutover and the personal counts.
 const shared = read('sidebar-taxonomy-core-v3.js');
 const runtimeAssetManifest = JSON.parse(read('runtime-asset-manifest.json'));
-const sidebarRelease = 'sidebar-taxonomy-v9-worker-ready-20261012';
+const sidebarRelease = 'sidebar-taxonomy-v10-topbar-20261127';
 for (const [page, assets] of Object.entries(runtimeAssetManifest)) {
   assert.equal(assets['sidebar-taxonomy-v3.js'], sidebarRelease, `${page}: the manifest must preserve the new shared sidebar release during build`);
   assert.ok(read(page).includes(`/sidebar-taxonomy-v3.js?v=${sidebarRelease}`), `${page}: the versioned sidebar loader is missing`);
 }
-assert.ok(sharedLoader.includes('/sidebar-taxonomy-core-v3.js?v=persistent-session-20261106'), 'The loader must use the current session-recovery core release');
+assert.ok(sharedLoader.includes('/sidebar-taxonomy-core-v3.js?v=shared-topbar-20261127'), 'The loader must use the current session-recovery core release');
 const icdSidebar = read('icd-sidebar-v3.js');
 const shell = read('tailadmin-shell.js');
 const shellCore = read('tailadmin-shell-core.js');
@@ -201,6 +201,7 @@ async function verifyDeviceReachability() {
     return node;
   };
   const host = element();
+  host.querySelector = () => null;
   const messages = [], requests = [];
   let available = false, responseStatus = 200, responseOffline = false;
   const scope = {
