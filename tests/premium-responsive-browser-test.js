@@ -20,7 +20,7 @@ const labFixture = {ok:true,data:{source:'QA fixture',
  indications:[{id:'qa-diagnosis',slug:'qa-diagnosis',title:'Diagnozë testuese me emër të gjatë për kontrollin e pamjes',summary:'Përshkrim i gjatë testues që duhet të lexohet i plotë në telefon.',icdCodes:[],tests:[],catalogGaps:[]}],
 }};
 const ROOT = path.resolve(__dirname, '..');
-const pages = ['index','klasifikimi','icd','dozologjia','antibiotiket','analizat','recetat','protokollet','medical-hub','urgjencat','sistemi'];
+const pages = ['index','klasifikimi','icd','medlex','librat-mjekesore','dozologjia','antibiotiket','analizat','recetat','protokollet','medical-hub','urgjencat','sistemi'];
 const output = process.env.PREMIUM_AUDIT_OUTPUT;
 const rows = [{id:'11111111-1111-4111-8111-111111111111',registryNumber:1,pdid:'1001',tradeName:'PRODUKT TESTUES ME EMËR TË GJATË PËR KONTROLLIN E PAMJES',activeSubstance:'Substancë testuese',atc:'N02BE01',strength:'500 mg',form:'Tabletë',drugClass:'Produkt testues',use:'Vetëm testim i ndërfaqes',productStatus:'Gjenerik',prescriptionNotation:'Produkt testues',retailPrice:2.45}];
 (async () => {
@@ -63,6 +63,28 @@ const rows = [{id:'11111111-1111-4111-8111-111111111111',registryNumber:1,pdid:'
     await page.goto(`http://127.0.0.1:4196/${name}.html`);
     await expect(page.locator('html')).toHaveAttribute('data-drx-sidebar-structure','taxonomy-v5');
     await page.waitForTimeout(180);
+    const topbar = page.locator('.main-shell > .topbar');
+    const status = topbar.locator('#drxDeviceStatus');
+    const profile = topbar.locator('#profileButton');
+    await expect(topbar.locator('.breadcrumbs strong')).toBeVisible();
+    await expect(status).toBeVisible();
+    await expect(profile).toBeVisible();
+    await expect(topbar.locator('.sync-pill, #miOfflineStatus')).toHaveCount(0);
+    assert.equal((await topbar.boundingBox()).height, 58, `${name}/${width}: consistent top bar height`);
+    assert.equal((await status.boundingBox()).height, (await profile.boundingBox()).height, `${name}/${width}: matching header controls`);
+    if (width === 320 || width === 1440) {
+     const panel = page.locator('#drxDevicePanel');
+     await status.click();
+     await expect(panel).toBeVisible();
+     await expect(panel.locator('[data-device-close]')).toBeFocused();
+     if (await page.locator('#syncText').count()) await expect(panel.locator('#syncText')).toBeVisible();
+     await page.keyboard.press('Escape');
+     await expect(panel).toBeHidden();
+     await expect(status).toBeFocused();
+     await page.evaluate(() => { document.documentElement.dataset.theme = 'dark'; });
+     await expect(topbar).toHaveCSS('background-color', 'rgb(33, 30, 52)');
+     await page.evaluate(() => { document.documentElement.dataset.theme = 'light'; });
+    }
     if(name==='dozologjia'){
      await expect(page.locator('#pediatricCommonCount')).not.toContainText('Nuk u ngarkua');
      await expect(page.locator('#pediatricDrug')).toContainText('Paracetamol');

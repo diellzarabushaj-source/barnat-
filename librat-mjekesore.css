@@ -13,21 +13,6 @@ html[data-drx-app="librat-mjekesore"]:is(.dark, [data-theme="dark"]) {
   --drx-finish-focus: #bbaaef;
 }
 
-html[data-drx-app="librat-mjekesore"]:is(.dark, [data-theme="dark"]) .topbar {
-  border-color: var(--drx-shell-line) !important;
-  background: #211e34 !important;
-}
-
-html[data-drx-app="librat-mjekesore"]:is(.dark, [data-theme="dark"]) .topbar :is(.drx-profile-chip, .menu-button, .drx-device-status:not([data-offline="true"])) {
-  border-color: var(--drx-shell-line) !important;
-  background: #302a48 !important;
-  color: var(--drx-shell-ink) !important;
-}
-
-html[data-drx-app="librat-mjekesore"]:is(.dark, [data-theme="dark"]) .topbar .breadcrumbs strong {
-  color: var(--drx-shell-ink) !important;
-}
-
 html[data-drx-app="librat-mjekesore"]:is(.dark, [data-theme="dark"]) .drx-mobile-nav {
   border-color: var(--drx-shell-line);
   background: #211e34;
@@ -40,11 +25,6 @@ html[data-drx-app="librat-mjekesore"]:is(.dark, [data-theme="dark"]) .drx-mobile
 html[data-drx-app="librat-mjekesore"]:is(.dark, [data-theme="dark"]) .drx-mobile-nav :is(a[aria-current="page"], button.is-active) {
   background: #392e58;
   color: var(--drx-shell-ink);
-}
-
-/* The shared shell already shows the normal device status. */
-html[data-drx-app="librat-mjekesore"] #miOfflineStatus:not([data-state="update"]):not([data-state="limited"]) {
-  display: none !important;
 }
 
 .books-page {

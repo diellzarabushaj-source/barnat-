@@ -3,6 +3,9 @@
 The canonical shared sidebar initializes the phone navigation, storage status,
 manifest and install icons. `sw.js` owns caching; no new UI/runtime dependency is
 loaded. Clinical values, warnings and calculations are unchanged.
+The shared top bar shows the current workspace, one storage button and the
+account. Open the storage button for the current page’s source, the saved date
+and any available offline update action.
 
 ## What is saved
 
