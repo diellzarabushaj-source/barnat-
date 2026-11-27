@@ -12,10 +12,10 @@
   <script src="/theme-preload.js?v=1.8.0"></script>
   <link rel="stylesheet" href="/protokollet-v2.css?v=2-audit-20261009">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107">
-  <link rel="stylesheet" href="/librat-mjekesore.css?v=20261127-library">
+  <link rel="stylesheet" href="/librat-mjekesore.css?v=20261127-sanity">
   <script src="/auth-client.js?v=20261108-remembered-device-v3" defer></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
-  <script src="/librat-mjekesore.js?v=20261127-library" defer></script>
+  <script src="/librat-mjekesore.js?v=20261127-sanity" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#medicalBooks">Kalo te librat mjekësorë</a>
@@ -123,11 +123,6 @@
                 <span data-books-icon="close" aria-hidden="true"></span>
               </button>
             </div>
-            <a id="booksSource" class="books-drive-link" data-slot="button" target="_blank" rel="noopener noreferrer">
-              <span data-books-icon="drive" aria-hidden="true"></span>
-              <span>Hap dosjen në Drive</span>
-              <span data-books-icon="external" aria-hidden="true"></span>
-            </a>
           </div>
         </header>
 
@@ -152,15 +147,6 @@
                 <p id="booksResultsCount" class="books-results-count" role="status"></p>
               </div>
               <div class="books-results-controls" id="booksControls">
-                <label class="books-select">
-                  <span class="sr-only">Filtro sipas disponueshmërisë</span>
-                  <select id="booksAvailability">
-                    <option value="all">Të gjitha statuset</option>
-                    <option value="direct">Me lidhje direkte</option>
-                    <option value="source">Origjinal i paarritshëm</option>
-                  </select>
-                  <span data-books-icon="down" aria-hidden="true"></span>
-                </label>
                 <label class="books-select">
                   <span class="sr-only">Rendit librat</span>
                   <select id="booksSort">
