@@ -5,6 +5,9 @@
   const collator = new Intl.Collator('sq', { numeric:true, sensitivity:'base', ignorePunctuation:true });
   const number = new Intl.NumberFormat('sq');
   const PAGE_SIZE = 24;
+  const ASSET_CDN = 'https://cdn.sanity.io/';
+  const PDF_BASE = ASSET_CDN + 'files/4wdtp8cz/production/';
+  const COVER_BASE = ASSET_CDN + 'images/4wdtp8cz/production/';
   const state = { folder:null, query:'', limit:PAGE_SIZE };
   const rootFolders = [
     ['Viti i parë', 'study'],
@@ -26,7 +29,6 @@
     down:'<path d="m6 9 6 6 6-6"/>',
     book:'<path d="M6 4h12v16H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm-2 13a2 2 0 0 1 2-2h12M8 8h6"/>',
     file:'<path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9Zm0 0v7h7M8 14h8m-8 3h5"/>',
-    drive:'<path d="M9 4h6l6 11-3 5H6l-3-5 6-11Zm0 0 6 11m0-11L9 15m-6 0h18"/>',
     study:'<path d="m2 10 10-5 10 5-10 5-10-5Zm4 2v5c3 2.5 9 2.5 12 0v-5m4-2v5"/>',
     stethoscope:'<path d="M5 4H3v5a5 5 0 0 0 10 0V4h-2m-3 10v3a4 4 0 0 0 8 0v-2"/><circle cx="18.5" cy="12.5" r="2.5"/>',
     clinical:'<rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V4h8v3m-4 4v6m-3-3h6"/>',
@@ -38,9 +40,7 @@
     + iconPaths[name] + '</svg>';
   const normalize = value => value.normalize('NFD').replace(/\p{M}/gu, '')
     .toLocaleLowerCase('sq').replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
-  const throughSource = book => book.linkMode === 'source-folder';
-
-  let source;
+  let rootId;
   let items;
   let byId;
   let children;
@@ -90,7 +90,7 @@
     return link;
   }
 
-  function driveAnchor(url, className) {
+  function pdfAnchor(url, className) {
     const link = create('a', className);
     link.href = url;
     link.target = '_blank';
@@ -103,10 +103,10 @@
   }
 
   function indexCatalog(data) {
-    source = data.source;
+    rootId = data.rootId;
     items = data.items;
     byId = new Map(items.map(entry => [entry.id, entry]));
-    children = new Map([[source.id, []]]);
+    children = new Map([[rootId, []]]);
     for (const entry of items) {
       if (!children.has(entry.parent)) children.set(entry.parent, []);
       children.get(entry.parent).push(entry);
@@ -143,8 +143,7 @@
 
   function renderFolder(folder) {
     const targetId = folder.targetFolder || folder.id;
-    const external = folder.kind === 'folder-link' && !folder.targetFolder;
-    const card = external ? driveAnchor(folder.url, 'books-folder-card') : folderAnchor(targetId, 'books-folder-card');
+    const card = folderAnchor(targetId, 'books-folder-card');
     const style = folderStyles.get(folder.title);
     card.dataset.slot = 'card';
     if (style?.tone) card.dataset.tone = style.tone;
@@ -160,12 +159,12 @@
       subfolders && countLabel(subfolders, 'nëndosje', 'nëndosje'),
       internalBooks && countLabel(internalBooks, 'libër', 'libra'),
     ].filter(Boolean).join(' · ');
-    const description = create('span', '', external ? 'Hapet në Google Drive' : contentsLabel || 'Dosje');
+    const description = create('span', '', contentsLabel || 'Dosje');
     description.dataset.slot = 'card-description';
 
     label.append(title, description);
     const top = create('div', 'books-folder-top');
-    top.append(glyph(style?.symbol || 'folder', 'books-folder-icon'), glyph(external ? 'external' : 'next', 'books-folder-arrow'));
+    top.append(glyph(style?.symbol || 'folder', 'books-folder-icon'), glyph('next', 'books-folder-arrow'));
     card.append(top, label);
     const item = create('li');
     item.append(card);
@@ -174,24 +173,28 @@
 
   function renderBook(book, showPath) {
     const item = create('li');
-    const link = driveAnchor(book.url, 'books-book-row');
-    const throughFolder = throughSource(book);
+    const link = pdfAnchor(PDF_BASE + book.pdf + '.pdf', 'books-book-row');
+    const cover = glyph('file', 'books-book-cover');
+    const image = create('img');
+    image.alt = '';
+    image.width = 42;
+    image.height = 56;
+    image.loading = 'lazy';
+    image.decoding = 'async';
+    image.fetchPriority = 'low';
+    image.addEventListener('error', () => image.remove(), { once:true });
+    cover.append(image);
+    image.src = COVER_BASE + book.cover + '?fm=webp';
+
     const text = create('span', 'books-book-copy');
-    const meta = create('span', 'books-book-meta');
-    const status = book.availability === 'deleted' ? 'Origjinali i fshirë' : 'Origjinali i paarritshëm';
     text.append(create('strong', 'books-book-title', book.title));
-    if (showPath && book.folderLabel) meta.append(create('small', 'books-book-path', book.folderLabel));
-    if (throughFolder) meta.append(create('small', 'books-link-note', status));
-    if (meta.childElementCount) text.append(meta);
+    if (showPath && book.folderLabel) text.append(create('small', 'books-book-path', book.folderLabel));
 
     const action = create('span', 'books-book-action');
-    action.append(create('span', 'books-book-action-label', throughFolder ? 'Shiko dosjen burimore' : 'Hap në Drive'), glyph('external'));
+    action.append(create('span', 'books-book-action-label', 'Hap PDF-në'), glyph('external'));
     action.setAttribute('aria-hidden', 'true');
-    link.setAttribute('aria-label', book.title + (throughFolder
-      ? ' (' + status + '. Hap dosjen burimore në skedë të re)'
-      : ' (hap librin në Google Drive në skedë të re)'));
-    link.dataset.availability = throughFolder ? 'source' : 'direct';
-    link.append(glyph(throughFolder ? 'folder' : 'file', 'books-book-icon'), text, action);
+    link.setAttribute('aria-label', book.title + ' (hap PDF-në në skedë të re)');
+    link.append(cover, text, action);
     item.append(link);
     return item;
   }
@@ -209,13 +212,10 @@
     $('booksFolderGrid').replaceChildren(...folders.map(renderFolder));
   }
 
-  function renderEmpty(searching, filtered, hasFolders) {
+  function renderEmpty(searching, hasFolders) {
     let title = hasFolders ? 'Librat janë në nëndosje' : 'Kjo dosje nuk ka libra';
     let message = hasFolders ? 'Zgjidh një nëndosje më sipër.' : 'Mund të kthehesh te dosjet e tjera nga shtegu më sipër.';
-    if (filtered) {
-      title = 'Nuk ka libra me këtë status';
-      message = 'Zgjidh «Të gjitha statuset» për të parë librat e tjerë.';
-    } else if (searching) {
+    if (searching) {
       title = 'Nuk u gjet asnjë libër';
       message = hasFolders ? 'Shfleto dosjet që përputhen me kërkimin më poshtë.' : 'Provo një titull më të shkurtër ose një fjalë tjetër.';
     }
@@ -223,7 +223,7 @@
     $('booksEmptyMessage').textContent = message;
   }
 
-  function renderBooks(books, searching, filtered, hasFolders) {
+  function renderBooks(books, searching, hasFolders) {
     $('booksResultsHeading').textContent = searching ? 'Rezultatet për libra' : state.folder ? 'Librat në këtë dosje' : 'Të gjithë librat';
     const list = $('booksList');
     const visible = books.slice(0, state.limit);
@@ -233,7 +233,7 @@
       ? number.format(visible.length) + ' nga ' + countLabel(books.length, 'libër', 'libra')
       : countLabel(books.length, 'libër', 'libra');
     $('booksEmpty').hidden = books.length > 0;
-    if (!books.length) renderEmpty(searching, filtered, hasFolders);
+    if (!books.length) renderEmpty(searching, hasFolders);
     const remaining = books.length - visible.length;
     $('booksPagination').hidden = remaining === 0;
     $('booksMore').textContent = 'Shfaq edhe ' + countLabel(Math.min(remaining, PAGE_SIZE), 'libër', 'libra');
@@ -242,7 +242,7 @@
   function render() {
     const tokens = normalize(state.query).split(' ').filter(Boolean);
     const searching = tokens.length > 0;
-    const parent = state.folder || source.id;
+    const parent = state.folder || rootId;
     const scoped = state.folder
       ? items.filter(item => item.folderIds.includes(state.folder))
       : items;
@@ -251,25 +251,22 @@
     const folders = searching ? scoped.filter(item => item.kind !== 'book' && match(item)) : direct;
     folders.sort(searching || state.folder ? (a, b) => collator.compare(a.title, b.title) : compareRootFolders);
     const sortDirection = $('booksSort').value === 'desc' ? -1 : 1;
-    const availability = $('booksAvailability').value;
-    const filtered = availability !== 'all';
-    const matchingBooks = scoped.filter(item => item.kind === 'book' && (searching ? match(item) : !state.folder || item.parent === state.folder));
-    const books = filtered ? matchingBooks.filter(book => throughSource(book) === (availability === 'source')) : matchingBooks;
+    const books = scoped.filter(item => item.kind === 'book'
+      && (searching ? match(item) : !state.folder || item.parent === state.folder));
     books.sort((a, b) => sortDirection * collator.compare(a.title, b.title));
 
     breadcrumb();
     const folder = byId.get(state.folder);
-    $('booksSource').href = folder?.url || source.url;
     $('booksSearch').placeholder = folder ? 'Kërko në këtë dosje…' : 'Kërko titull ose lëndë…';
     $('booksSearchLabel').textContent = folder ? 'Kërko në dosjen ' + folder.title : 'Kërko sipas titullit ose lëndës';
     $('booksSearchKey').hidden = Boolean(state.query);
     $('booksClear').hidden = !state.query;
-    $('booksControls').hidden = !matchingBooks.length && !filtered;
+    $('booksControls').hidden = books.length === 0;
     const firstSection = searching ? $('booksResults') : $('booksFolders');
     const nav = $('booksBreadcrumb');
     if (nav.nextElementSibling !== firstSection) nav.after(firstSection);
     renderFolders(folders, searching);
-    renderBooks(books, searching, filtered && matchingBooks.length > 0, folders.length > 0);
+    renderBooks(books, searching, folders.length > 0);
   }
 
   function changeQuery() {
@@ -298,7 +295,6 @@
       render();
     }
     $('booksSort').addEventListener('change', changeOptions);
-    $('booksAvailability').addEventListener('change', changeOptions);
     document.addEventListener('keydown', event => {
       if (event.key !== '/' || event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey || $('booksToolbar').hidden) return;
       if (event.target.closest?.('input, textarea, select, [contenteditable], [role="dialog"]') || document.querySelector('dialog[open], .sidebar.is-open')) return;
@@ -332,7 +328,7 @@
     $('booksRetry').hidden = true;
     $('booksStatus').textContent = 'Po ngarkohet katalogu…';
     try {
-      const response = await fetch('/data/medical-books.json?v=20261125-drive-audit', { headers:{ Accept:'application/json' } });
+      const response = await fetch('/data/medical-books.json?v=20261127-sanity', { headers:{ Accept:'application/json' } });
       if (!response.ok) throw new Error('Katalogu nuk u ngarkua.');
       indexCatalog(await response.json());
       setFolderFromUrl();

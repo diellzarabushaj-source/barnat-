@@ -49,9 +49,11 @@ Rrjedha kryesore është e thjeshtë:
 
 ## Librat mjekësorë
 
-Katalogu në `/librat-mjekesore.html` shfaq dosjet në shqip dhe ruan titujt e skedarëve siç figurojnë në Google Drive. Ai lexon inventarin `data/medical-books.json`; përditësoje këtë inventar kur ndryshon koleksioni. Faqja ruan hierarkinë e dosjeve dhe hap PDF-të në Google Drive me lejet ekzistuese. Kur Google Drive shënon origjinalin si të fshirë ose të paarritshëm, fusha `availability` ruan këtë status dhe `linkMode: source-folder` lidh dosjen burimore. Shkurtoret aktive i hap Drive përmes ridrejtimit te skedari origjinal. Një shkurtore drejt një dosjeje të kataloguar përdor `targetFolder` për navigimin e brendshëm.
+Katalogu në `/librat-mjekesore.html` ruan emrat e librave dhe hierarkinë në `data/medical-books.json`. Çdo libër në katalog ka PDF-në origjinale dhe kopertinën e krijuar nga faqja e parë në Sanity. Publiko vetëm skedarë të verifikuar dhe përjashto hyrjet pa origjinal të përdorshëm.
 
-Kërkimi përdor titullin dhe shtegun e dosjes. Shtyp `/` për ta fokusuar kërkimin. Te lista e librave mund të filtrosh sipas lidhjeve direkte ose origjinaleve të paarritshme dhe të ndryshosh renditjen alfabetike.
+Faqja lexon vetëm metadatat e katalogut në nisje. Kopertinat WebP ngarkohen pranë zonës së dukshme. PDF-ja hapet drejtpërdrejt nga CDN-ja e Sanity në një skedë të re kur zgjidhet libri.
+
+Kërkimi përdor titullin dhe shtegun e dosjes. Shtyp `/` për të fokusuar kërkimin dhe përdor renditjen A–Z ose Z–A për listën.
 
 Pamja përdor përshtatje HTML/CSS të komponentëve Card, Input dhe Button të shadcn/ui për runtime-in statik. Licenca e komponentëve gjendet te `vendor/shadcn/LICENSE`.
 
