@@ -8,7 +8,8 @@
   const ASSET_CDN = 'https://cdn.sanity.io/';
   const PDF_BASE = ASSET_CDN + 'files/4wdtp8cz/production/';
   const COVER_BASE = ASSET_CDN + 'images/4wdtp8cz/production/';
-  const state = { folder:null, query:'', limit:PAGE_SIZE };
+  const filterParams = { collection:'koleksioni', subject:'lenda', year:'viti' };
+  const state = { folder:null, query:'', collection:'', subject:'', year:'', sort:'asc', view:'grid', limit:PAGE_SIZE };
   const rootFolders = [
     ['Viti i parë', 'study'],
     ['Viti i dytë', 'study'],
@@ -21,12 +22,14 @@
   ];
   const folderStyles = new Map(rootFolders.map(([title, symbol, tone], order) => [title, { symbol, tone, order }]));
   const iconPaths = {
+    filters:'<path d="M4 7h16M7 12h10m-7 5h4"/><circle cx="8" cy="7" r="1.5" fill="currentColor"/><circle cx="15" cy="12" r="1.5" fill="currentColor"/>',
+    grid:'<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>',
+    list:'<path d="M9 6h11M9 12h11M9 18h11M4 6h1m-1 6h1m-1 6h1"/>',
     search:'<circle cx="11" cy="11" r="7"/><path d="m16 16 4 4"/>',
     close:'<path d="m6 6 12 12M18 6 6 18"/>',
     external:'<path d="M13 5h6v6m0-6-9 9m7-1v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h5"/>',
     folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/>',
     next:'<path d="m9 6 6 6-6 6"/>',
-    down:'<path d="m6 9 6 6 6-6"/>',
     book:'<path d="M6 4h12v16H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm-2 13a2 2 0 0 1 2-2h12M8 8h6"/>',
     file:'<path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9Zm0 0v7h7M8 14h8m-8 3h5"/>',
     study:'<path d="m2 10 10-5 10 5-10 5-10-5Zm4 2v5c3 2.5 9 2.5 12 0v-5m4-2v5"/>',
@@ -44,6 +47,10 @@
   let items;
   let byId;
   let children;
+  let collections;
+  let years;
+  let subjectScope;
+  const scopes = new Map();
 
   function create(tag, className, text) {
     const element = document.createElement(tag);
@@ -58,11 +65,19 @@
     return element;
   }
 
-  function folderHistory(folder) {
+  function catalogUrl(folder, browsing) {
     const url = new URL(location.href);
-    if (folder) url.searchParams.set('dosja', folder);
-    else url.searchParams.delete('dosja');
-    return url.pathname + url.search;
+    const settings = {
+      dosja:folder, q:browsing ? state.query.trim() : '',
+      koleksioni:browsing ? state.collection : '', lenda:browsing ? state.subject : '',
+      viti:browsing ? state.year : '', renditja:state.sort === 'asc' ? '' : state.sort,
+      pamja:state.view === 'grid' ? '' : state.view,
+    };
+    for (const [key, value] of Object.entries(settings)) {
+      if (value) url.searchParams.set(key, value);
+      else url.searchParams.delete(key);
+    }
+    return url.pathname + url.search + url.hash;
   }
 
   function folderTrail(id) {
@@ -75,17 +90,26 @@
     return trail;
   }
 
-  function setFolderFromUrl() {
-    const id = new URLSearchParams(location.search).get('dosja');
+  function readLocation() {
+    const params = new URLSearchParams(location.search);
+    const id = params.get('dosja');
     state.folder = byId.get(id)?.kind === 'folder' ? id : null;
-    state.query = '';
-    $('booksSearch').value = '';
+    state.query = params.get('q') || '';
+    const collection = params.get(filterParams.collection);
+    state.collection = !state.folder && collections.some(folder => folder.id === collection) ? collection : '';
+    state.subject = params.get(filterParams.subject) || '';
+    const year = params.get(filterParams.year);
+    state.year = year === 'unknown' || years.includes(year) ? year : '';
+    const sort = params.get('renditja');
+    state.sort = ['desc', 'newest', 'oldest'].includes(sort) ? sort : 'asc';
+    state.view = params.get('pamja') === 'list' ? 'list' : 'grid';
+    $('booksSearch').value = state.query;
     state.limit = PAGE_SIZE;
   }
 
   function folderAnchor(id, className) {
     const link = create('a', className);
-    link.href = folderHistory(id);
+    link.href = catalogUrl(id, false);
     link.dataset.booksFolder = id || '';
     return link;
   }
@@ -107,6 +131,8 @@
     items = data.items;
     byId = new Map(items.map(entry => [entry.id, entry]));
     children = new Map([[rootId, []]]);
+    scopes.clear();
+    subjectScope = undefined;
     for (const entry of items) {
       if (!children.has(entry.parent)) children.set(entry.parent, []);
       children.get(entry.parent).push(entry);
@@ -114,7 +140,83 @@
       entry.folderIds = trail.map(folder => folder.id);
       entry.folderLabel = trail.map(folder => folder.title).join(' / ');
       entry.search = normalize(entry.title + ' ' + entry.folderLabel);
+      if (entry.kind === 'book') {
+        entry.year = [...entry.title.matchAll(/\b(?:19|20)\d{2}\b/g)].at(-1)?.[0] || '';
+      }
     }
+    collections = (children.get(rootId) || []).filter(item => item.kind === 'folder').sort(compareRootFolders);
+    years = [...new Set(items.filter(item => item.year).map(item => item.year))].sort().reverse();
+    fillSelect('booksCollection', 'Të gjitha koleksionet', collections.map(folder => [folder.id, folder.title]));
+    fillSelect('booksYear', 'Të gjitha vitet', [...years.map(year => [year, year]), ['unknown', 'Pa vit në titull']]);
+  }
+
+  function getScope(id) {
+    if (scopes.has(id)) return scopes.get(id);
+    const folders = new Set();
+    const books = new Set();
+    function visit(folderId) {
+      if (folders.has(folderId)) return;
+      folders.add(folderId);
+      for (const item of children.get(folderId) || []) {
+        if (item.kind === 'book') books.add(item);
+        else visit(item.targetFolder || item.id);
+      }
+    }
+    visit(id);
+    const scope = { folders, books:[...books] };
+    scopes.set(id, scope);
+    return scope;
+  }
+
+  function fillSelect(id, placeholder, options) {
+    const select = $(id);
+    const fragment = document.createDocumentFragment();
+    for (const [value, label] of [['', placeholder], ...options]) {
+      const option = create('option', '', label);
+      option.value = value;
+      fragment.append(option);
+    }
+    select.replaceChildren(fragment);
+  }
+
+  function renderFilters(context) {
+    const subject = $('booksSubject');
+    if (subjectScope !== context) {
+      const subjects = [...getScope(context).folders].map(id => byId.get(id))
+        .filter(folder => folder && folder.id !== context && (context !== rootId || folder.parent !== rootId))
+        .sort((a, b) => collator.compare(a.title, b.title) || collator.compare(a.folderLabel, b.folderLabel));
+      const duplicate = new Set(subjects.filter((folder, i) => subjects[i - 1]?.title === folder.title
+        || subjects[i + 1]?.title === folder.title).map(folder => folder.title));
+      fillSelect('booksSubject', 'Të gjitha lëndët', subjects.map(folder => [
+        folder.id, duplicate.has(folder.title) ? folder.title + ' · ' + folder.folderLabel : folder.title,
+      ]));
+      subject.disabled = subjects.length === 0;
+      subjectScope = context;
+    }
+    subject.value = state.subject;
+    if (subject.selectedIndex < 0) subject.value = state.subject = '';
+    const collection = $('booksCollection');
+    $('booksCollectionField').hidden = Boolean(state.folder);
+    collection.value = state.collection;
+    $('booksYear').value = state.year;
+
+    const fields = { collection, subject, year:$('booksYear') };
+    const chips = Object.entries(fields).filter(([key]) => state[key]).map(([key, field]) => {
+      const item = create('li');
+      const label = field.selectedOptions[0].textContent;
+      const button = create('button', '', label);
+      button.type = 'button';
+      button.dataset.clearFilter = key;
+      button.setAttribute('aria-label', 'Hiq filtrin ' + label);
+      button.append(glyph('close'));
+      item.append(button);
+      return item;
+    });
+    $('booksFilterChips').replaceChildren(...chips);
+    $('booksFilterChips').hidden = chips.length === 0;
+    $('booksFilterCount').textContent = number.format(chips.length);
+    $('booksFilterCount').hidden = chips.length === 0;
+    $('booksResetFilters').disabled = chips.length === 0;
   }
 
   function breadcrumb() {
@@ -152,20 +254,11 @@
     label.dataset.slot = 'card-header';
     const title = create('strong', '', folder.title);
     title.dataset.slot = 'card-title';
-    const contents = children.get(targetId) || [];
-    const internalBooks = contents.filter(item => item.kind === 'book').length;
-    const subfolders = contents.length - internalBooks;
-    const contentsLabel = [
-      subfolders && countLabel(subfolders, 'nëndosje', 'nëndosje'),
-      internalBooks && countLabel(internalBooks, 'libër', 'libra'),
-    ].filter(Boolean).join(' · ');
-    const description = create('span', '', contentsLabel || 'Dosje');
+    const count = getScope(targetId).books.length;
+    const description = create('span', '', countLabel(count, 'libër', 'libra'));
     description.dataset.slot = 'card-description';
-
     label.append(title, description);
-    const top = create('div', 'books-folder-top');
-    top.append(glyph(style?.symbol || 'folder', 'books-folder-icon'), glyph('next', 'books-folder-arrow'));
-    card.append(top, label);
+    card.append(glyph(style?.symbol || 'folder', 'books-folder-icon'), label, glyph('next', 'books-folder-arrow'));
     const item = create('li');
     item.append(card);
     return item;
@@ -177,8 +270,8 @@
     const cover = glyph('file', 'books-book-cover');
     const image = create('img');
     image.alt = '';
-    image.width = 42;
-    image.height = 56;
+    image.width = 160;
+    image.height = 208;
     image.loading = 'lazy';
     image.decoding = 'async';
     image.fetchPriority = 'low';
@@ -188,7 +281,9 @@
 
     const text = create('span', 'books-book-copy');
     text.append(create('strong', 'books-book-title', book.title));
-    if (showPath && book.folderLabel) text.append(create('small', 'books-book-path', book.folderLabel));
+    const metadata = [showPath && book.folderLabel, book.year].filter(Boolean).join(' · ');
+    if (metadata) text.append(create('small', 'books-book-path', metadata));
+    link.title = book.title;
 
     const action = create('span', 'books-book-action');
     action.append(create('span', 'books-book-action-label', 'Hap PDF-në'), glyph('external'));
@@ -212,48 +307,69 @@
     $('booksFolderGrid').replaceChildren(...folders.map(renderFolder));
   }
 
-  function renderEmpty(searching, hasFolders) {
+  function renderEmpty(searching, filtering, hasFolders) {
     let title = hasFolders ? 'Librat janë në nëndosje' : 'Kjo dosje nuk ka libra';
     let message = hasFolders ? 'Zgjidh një nëndosje më sipër.' : 'Mund të kthehesh te dosjet e tjera nga shtegu më sipër.';
-    if (searching) {
+    if (searching || filtering || !hasFolders) {
       title = 'Nuk u gjet asnjë libër';
-      message = hasFolders ? 'Shfleto dosjet që përputhen me kërkimin më poshtë.' : 'Provo një titull më të shkurtër ose një fjalë tjetër.';
+      message = filtering ? 'Hiq një filtër për të zgjeruar rezultatet.'
+        : hasFolders ? 'Shfleto dosjet që përputhen me kërkimin më poshtë.'
+        : 'Provo një titull më të shkurtër ose një fjalë tjetër.';
     }
     $('booksEmptyTitle').textContent = title;
     $('booksEmptyMessage').textContent = message;
   }
 
-  function renderBooks(books, searching, hasFolders) {
-    $('booksResultsHeading').textContent = searching ? 'Rezultatet për libra' : state.folder ? 'Librat në këtë dosje' : 'Të gjithë librat';
+  function renderBooks(books, searching, filtering, hasFolders) {
+    $('booksResultsHeading').textContent = searching || filtering ? 'Rezultatet për libra' : state.folder ? 'Librat në këtë dosje' : 'Të gjithë librat';
     const list = $('booksList');
+    list.dataset.view = state.view;
+    document.querySelectorAll('.books-views [data-view]').forEach(button => {
+      button.setAttribute('aria-pressed', String(button.dataset.view === state.view));
+    });
     const visible = books.slice(0, state.limit);
-    list.replaceChildren(...visible.map(book => renderBook(book, searching || !state.folder)));
+    list.replaceChildren(...visible.map(book => renderBook(book, searching || filtering || !state.folder)));
     list.hidden = visible.length === 0;
     $('booksResultsCount').textContent = visible.length < books.length
       ? number.format(visible.length) + ' nga ' + countLabel(books.length, 'libër', 'libra')
       : countLabel(books.length, 'libër', 'libra');
     $('booksEmpty').hidden = books.length > 0;
-    if (!books.length) renderEmpty(searching, hasFolders);
+    if (!books.length) renderEmpty(searching, filtering, hasFolders);
     const remaining = books.length - visible.length;
     $('booksPagination').hidden = remaining === 0;
     $('booksMore').textContent = 'Shfaq edhe ' + countLabel(Math.min(remaining, PAGE_SIZE), 'libër', 'libra');
   }
 
+  function compareBooks(a, b) {
+    if (state.sort === 'oldest' || state.sort === 'newest') {
+      if (!a.year || !b.year) {
+        if (a.year !== b.year) return a.year ? -1 : 1;
+      } else {
+        const diff = Number(a.year) - Number(b.year);
+        if (diff) return state.sort === 'oldest' ? diff : -diff;
+      }
+    }
+    return (state.sort === 'desc' ? -1 : 1) * collator.compare(a.title, b.title);
+  }
+
   function render() {
+    const context = state.folder || state.collection || rootId;
+    renderFilters(context);
     const tokens = normalize(state.query).split(' ').filter(Boolean);
     const searching = tokens.length > 0;
-    const parent = state.folder || rootId;
-    const scoped = state.folder
-      ? items.filter(item => item.folderIds.includes(state.folder))
-      : items;
+    const filtering = Boolean(state.collection || state.subject || state.year);
     const match = item => tokens.every(token => item.search.includes(token));
-    const direct = (children.get(parent) || []).filter(item => item.kind !== 'book');
-    const folders = searching ? scoped.filter(item => item.kind !== 'book' && match(item)) : direct;
+    const direct = children.get(state.folder || rootId) || [];
+    let folders = direct.filter(item => item.kind !== 'book');
+    if (filtering) folders = [];
+    else if (searching) folders = items.filter(item => item.kind !== 'book' && match(item)
+      && getScope(context).folders.has(item.parent));
     folders.sort(searching || state.folder ? (a, b) => collator.compare(a.title, b.title) : compareRootFolders);
-    const sortDirection = $('booksSort').value === 'desc' ? -1 : 1;
-    const books = scoped.filter(item => item.kind === 'book'
-      && (searching ? match(item) : !state.folder || item.parent === state.folder));
-    books.sort((a, b) => sortDirection * collator.compare(a.title, b.title));
+    const candidates = state.folder && !searching && !filtering
+      ? direct.filter(item => item.kind === 'book') : getScope(state.subject || context).books;
+    const books = candidates.filter(book => match(book)
+      && (!state.year || (book.year || 'unknown') === state.year));
+    books.sort(compareBooks);
 
     breadcrumb();
     const folder = byId.get(state.folder);
@@ -262,17 +378,23 @@
     $('booksSearchKey').hidden = Boolean(state.query);
     $('booksClear').hidden = !state.query;
     $('booksControls').hidden = books.length === 0;
-    const firstSection = searching ? $('booksResults') : $('booksFolders');
+    $('booksSort').value = state.sort;
+    const firstSection = searching || filtering ? $('booksResults') : $('booksFolders');
     const nav = $('booksBreadcrumb');
     if (nav.nextElementSibling !== firstSection) nav.after(firstSection);
     renderFolders(folders, searching);
-    renderBooks(books, searching, folders.length > 0);
+    renderBooks(books, searching, filtering, folders.length > 0);
+  }
+
+  function changeOptions() {
+    state.limit = PAGE_SIZE;
+    render();
+    history.replaceState(null, '', catalogUrl(state.folder, true));
   }
 
   function changeQuery() {
     state.query = $('booksSearch').value;
-    state.limit = PAGE_SIZE;
-    render();
+    changeOptions();
   }
 
   function clearQuery() {
@@ -290,11 +412,46 @@
       }
     });
     $('booksClear').addEventListener('click', clearQuery);
-    function changeOptions() {
-      state.limit = PAGE_SIZE;
-      render();
-    }
-    $('booksSort').addEventListener('change', changeOptions);
+    $('booksSort').addEventListener('change', event => {
+      state.sort = event.target.value;
+      changeOptions();
+    });
+    $('booksFilterToggle').addEventListener('click', event => {
+      const panel = $('booksFilterPanel');
+      panel.hidden = !panel.hidden;
+      event.currentTarget.setAttribute('aria-expanded', String(!panel.hidden));
+    });
+    $('booksFilterPanel').addEventListener('change', event => {
+      const key = event.target.dataset.filterKey;
+      if (!Object.hasOwn(filterParams, key)) return;
+      state[key] = event.target.value;
+      if (key === 'collection') state.subject = '';
+      changeOptions();
+    });
+    $('booksResetFilters').addEventListener('click', () => {
+      for (const key of Object.keys(filterParams)) state[key] = '';
+      changeOptions();
+      $('booksFilterToggle').focus();
+    });
+    $('booksFilterChips').addEventListener('click', event => {
+      const button = event.target.closest('[data-clear-filter]');
+      if (!button) return;
+      const key = button.dataset.clearFilter;
+      state[key] = '';
+      if (key === 'collection') state.subject = '';
+      changeOptions();
+      $('booksFilterToggle').focus();
+    });
+    $('booksControls').addEventListener('click', event => {
+      const button = event.target.closest('[data-view]');
+      if (!button) return;
+      state.view = button.dataset.view;
+      $('booksList').dataset.view = state.view;
+      $('booksControls').querySelectorAll('[data-view]').forEach(option => {
+        option.setAttribute('aria-pressed', String(option === button));
+      });
+      history.replaceState(null, '', catalogUrl(state.folder, true));
+    });
     document.addEventListener('keydown', event => {
       if (event.key !== '/' || event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey || $('booksToolbar').hidden) return;
       if (event.target.closest?.('input, textarea, select, [contenteditable], [role="dialog"]') || document.querySelector('dialog[open], .sidebar.is-open')) return;
@@ -312,14 +469,14 @@
       if (!link || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
       event.preventDefault();
       history.pushState(null, '', link.href);
-      setFolderFromUrl();
+      readLocation();
       render();
       const heading = $('booksFolders').hidden ? $('booksResultsHeading') : $('booksFolderHeading');
       heading.focus();
     });
     window.addEventListener('popstate', () => {
       if (!byId) return;
-      setFolderFromUrl();
+      readLocation();
       render();
     });
   }
@@ -331,7 +488,7 @@
       const response = await fetch('/data/medical-books.json?v=20261127-sanity', { headers:{ Accept:'application/json' } });
       if (!response.ok) throw new Error('Katalogu nuk u ngarkua.');
       indexCatalog(await response.json());
-      setFolderFromUrl();
+      readLocation();
       render();
       $('booksTotal').textContent = number.format(items.filter(item => item.kind === 'book').length);
       $('booksFolderTotal').textContent = number.format(items.filter(item => item.kind === 'folder').length);
