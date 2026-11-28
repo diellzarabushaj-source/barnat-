@@ -13,12 +13,12 @@ const sharedLoader = read('sidebar-taxonomy-v3.js');
 // which owns the taxonomy, the worker cutover and the personal counts.
 const shared = read('sidebar-taxonomy-core-v3.js');
 const runtimeAssetManifest = JSON.parse(read('runtime-asset-manifest.json'));
-const sidebarRelease = 'sidebar-taxonomy-v9-worker-ready-20261012';
+const sidebarRelease = 'sidebar-taxonomy-v10-workspace-polish-20261128';
 for (const [page, assets] of Object.entries(runtimeAssetManifest)) {
   assert.equal(assets['sidebar-taxonomy-v3.js'], sidebarRelease, `${page}: the manifest must preserve the new shared sidebar release during build`);
   assert.ok(read(page).includes(`/sidebar-taxonomy-v3.js?v=${sidebarRelease}`), `${page}: the versioned sidebar loader is missing`);
 }
-assert.ok(sharedLoader.includes('/sidebar-taxonomy-core-v3.js?v=persistent-session-20261106'), 'The loader must use the current session-recovery core release');
+assert.ok(sharedLoader.includes('/sidebar-taxonomy-core-v3.js?v=workspace-polish-20261128'), 'The loader must use the current session-recovery core release');
 const icdSidebar = read('icd-sidebar-v3.js');
 const shell = read('tailadmin-shell.js');
 const shellCore = read('tailadmin-shell-core.js');
@@ -201,6 +201,7 @@ async function verifyDeviceReachability() {
     return node;
   };
   const host = element();
+  host.querySelector = () => null;
   const messages = [], requests = [];
   let available = false, responseStatus = 200, responseOffline = false;
   const scope = {
@@ -249,7 +250,7 @@ async function verifyDeviceReachability() {
   await settle();
   assert.equal(requests.at(-1).url, '/api/auth?offline_probe=1', 'Same-Wi-Fi recovery must bypass the offline auth lease');
   assert.equal(scope.window.DRxDeviceReachable, true);
-  assert.equal(status.textContent, 'Online');
+  assert.equal(status.textContent, 'Me internet');
   assert.equal(status.dataset.offline, 'false');
   assert.equal(latestOnline(), true, 'Recovered UI and worker must share their effective online state');
   emit('pageshow');
@@ -263,7 +264,7 @@ async function verifyDeviceReachability() {
   scope.navigator.onLine = true;
   emit('online');
   await settle();
-  assert.equal(status.textContent, 'Online', 'Explicit physical reconnect remains available');
+  assert.equal(status.textContent, 'Me internet', 'Explicit physical reconnect remains available');
   assert.equal(latestOnline(), true);
 
   scope.window.DRxDeviceReachable = false;
@@ -277,7 +278,7 @@ async function verifyDeviceReachability() {
   emit('pageshow');
   await settle();
   assert.equal(latestOnline(), true, 'A reachable but forbidden auth response confirms connectivity without authentication');
-  assert.equal(status.textContent, 'Online');
+  assert.equal(status.textContent, 'Me internet');
 }
 
 verifyDeviceReachability().then(() => {

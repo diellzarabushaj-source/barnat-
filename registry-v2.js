@@ -149,13 +149,13 @@
     appShell: $('appShell'), sidebar: $('sidebar'), sidebarBackdrop: $('sidebarBackdrop'), menuButton: $('menuButton'), sidebarClose: $('sidebarClose'),
     logoutButton: $('logoutButton'), sourceStatus: $('sourceStatus'), syncText: $('syncText'), avatarInitials: $('avatarInitials'),
     refreshButton: $('refreshButton'), openPrescriptionButton: $('openPrescriptionButton'), selectedCount: $('selectedCount'),
-    metricTotal: $('metricTotal'), metricPage: $('metricPage'), metricPageSize: $('metricPageSize'), metricSource: $('metricSource'), metricFilters: $('metricFilters'),
+    metricTotal: $('metricTotal'), metricPage: $('metricPage'), metricPageSize: $('metricPageSize'), metricFilters: $('metricFilters'),
     searchInput: $('searchInput'), filterToggle: $('filterToggle'), filterPanel: $('filterPanel'), filterCountBadge: $('filterCountBadge'),
     columnPicker: $('columnPicker'), columnPickerButton: $('columnPickerButton'), columnPickerPanel: $('columnPickerPanel'), columnPickerList: $('columnPickerList'), columnPickerSummary: $('columnPickerSummary'), columnSaveStatus: $('columnSaveStatus'), resetColumnsButton: $('resetColumnsButton'),
     formPicker: $('formPicker'), formPickerButton: $('formPickerButton'), formPickerPanel: $('formPickerPanel'), formPickerSearch: $('formPickerSearch'), formPickerList: $('formPickerList'), formPickerValue: $('formPickerValue'), formPickerHint: $('formPickerHint'), sortSelect: $('sortSelect'), clearFiltersButton: $('clearFiltersButton'),
     pageSizeSelect: $('pageSizeSelect'), resultSummary: $('resultSummary'), requestTiming: $('requestTiming'), registryRows: $('registryRows'), registryTable: $('registryTable'), tableScroll: $('tableScroll'),
     registryList: $('registryList'), viewToggle: $('viewToggle'),
-    emptyState: $('emptyState'), emptyClearButton: $('emptyClearButton'), selectPageCheckbox: $('selectPageCheckbox'), paginationSummary: $('paginationSummary'), pageIndicator: $('pageIndicator'), prevPageButton: $('prevPageButton'), nextPageButton: $('nextPageButton'),
+    emptyState: $('emptyState'), emptyClearButton: $('emptyClearButton'), emptyRetryButton: $('emptyRetryButton'), selectPageCheckbox: $('selectPageCheckbox'), paginationSummary: $('paginationSummary'), pageIndicator: $('pageIndicator'), prevPageButton: $('prevPageButton'), nextPageButton: $('nextPageButton'),
     drawerBackdrop: $('drawerBackdrop'), detailDrawer: $('detailDrawer'), drawerClose: $('drawerClose'), drawerCloseButton: $('drawerCloseButton'), drawerTitle: $('drawerTitle'), drawerBody: $('drawerBody'), drawerPrescriptionButton: $('drawerPrescriptionButton'),
     pageTitle: $('pageTitle'), pageEyebrow: $('pageEyebrow'), pageSubtitle: $('pageSubtitle'), breadcrumbCurrent: $('breadcrumbCurrent'), headingActions: $('headingActions'),
     personalWorkspace: $('personalWorkspace'), personalTitle: $('personalTitle'), personalSubtitle: $('personalSubtitle'), personalList: $('personalList'), personalEmpty: $('personalEmpty'),
@@ -1616,6 +1616,9 @@
 
   function renderRows() {
     if (!state.rows.length) {
+      el.emptyState.dataset.state = 'empty';
+      el.emptyClearButton.hidden = false;
+      el.emptyRetryButton.hidden = true;
       el.emptyState.querySelector('h2').textContent = 'Nuk u gjet asnjë bar';
       el.emptyState.querySelector('p').textContent = 'Provo një emër, substancë ose kod ATC tjetër.';
       el.registryRows.innerHTML = '';
@@ -1834,6 +1837,9 @@
   el.registryList.innerHTML = '';
   el.tableScroll.hidden = true;
   el.registryList.hidden = true;
+  el.emptyState.dataset.state = 'error';
+  el.emptyClearButton.hidden = true;
+  el.emptyRetryButton.hidden = false;
   el.emptyState.hidden = false;
   el.emptyState.querySelector('h2').textContent = 'Regjistri nuk u ngarkua';
   el.emptyState.querySelector('p').textContent = message;
@@ -1852,6 +1858,7 @@
     updatePagination();
     el.appShell.setAttribute('aria-busy', busy ? 'true' : 'false');
     el.refreshButton.disabled = busy;
+    el.emptyRetryButton.disabled = busy;
   }
 
   function findRow(key) { return state.rows.find(row => rowKey(row) === key) || state.selected.get(key) || null; }
@@ -2307,7 +2314,9 @@
     el.pageSizeSelect.addEventListener('change', () => { state.pageSize = Number(el.pageSizeSelect.value) || 50; state.page = 1; loadPage(); });
     el.clearFiltersButton.addEventListener('click', clearFilters);
     el.emptyClearButton.addEventListener('click', clearFilters);
-    el.refreshButton.addEventListener('click', () => loadPage({ preserveScroll:true, preserveRows:true, forceRefresh:true }));
+    for (const button of [el.refreshButton, el.emptyRetryButton]) {
+      button.addEventListener('click', () => loadPage({ preserveScroll:true, preserveRows:true, forceRefresh:true }));
+    }
     el.prevPageButton.addEventListener('click', () => { if (!state.loading && !el.prevPageButton.disabled && state.page > 1) { state.page -= 1; loadPage(); } });
     el.nextPageButton.addEventListener('click', () => { if (!state.loading && !el.nextPageButton.disabled) { state.page += 1; loadPage(); } });
     document.querySelectorAll('.sort-head[data-sort]').forEach(button => button.addEventListener('click', () => { const next = button.dataset.sort; if (state.sort === next) state.direction = state.direction === 'asc' ? 'desc' : 'asc'; else { state.sort = next; state.direction = 'asc'; } state.columnSort = true; state.page = 1; loadPage(); }));

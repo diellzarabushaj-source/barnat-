@@ -21,7 +21,7 @@ assert.match(html, /\/dose-core\.js\?v=drx-dose-core-v1/);
 assert.match(html, /\/dose-runtime-browser\.js\?v=drx-dose-runtime-browser-v1/);
 
 assert.match(html, /\/drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v8/);
-assert.match(html, /\/sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v9-worker-ready-20261012(?=["'&])/);
+assert.match(html, /\/sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v10-workspace-polish-20261128(?=["'&])/);
 
 const corePos=html.indexOf('/dose-core.js');
 const runtimePos=html.indexOf('/dose-runtime-browser.js');

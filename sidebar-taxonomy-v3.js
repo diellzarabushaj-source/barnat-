@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const CORE_SRC = '/sidebar-taxonomy-core-v3.js?v=persistent-session-20261106';
+  const CORE_SRC = '/sidebar-taxonomy-core-v3.js?v=workspace-polish-20261128';
   // Observe the initial reads before the asynchronously loaded core is ready.
   // Store only clinical GET responses; account/patient APIs and writes stay online.
   let firstReadOwner = '';

@@ -17,10 +17,10 @@ for (const page of pages) {
   const html = read(page);
   const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>]*\bhref=["']([^"']+)["'])[^>]*>/gi)]
     .map(match => match[1]);
-  assert.match(html, /\/sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v9-worker-ready-20261012(?=["'&])/, `${page}: shared sidebar reachability runtime v8 is missing`);
+  assert.match(html, /\/sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v10-workspace-polish-20261128(?=["'&])/, `${page}: shared sidebar reachability runtime v8 is missing`);
   assert.equal(
     styles.at(-1),
-    '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107',
+    '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-workspace-polish-20261128',
     `${page}: canonical shell v8 must remain the final stylesheet`
   );
 }

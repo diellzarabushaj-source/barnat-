@@ -95,7 +95,7 @@ a{color:inherit}
 .button-square .icon{width:16px;height:16px}
 
 /* Stripe-style summary strip */
-.metrics-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin-bottom:24px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:rgba(0,55,112,.04) 0 1px 3px;overflow:hidden}
+.metrics-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-bottom:24px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:rgba(0,55,112,.04) 0 1px 3px;overflow:hidden}
 .metric-card{min-width:0;padding:20px 22px;border:0;border-right:1px solid var(--line);border-radius:0;background:#fff}
 .metric-card:last-child{border-right:0}
 .metric-card span,.metric-card strong,.metric-card small{display:block}
