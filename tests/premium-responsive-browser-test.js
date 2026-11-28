@@ -23,6 +23,8 @@ const labFixture = {ok:true,data:{source:'QA fixture',
 const ROOT = path.resolve(__dirname, '..');
 const pages = ['index','klasifikimi','icd','medlex','librat-mjekesore','dozologjia','antibiotiket','analizat','recetat','protokollet','medical-hub','urgjencat','sistemi'];
 const output = process.env.PREMIUM_AUDIT_OUTPUT;
+const atcDrug = {id:'22222222-2222-4222-8222-222222222222',atc:'B01AA03',tradeName:'BAR TESTUES B01',activeSubstance:'Substancë testuese',strength:'5 mg',form:'Tabletë'};
+const atcOther = {id:'33333333-3333-4333-8333-333333333333',atc:'B02AA01',tradeName:'BAR TESTUES B02',activeSubstance:'Substancë testuese'};
 const rows = [{id:'11111111-1111-4111-8111-111111111111',registryNumber:1,pdid:'1001',tradeName:'PRODUKT TESTUES ME EMËR TË GJATË PËR KONTROLLIN E PAMJES',activeSubstance:'Substancë testuese',atc:'N02BE01',strength:'500 mg',form:'Tabletë',drugClass:'Produkt testues',use:'Vetëm testim i ndërfaqes',productStatus:'Gjenerik',prescriptionNotation:'Produkt testues',retailPrice:2.45}];
 (async () => {
  const server = spawn(process.execPath, ['tests/clinical-smoke-server.js'], {cwd:ROOT,env:{...process.env,PORT:'4196'},stdio:['ignore','pipe','pipe']});
@@ -50,8 +52,20 @@ const rows = [{id:'11111111-1111-4111-8111-111111111111',registryNumber:1,pdid:'
      return nativeFetch(input,init);
     };
    },emergencyFixture);
+   await context.route('**/api/dosage?view=card&id='+atcDrug.id, route => route.fulfill({json:{
+    ok:true,drugId:atcDrug.id,adult:{dose:'Të dhëna për provën e ndërfaqes',route:'Rrugë testuese'},
+    profile:{warnings:'Paralajmërim testues'},sources:['https://example.test/b01'],
+   }}));
    await context.route('**/api/drug-search**', route => {
     const url = new URL(route.request().url());
+    if (url.searchParams.get('id') === atcDrug.id) {
+     return route.fulfill({json:{ok:true,row:{...atcDrug,manufacturer:'Prodhues testues',sourceFields:[{label:'Referencë e regjistrit',value:'Tekst testues'}]}}});
+    }
+    if (url.searchParams.has('atc')) {
+     const atc = url.searchParams.get('atc');
+     const matches = [atcDrug, atcOther].filter(drug => drug.atc.startsWith(atc));
+     return route.fulfill({json:{ok:true,rows:matches,pagination:{total:matches.length,totalPages:1,hasNext:false}}});
+    }
     if (url.searchParams.get('view') === 'registry-detail') return route.fulfill({json:{ok:true,row:{...rows[0],packaging:'20 tableta',manufacturer:'Test'}}});
     const q=(url.searchParams.get('q')||'').toLowerCase();
     const found=rows.filter(row=>`${row.tradeName} ${row.activeSubstance}`.toLowerCase().includes(q));
@@ -106,6 +120,33 @@ const rows = [{id:'11111111-1111-4111-8111-111111111111',registryNumber:1,pdid:'
      await page.evaluate(() => { document.documentElement.dataset.theme = 'dark'; });
      await expect(topbar).toHaveCSS('background-color', 'rgb(33, 30, 52)');
      await page.evaluate(() => { document.documentElement.dataset.theme = 'light'; });
+    }
+    if (name === 'klasifikimi' && (width === 390 || width === 1440)) {
+     await page.goto('http://127.0.0.1:4196/klasifikimi.html#B');
+     const medicines = page.locator('#atcMedicineList');
+     await expect(medicines).toContainText(atcDrug.tradeName);
+     await expect(medicines).toContainText(atcOther.tradeName);
+     await page.locator('.category-code[data-category-code="B01"]').click();
+     await expect(page).toHaveURL(/klasifikimi\.html#B01$/);
+     await expect(medicines).toContainText(atcDrug.tradeName);
+     await expect(medicines).not.toContainText(atcOther.tradeName);
+     await page.locator('[data-subdivision-code="B01A"]').click();
+     await expect(page).toHaveURL(/klasifikimi\.html#B01A$/);
+     await expect(medicines).toContainText(atcDrug.tradeName);
+     const medicine = medicines.getByRole('button', {name:new RegExp(atcDrug.tradeName)});
+     await medicine.click();
+     const drawer = page.getByRole('dialog', {name:atcDrug.tradeName});
+     await expect(drawer).toBeVisible();
+     await expect(drawer).toContainText('Prodhues testues');
+     await expect(drawer).toContainText('Paralajmërim testues');
+     await expect(drawer.getByRole('link', {name:'https://example.test/b01'})).toBeVisible();
+     await drawer.getByText('Fushat burimore të regjistrit').click();
+     await expect(drawer.getByText('Tekst testues')).toBeVisible();
+     const box = await drawer.boundingBox();
+     assert.ok(Math.abs(box.x + box.width - width) < 2, 'Drug drawer aligns to the right of the viewport');
+     await page.keyboard.press('Escape');
+     await expect(drawer).toBeHidden();
+     await expect(medicine).toBeFocused();
     }
     if(name==='dozologjia'){
      await expect(page.locator('#pediatricCommonCount')).not.toContainText('Nuk u ngarkua');

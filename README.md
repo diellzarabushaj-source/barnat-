@@ -47,6 +47,10 @@ Rrjedha kryesore është e thjeshtë:
 4. Kërkimi, filtrimi dhe formatimi bazë i recetës punojnë lokalisht.
 5. Funksionet që kërkojnë rrjet, si sugjerimi me AI dhe Media Library, shënohen qartë.
 
+## Klasifikimi ATC
+
+Faqja `/klasifikimi.html` shfaq barnat e publikuara të grupit ose nënkategorisë së zgjedhur. Zgjidh një bar për ta hapur kartelën anash, me të dhënat e regjistrimit, dozologjinë, profilin klinik dhe burimet kur janë në dispozicion. Kodi ATC aktiv ruhet në adresën e faqes.
+
 ## Librat mjekësorë
 
 Katalogu në `/librat-mjekesore.html` ruan emrat e librave dhe hierarkinë në `data/medical-books.json`. Çdo libër në katalog ka PDF-në origjinale dhe kopertinën e krijuar nga faqja e parë në Sanity. Publiko vetëm skedarë të verifikuar dhe përjashto hyrjet pa origjinal të përdorshëm.

@@ -54,6 +54,8 @@
     atcPath:$('atcPath'), atcPathItems:$('atcPathItems'), atcPathRegistry:$('atcPathRegistry'), toast:$('toast'),
   };
 
+  const medicines = window.DRxAtcDrugs.create(fetchJson);
+
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
   const escapeHtml = value => clean(value).replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
   const normalize = value => clean(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('sq');
@@ -65,14 +67,16 @@
   const formatNumber = value => Number(value || 0).toLocaleString('sq-XK');
 
   async function fetchJson(url, options = {}, timeoutMs = 7000) {
+    const { signal, ...requestOptions } = options;
     const controller = new AbortController();
+    const requestSignal = signal ? AbortSignal.any([signal, controller.signal]) : controller.signal;
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const response = await fetch(url, {
         credentials:'same-origin',
         cache:'no-store',
-        ...options,
-        signal:controller.signal,
+        ...requestOptions,
+        signal:requestSignal,
         headers:{ Accept:'application/json', ...(options.headers || {}) },
       });
       const payload = await response.json().catch(() => ({}));
@@ -211,7 +215,7 @@
       </div>
       <div class="hero-actions">
         ${count !== null ? `<span class="hero-count">${state.counts ? formatNumber(count) : '—'} barna</span>` : ''}
-        <a class="button button-secondary" href="${registryUrl(code)}">Hap barnat ${escapeHtml(code)}</a>
+        <button class="button button-primary" type="button" data-show-medicines>Shiko barnat</button>
       </div>`;
   }
 
@@ -238,18 +242,17 @@
     return `<div class="subdivision-block" style="--group-accent:${color}">
       <div class="subdivision-heading">
         <div><span>Nënndarjet ATC</span><small>Niveli farmakologjik → niveli kimik</small></div>
-        <a class="button button-secondary" href="${registryUrl(categoryCode)}">Hap barnat ${escapeHtml(categoryCode)}</a>
       </div>
       ${branches.length ? `<div class="subdivision-tree">${branches.map(branch => {
         const level = branch.code.length === 4 ? 'Niveli 4' : 'Niveli 5';
         return `<section class="subdivision-branch ${state.subdivision === branch.code ? 'is-active' : ''}">
-          <a class="subdivision-parent" href="${registryUrl(branch.code)}" data-subdivision-code="${escapeHtml(branch.code)}">
+          <a class="subdivision-parent" href="#${escapeHtml(branch.code)}" data-subdivision-code="${escapeHtml(branch.code)}">
             <span class="subdivision-code">${escapeHtml(branch.code)}</span>
             <span class="subdivision-name"><strong>${escapeHtml(branch.name)}</strong><small>${level}${branch.children.length ? ` · ${branch.children.length} nënndarje kimike` : ''}</small></span>
             <span class="subdivision-open" aria-hidden="true">→</span>
           </a>
           ${branch.children.length ? `<div class="subdivision-children">${branch.children.map(([code,name]) => `
-            <a class="subdivision-child ${state.subdivision === code ? 'is-active' : ''}" href="${registryUrl(code)}" data-subdivision-code="${escapeHtml(code)}">
+            <a class="subdivision-child ${state.subdivision === code ? 'is-active' : ''}" href="#${escapeHtml(code)}" data-subdivision-code="${escapeHtml(code)}">
               <span class="subdivision-code">${escapeHtml(code)}</span>
               <span class="subdivision-name">${escapeHtml(name)}</span>
               <span class="subdivision-open" aria-hidden="true">→</span>
@@ -325,6 +328,7 @@
     renderHero();
     renderCategories();
     renderPath();
+    medicines.select(state.subdivision || state.category || state.group);
     el.metricGroups.textContent = String(Object.keys(groups()).length);
     const totalCategories = Object.keys(categories()).length;
     el.metricCategories.textContent = String(totalCategories);
@@ -443,6 +447,7 @@
     el.searchResultsView.hidden = true;
     if (updateHash) writeHash(code);
     renderClassification();
+    medicines.reveal();
   }
 
   function selectCategory(code, subdivision = '', { updateHash = true } = {}) {
@@ -457,12 +462,7 @@
     el.searchResultsView.hidden = true;
     if (updateHash) writeHash(subdivision || code);
     renderClassification();
-    requestAnimationFrame(() => {
-      const target = subdivision
-        ? document.querySelector(`[data-subdivision-code="${CSS.escape(subdivision)}"]`)
-        : document.querySelector(`[data-category-card="${CSS.escape(code)}"]`);
-      target?.scrollIntoView({ block:'center', behavior:'smooth' });
-    });
+    medicines.reveal();
   }
 
   function toggleCategory(code) {
@@ -525,9 +525,18 @@
   }
 
   function bindEvents() {
+    el.categoryHero.addEventListener('click', event => {
+      if (event.target.closest('[data-show-medicines]')) medicines.reveal();
+    });
     el.categoryList.addEventListener('click', event => {
       const sub = event.target.closest('[data-subdivision-code]');
-      if (sub) return;
+      if (sub) {
+        if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
+        event.preventDefault();
+        const code = sub.dataset.subdivisionCode;
+        selectCategory(code.slice(0,3), code);
+        return;
+      }
       const button = event.target.closest('[data-category-code]');
       if (button) toggleCategory(button.dataset.categoryCode);
     });
@@ -614,6 +623,7 @@
       const authPayload = await ensureAuth();
       await syncProfileChrome(authPayload);
       el.appShell.setAttribute('aria-busy', 'false');
+      medicines.start();
       void loadCounts();
     } catch (error) {
       console.error('ATC classification bootstrap failed:', error);

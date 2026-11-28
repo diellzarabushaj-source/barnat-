@@ -8,12 +8,13 @@
   <title>DRx | Klasifikimi ATC</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/classification-v2.css?v=profile-columns-v5-audit-20261009">
+  <link rel="stylesheet" href="/classification-v2.css?v=20261128-atc-barnat">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-workspace-polish-20261128">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/classification-data.js?v=atc-catalog-v2" defer></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v10-workspace-polish-20261128" data-drx-sidebar-taxonomy="1" defer></script>
-<script src="/classification-v2.js?v=20261128-session-profile" defer></script>
+  <script src="/atc-drugs.js?v=20261128-atc-barnat" defer></script>
+  <script src="/classification-v2.js?v=20261128-atc-barnat" defer></script>
 </head>
 <body>
   <div class="app-shell" id="appShell" aria-busy="true">
@@ -117,7 +118,7 @@
           <nav class="atc-path" id="atcPath" aria-label="Rruga aktive e klasifikimit ATC">
             <span class="atc-path-label">Rruga ATC</span>
             <div class="atc-path-items" id="atcPathItems"></div>
-            <a class="atc-path-registry" id="atcPathRegistry" href="/index.html">Hap barnat <span aria-hidden="true">→</span></a>
+            <a class="atc-path-registry" id="atcPathRegistry" href="/index.html">Regjistri i plotë <span aria-hidden="true">→</span></a>
           </nav>
 
           <div class="atc-toolbar">
@@ -137,14 +138,33 @@
             <section class="category-panel" aria-labelledby="categoryPanelTitle">
               <div id="categoryView">
                 <div class="category-hero" id="categoryHero"></div>
-                <div class="category-section-head">
-                  <div>
-                    <span class="panel-kicker">Kategoritë</span>
-                    <h2 id="categoryPanelTitle">Zgjidh një grup</h2>
-                  </div>
-                  <span class="panel-count" id="categoryCount">0</span>
+                <div class="atc-browse-grid">
+                  <section class="atc-medicines" id="atcMedicines" aria-labelledby="atcMedicinesTitle">
+                    <div class="atc-medicines-head">
+                      <div>
+                        <h2 id="atcMedicinesTitle" tabindex="-1">Barnat</h2>
+                        <p id="atcMedicinesStatus" role="status"></p>
+                      </div>
+                    </div>
+                    <ul class="atc-medicine-list" id="atcMedicineList" aria-labelledby="atcMedicinesTitle"></ul>
+                    <button class="button button-secondary atc-medicine-retry" id="atcMedicineRetry" type="button" hidden>Provo përsëri</button>
+                    <nav class="atc-medicine-pagination" aria-label="Faqet e barnave" id="atcMedicinePagination" hidden>
+                      <button class="button button-secondary" id="atcMedicinePrevious" type="button">Para</button>
+                      <span id="atcMedicinePage"></span>
+                      <button class="button button-secondary" id="atcMedicineNext" type="button">Tjetra</button>
+                    </nav>
+                  </section>
+                  <section class="atc-category-browser" aria-labelledby="categoryPanelTitle">
+                    <div class="category-section-head">
+                      <div>
+                        <span class="panel-kicker">Kategoritë</span>
+                        <h2 id="categoryPanelTitle">Zgjidh një grup</h2>
+                      </div>
+                      <span class="panel-count" id="categoryCount">0</span>
+                    </div>
+                    <div class="category-list" id="categoryList"></div>
+                  </section>
                 </div>
-                <div class="category-list" id="categoryList"></div>
               </div>
 
               <div class="search-results-view" id="searchResultsView" hidden>
@@ -163,6 +183,16 @@
       </section>
     </main>
   </div>
+
+  <dialog class="atc-drug-drawer" id="atcDrugDrawer" aria-labelledby="atcDrugTitle">
+    <div class="atc-drug-drawer-head">
+      <div><span>Kartela e barit</span><h2 id="atcDrugTitle">Detajet</h2></div>
+      <form method="dialog">
+        <button class="button button-secondary" type="submit" autofocus>Mbyll</button>
+      </form>
+    </div>
+    <div class="atc-drug-drawer-body" id="atcDrugBody"></div>
+  </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 </body>
