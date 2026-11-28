@@ -12,7 +12,7 @@
   <script src="/theme-preload.js?v=1.8.0"></script>
   <link rel="stylesheet" href="/protokollet-v2.css?v=2-audit-20261009">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107">
-  <link rel="stylesheet" href="/librat-mjekesore.css?v=20261128-folder-scope">
+  <link rel="stylesheet" href="/librat-mjekesore.css?v=20261128-folder-aurora">
   <script src="/auth-client.js?v=20261108-remembered-device-v3" defer></script>
   <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
   <script src="/librat-mjekesore.js?v=20261128-folder-scope" defer></script>
@@ -157,7 +157,13 @@
           <section id="booksFolders" class="books-section books-folder-section" aria-labelledby="booksFolderHeading" hidden>
             <div class="books-section-heading">
               <h2 id="booksFolderHeading" tabindex="-1">Dosjet</h2>
-              <span id="booksFolderCount" class="books-folder-count"></span>
+              <div class="books-folder-actions">
+                <label class="books-folder-motion">
+                  <input id="booksFolderMotion" type="checkbox" checked>
+                  <span>Animacioni</span>
+                </label>
+                <span id="booksFolderCount" class="books-folder-count"></span>
+              </div>
             </div>
             <ul class="books-folders" id="booksFolderGrid"></ul>
           </section>

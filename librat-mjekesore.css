@@ -335,33 +335,83 @@ html.drx-unified-sidebar .books-page :is(a, button, select, input):focus-visible
 .books-list { list-style: none; margin: 0; padding: 0; }
 .books-folder-section {
   --books-foreground: #faf7ff;
-  --books-muted: #d1c5eb;
-  --books-primary: #e2ceff;
-  --books-card: #2c2250;
-  --books-hover: #392965;
-  --books-border: #574674;
+  --books-muted: #d9ceef;
+  --books-primary: #e4d9ff;
+  --books-card: rgb(43 32 74 / .9);
+  --books-hover: #3d2d65;
+  --books-border: #655382;
   color-scheme: dark;
   position: relative;
   isolation: isolate;
   overflow: clip;
   padding: clamp(12px, 2cqi, 22px);
-  border: 1px solid #44345f;
+  border: 1px solid #493861;
   border-radius: 18px;
-  background: #211838;
+  background: linear-gradient(116deg, #20162f, #302048 56%, #201832);
   box-shadow: 0 8px 24px #24174423;
 }
-.books-folder-section::before {
+.books-folder-section::before,
+.books-folder-section::after {
   content: "";
   position: absolute;
   z-index: -1;
-  inset: -25% -12%;
-  background: radial-gradient(ellipse at 82% 14%, #653998a6, transparent 57%);
+  inset: -42% -22%;
   pointer-events: none;
-  animation: books-folder-glow .7s ease-out both;
 }
-@keyframes books-folder-glow {
-  from { opacity: .42; transform: translate3d(-4%, 3%, 0); }
-  to { opacity: 1; transform: translate3d(0, 0, 0); }
+.books-folder-section::before {
+  background:
+    radial-gradient(ellipse at 68% 37%, #a176e680, transparent 51%),
+    linear-gradient(124deg, transparent 28%, #8057bd38 43%, #ba86f355 49%, transparent 66%);
+  transform: translate3d(-7%, -6%, 0) rotate(-7deg);
+}
+.books-folder-section::after {
+  background: radial-gradient(ellipse at 27% 71%, #6946a473, transparent 48%);
+  opacity: .8;
+  transform: translate3d(6%, 8%, 0);
+}
+.books-folder-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+}
+.books-folder-motion { display: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .books-folder-section::before { animation: books-folder-aurora 14s ease-in-out infinite alternate; }
+  .books-folder-section::after { animation: books-folder-ambient 19s ease-in-out infinite alternate; }
+  .books-folder-section:has(#booksFolderMotion:not(:checked))::before,
+  .books-folder-section:has(#booksFolderMotion:not(:checked))::after { animation-play-state: paused; }
+  .books-folder-motion {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 32px;
+    padding: 4px 8px;
+    border: 1px solid var(--books-border);
+    border-radius: 7px;
+    background: var(--books-card);
+    color: var(--books-muted);
+    font-size: .8125rem;
+    cursor: pointer;
+  }
+  .books-folder-motion:hover { background: var(--books-hover); }
+  .books-folder-motion input {
+    appearance: auto;
+    width: .875rem;
+    height: .875rem;
+    margin: 0;
+    accent-color: #bb9ae9;
+    cursor: pointer;
+  }
+}
+@keyframes books-folder-aurora {
+  from { transform: translate3d(-7%, -6%, 0) rotate(-7deg); }
+  to { transform: translate3d(9%, 8%, 0) rotate(8deg); }
+}
+@keyframes books-folder-ambient {
+  from { opacity: .8; transform: translate3d(6%, 8%, 0); }
+  to { opacity: .55; transform: translate3d(-10%, -6%, 0); }
 }
 .books-folder-section .books-section-heading {
   margin-block-end: 13px;
@@ -646,7 +696,6 @@ html.drx-unified-sidebar .books-book-row:focus-visible { outline-offset: -3px !i
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .books-folder-section::before { animation: none; }
   .books-folder-card,
   .books-folder-arrow,
   .books-book-row { transition: none; }
