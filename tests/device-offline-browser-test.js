@@ -83,7 +83,7 @@ const server=http.createServer(async(req,res)=>{
   await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
   await expect(page.locator('html')).toHaveAttribute('data-drx-worker','canonical');
   await expect.poll(()=>page.evaluate(async()=>{const c=await caches.open('medindex-private-device-v1');return(await c.keys()).some(k=>k.url.includes('view=registry-page'));}),{timeout:10000}).toBe(true);
-  await expect.poll(()=>page.evaluate(async()=>{const cache=await caches.open('medindex-static-device-v1');return !!await cache.match(location.origin+'/sidebar-taxonomy-core-v3.js?v=persistent-session-20261106');}),{timeout:10000}).toBe(true).catch(async error=>{console.log(JSON.stringify(await page.evaluate(async()=>await Promise.all((await caches.keys()).map(async name=>({name,keys:(await(await caches.open(name)).keys()).map(k=>k.url)})))),null,2));throw error;});
+  await expect.poll(()=>page.evaluate(async()=>{const cache=await caches.open('medindex-static-device-v1');return !!await cache.match(location.origin+'/sidebar-taxonomy-core-v3.js?v=workspace-polish-20261128');}),{timeout:10000}).toBe(true).catch(async error=>{console.log(JSON.stringify(await page.evaluate(async()=>await Promise.all((await caches.keys()).map(async name=>({name,keys:(await(await caches.open(name)).keys()).map(k=>k.url)})))),null,2));throw error;});
   const query=await page.evaluate(async()=>{const c=await caches.open('medindex-private-device-v1');return(await c.keys()).find(k=>k.url.includes('view=registry-page')).url;});
   const registryReads=()=>[...reads].filter(([key])=>key.startsWith('/api/drug-search?')&&key.includes('view=registry-page')).reduce((sum,[,value])=>sum+value,0);
   const before=registryReads();
@@ -122,11 +122,16 @@ const server=http.createServer(async(req,res)=>{
   });
   await expect(page.locator('meta[name="test-workspace-release"]')).toHaveAttribute('content','current');
   await expect(page.locator('#drxDeviceStatus')).toContainText('Pa internet');
-  await expect(page.locator('#syncText')).toContainText('Kopje lokale');
+  await expect(page.locator('#syncText')).toBeHidden();
   const detail=await page.evaluate(async id=>{const r=await fetch('/api/drug-search?view=registry-detail&id='+id);return{status:r.status,cache:r.headers.get('X-MedIndex-Cache'),row:(await r.json()).row};},row.id);
   assert.equal(detail.status,200);assert.equal(detail.row.id,row.id);assert.equal(detail.cache,'query-local-hit');
   await page.locator('#registryList [data-open-row]').first().click();await expect(page.locator('#detailDrawer')).toContainText(row.tradeName);await page.locator('#drawerClose').click();
-  await page.locator('#drxDeviceStatus').click();await expect(page.locator('#drxDevicePanel')).toBeVisible();await page.keyboard.press('Escape');
+  await page.locator('#drxDeviceStatus').click();
+  await expect(page.locator('#drxDevicePanel')).toBeVisible();
+  await expect(page.locator('#drxDevicePanel #syncText')).toBeVisible();
+  await expect(page.locator('#drxDevicePanel #syncText')).toContainText('Kopje lokale');
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#drxDeviceStatus')).toBeFocused();
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
   const savedResponse=await page.evaluate(async url=>(await fetch(url)).status,query);assert.equal(savedResponse,200);
   const unknown=await page.evaluate(async()=>{const r=await fetch('/api/drug-search?view=registry-detail&id=never-downloaded');return{status:r.status,body:await r.json()};});

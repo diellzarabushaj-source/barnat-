@@ -3,6 +3,9 @@
 The canonical shared sidebar initializes the phone navigation, storage status,
 manifest and install icons. `sw.js` owns caching; no new UI/runtime dependency is
 loaded. Clinical values, warnings and calculations are unchanged.
+The shared top bar shows the current workspace, one storage button and the
+account. Open the storage button for the current page’s source, the saved date
+and any available offline update action.
 
 ## What is saved
 
@@ -54,7 +57,7 @@ Playwright WebKit offline emulation rejects even literal worker responses
 origin is unreachable in both engines, without bypassing application behavior.
 The storage status also detects a failed connection while Wi-Fi remains on.
 
-`pnpm test:premium-ui` checks 90 route/viewport cases from 320–1920 px, mobile
+`pnpm test:premium-ui` checks 102 route/viewport cases from 320–1920 px, mobile
 navigation, touch targets, long medicine names, drawers, keyboard focus, search
 and public pages. Raster app icons are deterministic exports of the existing
 approved DRx mark, with separate any/maskable assets and an Apple touch icon.

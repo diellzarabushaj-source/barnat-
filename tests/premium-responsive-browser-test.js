@@ -21,7 +21,7 @@ const labFixture = {ok:true,data:{source:'QA fixture',
  indications:[{id:'qa-diagnosis',slug:'qa-diagnosis',title:'Diagnozë testuese me emër të gjatë për kontrollin e pamjes',summary:'Përshkrim i gjatë testues që duhet të lexohet i plotë në telefon.',icdCodes:[],tests:[],catalogGaps:[]}],
 }};
 const ROOT = path.resolve(__dirname, '..');
-const pages = ['index','klasifikimi','icd','dozologjia','antibiotiket','analizat','recetat','protokollet','medical-hub','urgjencat','sistemi','librat-mjekesore'];
+const pages = ['index','klasifikimi','icd','medlex','librat-mjekesore','dozologjia','antibiotiket','analizat','recetat','protokollet','medical-hub','urgjencat','sistemi'];
 const output = process.env.PREMIUM_AUDIT_OUTPUT;
 const rows = [{id:'11111111-1111-4111-8111-111111111111',registryNumber:1,pdid:'1001',tradeName:'PRODUKT TESTUES ME EMËR TË GJATË PËR KONTROLLIN E PAMJES',activeSubstance:'Substancë testuese',atc:'N02BE01',strength:'500 mg',form:'Tabletë',drugClass:'Produkt testues',use:'Vetëm testim i ndërfaqes',productStatus:'Gjenerik',prescriptionNotation:'Produkt testues',retailPrice:2.45}];
 (async () => {
@@ -84,6 +84,28 @@ const rows = [{id:'11111111-1111-4111-8111-111111111111',registryNumber:1,pdid:'
      });
      assert.ok(position.scroll > 100, 'ICD-10 document has scrolled');
      assert.ok(Math.abs(position.top) <= 1, 'ICD-10 top bar stays at the viewport edge');
+    }
+    const topbar = page.locator('.main-shell > .topbar');
+    const status = topbar.locator('#drxDeviceStatus');
+    const profile = topbar.locator('#profileButton');
+    await expect(topbar.locator('.breadcrumbs strong')).toBeVisible();
+    await expect(status).toBeVisible();
+    await expect(profile).toBeVisible();
+    await expect(topbar.locator('.sync-pill, #miOfflineStatus')).toHaveCount(0);
+    assert.equal((await topbar.boundingBox()).height, 58, `${name}/${width}: consistent top bar height`);
+    assert.equal((await status.boundingBox()).height, (await profile.boundingBox()).height, `${name}/${width}: matching header controls`);
+    if (width === 320 || width === 1440) {
+     const panel = page.locator('#drxDevicePanel');
+     await status.click();
+     await expect(panel).toBeVisible();
+     await expect(panel.locator('[data-device-close]')).toBeFocused();
+     if (await page.locator('#syncText').count()) await expect(panel.locator('#syncText')).toBeVisible();
+     await page.keyboard.press('Escape');
+     await expect(panel).toBeHidden();
+     await expect(status).toBeFocused();
+     await page.evaluate(() => { document.documentElement.dataset.theme = 'dark'; });
+     await expect(topbar).toHaveCSS('background-color', 'rgb(33, 30, 52)');
+     await page.evaluate(() => { document.documentElement.dataset.theme = 'light'; });
     }
     if(name==='dozologjia'){
      await expect(page.locator('#pediatricCommonCount')).not.toContainText('Nuk u ngarkua');
@@ -152,6 +174,23 @@ const rows = [{id:'11111111-1111-4111-8111-111111111111',registryNumber:1,pdid:'
      await page.locator('#searchInput').fill('');
      await page.locator('#searchInput').blur();
      await expect(page.locator('#registryRows')).toContainText('PRODUKT TESTUES');
+     if (width === 390) {
+      const query = /\/api\/drug-search\?.*\bq=testues\b/;
+      let failOnce = true;
+      await page.route(query, route => {
+       if (!failOnce) return route.fallback();
+       failOnce = false;
+       return route.fulfill({status:503,json:{error:'Gabim i përkohshëm i lidhjes.'}});
+      });
+      const input = page.locator('#searchInput');
+      await input.fill('testues');
+      const retry = page.getByRole('button', {name:'Provo përsëri',exact:true});
+      await expect(retry).toBeVisible();
+      await expect(page.locator('#emptyClearButton')).toBeHidden();
+      await retry.click();
+      await expect(input).toHaveValue('testues');
+      await expect(page.locator('#registryRows')).toContainText('PRODUKT TESTUES');
+     }
     }
     if(name==='protokollet'&&width<761){
       // V3 has a compact 3-stat clinical hero and system-chip navigation,

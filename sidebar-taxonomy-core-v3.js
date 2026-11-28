@@ -824,27 +824,69 @@
 
   function initDeviceExperience() {
     const host = document.querySelector('.topbar-actions');
-    if (!host || document.getElementById('drxDeviceStatus')) return;
+    const main = document.querySelector('.main-shell');
+    if (!host || !main || document.getElementById('drxDeviceStatus')) return;
     const status = document.createElement('button');
     status.id = 'drxDeviceStatus'; status.type = 'button'; status.className = 'drx-device-status';
     const panel = document.createElement('section');
     panel.id = 'drxDevicePanel'; panel.className = 'drx-device-panel'; panel.hidden = true;
-    panel.innerHTML = '<h2>Ruajtja në këtë pajisje</h2><p data-device-copy>Faqet, rezultatet dhe detajet që hap me internet ruhen automatikisht. Mund t’i hapësh përsëri pa i shkarkuar.</p><p data-device-count></p><p class="drx-device-note">Kërkimet e reja dhe llogaritjet në server kërkojnë lidhje. Për hapje të re pa internet, hyrja duhet të jetë verifikuar gjatë 8 orëve të fundit. Kopja lokale tregon kohën e ruajtjes; për vendime klinike kontrollo burimin dhe përditësimin.</p><button type="button" data-device-close>Mbyll</button>';
-    host.prepend(status); document.querySelector('.main-shell').append(panel);
-    status.setAttribute('aria-controls', panel.id); status.setAttribute('aria-expanded','false');
+    panel.setAttribute('aria-labelledby', 'drxDeviceTitle');
+    panel.innerHTML = `<h2 id="drxDeviceTitle">Ruajtja në këtë pajisje</h2>
+      <p data-device-count></p>
+      <dl class="drx-device-source" data-device-source hidden>
+        <dt>Burimi i kësaj faqeje</dt><dd></dd>
+      </dl>
+      <div data-device-action></div>
+      <p class="drx-device-note">Mund t’i rihapësh faqet dhe rezultatet e ruajtura pas një hyrjeje të verifikuar gjatë 8 orëve të fundit. Kërkimet e reja dhe llogaritjet në server kërkojnë internet. Për vendime klinike kontrollo burimin dhe kohën e përditësimit.</p>
+      <button type="button" class="drx-device-close" data-device-close>Mbyll</button>`;
+    host.prepend(status);
+    main.append(panel);
+    status.setAttribute('aria-controls', panel.id);
+    status.setAttribute('aria-expanded', 'false');
+
+    // Workspaces keep updating the same source text while the panel is closed.
+    const sourcePill = host.querySelector('.sync-pill');
+    const sourceText = sourcePill?.querySelector('#syncText');
+    if (sourceText) {
+      const source = panel.querySelector('[data-device-source]');
+      source.querySelector('dd').append(sourceText);
+      sourcePill.remove();
+      source.hidden = false;
+    }
+
+    const offlineAction = panel.querySelector('[data-device-action]');
+    function placeOfflineAction() {
+      const action = document.getElementById('miOfflineStatus');
+      if (action && action.parentElement !== offlineAction) offlineAction.append(action);
+    }
+    placeOfflineAction();
+    window.addEventListener('medindex:offline-status', placeOfflineAction);
+
+    const stateLabels = { offline:'Pa internet', limited:'Hapësira plot', saving:'Po ruhet', saved:'Ruajtur', online:'Me internet' };
+    const countCopy = panel.querySelector('[data-device-count]');
+    const closeButton = panel.querySelector('[data-device-close]');
     let count = 0, pages = 0, savedAt = 0, preparing = false, storageFull = false;
     let reachable = window.DRxDeviceReachable !== false;
     function render() {
       const online = navigator.onLine && reachable;
       navigator.serviceWorker?.controller?.postMessage({type:'SET_DEVICE_ONLINE',online});
-      status.textContent = !online ? 'Pa internet' : storageFull ? 'Hapësira plot' : preparing ? 'Po ruhet' : count ? 'Ruajtur' : 'Online';
+      const state = !online ? 'offline' : storageFull ? 'limited' : preparing ? 'saving' : (count || pages) ? 'saved' : 'online';
+      status.textContent = stateLabels[state];
+      status.dataset.state = state;
       status.dataset.offline = String(!online);
       status.setAttribute('aria-label', status.textContent + ' · Hap statusin e ruajtjes');
-      panel.querySelector('[data-device-count]').textContent = count ? `${count} përgjigje dhe ${pages} faqe të ruajtura · ${savedAt ? new Date(savedAt).toLocaleString('sq-AL') : ''}` : 'Të dhënat ruhen pasi hapen me internet.';
+      if (count || pages) {
+        const total = `${count} përgjigje dhe ${pages} faqe të ruajtura`;
+        countCopy.textContent = savedAt ? `${total} · ${new Date(savedAt).toLocaleString('sq-AL')}` : total;
+      } else countCopy.textContent = 'Faqet dhe rezultatet ruhen pasi i hap me internet.';
     }
     function close() { panel.hidden = true; status.setAttribute('aria-expanded','false'); status.focus(); }
-    status.addEventListener('click', () => { panel.hidden = !panel.hidden; status.setAttribute('aria-expanded', String(!panel.hidden)); if (!panel.hidden) panel.querySelector('button').focus(); });
-    panel.querySelector('button').addEventListener('click', close);
+    status.addEventListener('click', () => {
+      panel.hidden = !panel.hidden;
+      status.setAttribute('aria-expanded', String(!panel.hidden));
+      if (!panel.hidden) closeButton.focus();
+    });
+    closeButton.addEventListener('click', close);
     document.addEventListener('keydown', event => { if (event.key === 'Escape' && !panel.hidden) close(); });
     document.addEventListener('pointerdown', event => { if (!panel.hidden && !panel.contains(event.target) && !status.contains(event.target)) { panel.hidden = true; status.setAttribute('aria-expanded','false'); } });
     window.addEventListener('online', () => { reachable = true; render(); }); window.addEventListener('offline', render);

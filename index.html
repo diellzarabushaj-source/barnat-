@@ -8,24 +8,24 @@
   <title>DRx | Regjistri i barnave</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/registry-v2.css?v=registry-smooth-20261103">
+  <link rel="stylesheet" href="/registry-v2.css?v=20261128-registry-polish">
   <link rel="stylesheet" href="/registry-atc-filter.css?v=20261006">
   <link rel="stylesheet" href="/registry-column-filter.css?v=registry-smooth-20261103">
   <link rel="stylesheet" href="/luna-search.css?v=20261108-luna-beta">
   <link rel="stylesheet" href="/registry-phone-compact-table.css?v=20261109-mobile-compact-v2">
-  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-sidebar-polish-20261107">
+  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v8-workspace-polish-20261128">
   <script type="module" src="/drx-runtime-telemetry.js?v=20261009-rum-v1"></script>
   <script src="/dose-core.js?v=drx-dose-core-v1" defer></script>
   <script src="/drx-modal-focus.js?v=p1-20261008" defer></script>
   <script src="/dose-runtime-browser.js?v=drx-dose-runtime-browser-v1" defer></script>
-  <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v9-worker-ready-20261012" data-drx-sidebar-taxonomy="1" defer></script>
+  <script src="/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v10-workspace-polish-20261128" data-drx-sidebar-taxonomy="1" defer></script>
   <script src="/classification-data.js?v=20261006" defer></script>
   <script src="/registry-atc-filter.js?v=20261006" defer></script>
   <script src="/registry-substance-data.js?v=20261006" defer></script>
   <script src="/registry-substance-normalization.js?v=20261006" defer></script>
   <script src="/registry-column-model.js?v=20261006-substances" defer></script>
   <script src="/registry-column-filter.js?v=registry-smooth-20261103" defer></script>
-<script src="/registry-v2.js?v=registry-smooth-20261103&amp;registryUpdates=20261005" defer></script>
+<script src="/registry-v2.js?v=20261128-registry-polish&amp;registryUpdates=20261005" defer></script>
   <script src="/luna-search.js?v=20261108-luna-beta" defer></script>
 </head>
 <body>
@@ -185,7 +185,6 @@
         <div class="metrics-row" aria-label="Përmbledhje e regjistrit">
           <article class="metric-card"><span>Rezultate</span><strong id="metricTotal">—</strong><small id="metricScope">Në regjistrin aktiv</small></article>
           <article class="metric-card"><span>Faqja</span><strong id="metricPage">1</strong><small id="metricPageSize">50 për faqe</small></article>
-          <article class="metric-card"><span>Burimi</span><strong>Supabase</strong><small id="metricSource">Server-side</small></article>
           <article class="metric-card"><span>Filtra aktivë</span><strong id="metricFilters">0</strong><small>Kërkim, ATC, formë</small></article>
         </div>
 
@@ -320,6 +319,7 @@
             <h2>Nuk u gjet asnjë bar</h2>
             <p>Provo një emër, substancë ose kod ATC tjetër.</p>
             <button class="button button-secondary" id="emptyClearButton" type="button">Pastro kërkimin</button>
+            <button class="button button-primary" id="emptyRetryButton" type="button" hidden>Provo përsëri</button>
           </div>
 
           <div class="pagination-bar">
