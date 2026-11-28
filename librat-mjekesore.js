@@ -14,13 +14,13 @@
     ['Viti i parë', 'study'],
     ['Viti i dytë', 'study'],
     ['Viti i tretë', 'study'],
-    ['Praktika klinike', 'stethoscope', 'teal'],
-    ['Diskutime klinike dhe referenca për repartin (SGD, CPC, CCP)', 'clinical', 'blue'],
-    ['Reanimimi (BLS, ACLS dhe PALS)', 'activity', 'rose'],
-    ['Provimet përmbledhëse dhe të licencimit (PLE, Revalida)', 'clipboard', 'amber'],
-    ['Teknika provimi dhe pyetje me alternativa', 'layers', 'amber'],
+    ['Praktika klinike', 'stethoscope'],
+    ['Diskutime klinike dhe referenca për repartin (SGD, CPC, CCP)', 'clinical'],
+    ['Reanimimi (BLS, ACLS dhe PALS)', 'activity'],
+    ['Provimet përmbledhëse dhe të licencimit (PLE, Revalida)', 'clipboard'],
+    ['Teknika provimi dhe pyetje me alternativa', 'layers'],
   ];
-  const folderStyles = new Map(rootFolders.map(([title, symbol, tone], order) => [title, { symbol, tone, order }]));
+  const folderStyles = new Map(rootFolders.map(([title, symbol], order) => [title, { symbol, order }]));
   const iconPaths = {
     filters:'<path d="M4 7h16M7 12h10m-7 5h4"/><circle cx="8" cy="7" r="1.5" fill="currentColor"/><circle cx="15" cy="12" r="1.5" fill="currentColor"/>',
     grid:'<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>',
@@ -68,9 +68,9 @@
   function catalogUrl(folder, browsing) {
     const url = new URL(location.href);
     const settings = {
-      dosja:folder, q:browsing ? state.query.trim() : '',
+      dosja:folder, q:state.query.trim(),
       koleksioni:browsing ? state.collection : '', lenda:browsing ? state.subject : '',
-      viti:browsing ? state.year : '', renditja:state.sort === 'asc' ? '' : state.sort,
+      viti:state.year, renditja:state.sort === 'asc' ? '' : state.sort,
       pamja:state.view === 'grid' ? '' : state.view,
     };
     for (const [key, value] of Object.entries(settings)) {
@@ -93,7 +93,8 @@
   function readLocation() {
     const params = new URLSearchParams(location.search);
     const id = params.get('dosja');
-    state.folder = byId.get(id)?.kind === 'folder' ? id : null;
+    const kind = byId.get(id)?.kind;
+    state.folder = kind === 'folder' || kind === 'folder-link' ? id : null;
     state.query = params.get('q') || '';
     const collection = params.get(filterParams.collection);
     state.collection = !state.folder && collections.some(folder => folder.id === collection) ? collection : '';
@@ -137,7 +138,6 @@
       if (!children.has(entry.parent)) children.set(entry.parent, []);
       children.get(entry.parent).push(entry);
       const trail = folderTrail(entry.parent);
-      entry.folderIds = trail.map(folder => folder.id);
       entry.folderLabel = trail.map(folder => folder.title).join(' / ');
       entry.search = normalize(entry.title + ' ' + entry.folderLabel);
       if (entry.kind === 'book') {
@@ -150,7 +150,12 @@
     fillSelect('booksYear', 'Të gjitha vitet', [...years.map(year => [year, year]), ['unknown', 'Pa vit në titull']]);
   }
 
+  function folderTarget(id) {
+    return byId.get(id)?.targetFolder || id;
+  }
+
   function getScope(id) {
+    id = folderTarget(id);
     if (scopes.has(id)) return scopes.get(id);
     const folders = new Set();
     const books = new Set();
@@ -244,17 +249,15 @@
   }
 
   function renderFolder(folder) {
-    const targetId = folder.targetFolder || folder.id;
-    const card = folderAnchor(targetId, 'books-folder-card');
+    const card = folderAnchor(folder.id, 'books-folder-card');
     const style = folderStyles.get(folder.title);
     card.dataset.slot = 'card';
-    if (style?.tone) card.dataset.tone = style.tone;
 
     const label = create('div', 'books-folder-label');
     label.dataset.slot = 'card-header';
     const title = create('strong', '', folder.title);
     title.dataset.slot = 'card-title';
-    const count = getScope(targetId).books.length;
+    const count = getScope(folder.id).books.length;
     const description = create('span', '', countLabel(count, 'libër', 'libra'));
     description.dataset.slot = 'card-description';
     label.append(title, description);
@@ -300,35 +303,33 @@
     return aOrder - bOrder || collator.compare(a.title, b.title);
   }
 
-  function renderFolders(folders, searching) {
+  function renderFolders(folders, searchingFolders) {
     $('booksFolders').hidden = folders.length === 0;
-    $('booksFolderHeading').textContent = searching ? 'Dosjet e gjetura' : state.folder ? 'Nëndosjet' : 'Dosjet';
+    $('booksFolderHeading').textContent = searchingFolders ? 'Dosjet e gjetura' : state.folder ? 'Nëndosjet' : 'Dosjet';
     $('booksFolderCount').textContent = countLabel(folders.length, 'dosje', 'dosje');
     $('booksFolderGrid').replaceChildren(...folders.map(renderFolder));
   }
 
   function renderEmpty(searching, filtering, hasFolders) {
-    let title = hasFolders ? 'Librat janë në nëndosje' : 'Kjo dosje nuk ka libra';
-    let message = hasFolders ? 'Zgjidh një nëndosje më sipër.' : 'Mund të kthehesh te dosjet e tjera nga shtegu më sipër.';
-    if (searching || filtering || !hasFolders) {
-      title = 'Nuk u gjet asnjë libër';
-      message = filtering ? 'Hiq një filtër për të zgjeruar rezultatet.'
-        : hasFolders ? 'Shfleto dosjet që përputhen me kërkimin më poshtë.'
-        : 'Provo një titull më të shkurtër ose një fjalë tjetër.';
-    }
-    $('booksEmptyTitle').textContent = title;
-    $('booksEmptyMessage').textContent = message;
+    $('booksEmptyTitle').textContent = 'Nuk u gjet asnjë libër';
+    $('booksEmptyMessage').textContent = filtering ? 'Hiq një filtër për të zgjeruar rezultatet.'
+      : searching && hasFolders ? 'Kontrollo edhe dosjet që përputhen me kërkimin.'
+      : searching ? 'Provo një titull më të shkurtër ose një fjalë tjetër.'
+      : 'Shfleto dosjet e tjera nga shtegu më sipër.';
   }
 
   function renderBooks(books, searching, filtering, hasFolders) {
-    $('booksResultsHeading').textContent = searching || filtering ? 'Rezultatet për libra' : state.folder ? 'Librat në këtë dosje' : 'Të gjithë librat';
+    const scope = byId.get(state.subject || state.folder || state.collection);
+    const heading = searching || state.year ? 'Rezultatet' : 'Të gjithë librat';
+    $('booksResultsHeading').textContent = scope ? heading + ' · ' + scope.title : heading;
     const list = $('booksList');
     list.dataset.view = state.view;
     document.querySelectorAll('.books-views [data-view]').forEach(button => {
       button.setAttribute('aria-pressed', String(button.dataset.view === state.view));
     });
     const visible = books.slice(0, state.limit);
-    list.replaceChildren(...visible.map(book => renderBook(book, searching || filtering || !state.folder)));
+    const currentFolder = folderTarget(state.folder);
+    list.replaceChildren(...visible.map(book => renderBook(book, book.parent !== currentFolder)));
     list.hidden = visible.length === 0;
     $('booksResultsCount').textContent = visible.length < books.length
       ? number.format(visible.length) + ' nga ' + countLabel(books.length, 'libër', 'libra')
@@ -359,14 +360,13 @@
     const searching = tokens.length > 0;
     const filtering = Boolean(state.collection || state.subject || state.year);
     const match = item => tokens.every(token => item.search.includes(token));
-    const direct = children.get(state.folder || rootId) || [];
+    const direct = children.get(folderTarget(state.folder || rootId)) || [];
+    const searchingFolders = searching && !state.folder && !filtering;
     let folders = direct.filter(item => item.kind !== 'book');
-    if (filtering) folders = [];
-    else if (searching) folders = items.filter(item => item.kind !== 'book' && match(item)
-      && getScope(context).folders.has(item.parent));
-    folders.sort(searching || state.folder ? (a, b) => collator.compare(a.title, b.title) : compareRootFolders);
-    const candidates = state.folder && !searching && !filtering
-      ? direct.filter(item => item.kind === 'book') : getScope(state.subject || context).books;
+    if (!state.folder && filtering) folders = [];
+    else if (searchingFolders) folders = items.filter(item => item.kind !== 'book' && match(item));
+    folders.sort(searchingFolders || state.folder ? (a, b) => collator.compare(a.title, b.title) : compareRootFolders);
+    const candidates = getScope(state.subject || context).books;
     const books = candidates.filter(book => match(book)
       && (!state.year || (book.year || 'unknown') === state.year));
     books.sort(compareBooks);
@@ -382,7 +382,7 @@
     const firstSection = searching || filtering ? $('booksResults') : $('booksFolders');
     const nav = $('booksBreadcrumb');
     if (nav.nextElementSibling !== firstSection) nav.after(firstSection);
-    renderFolders(folders, searching);
+    renderFolders(folders, searchingFolders);
     renderBooks(books, searching, filtering, folders.length > 0);
   }
 
@@ -471,7 +471,8 @@
       history.pushState(null, '', link.href);
       readLocation();
       render();
-      const heading = $('booksFolders').hidden ? $('booksResultsHeading') : $('booksFolderHeading');
+      const heading = $('booksFolders').hidden || $('booksBreadcrumb').nextElementSibling === $('booksResults')
+        ? $('booksResultsHeading') : $('booksFolderHeading');
       heading.focus();
     });
     window.addEventListener('popstate', () => {
