@@ -369,41 +369,9 @@ html.drx-unified-sidebar .books-page :is(a, button, select, input):focus-visible
   opacity: .8;
   transform: translate3d(6%, 8%, 0);
 }
-.books-folder-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 6px;
-}
-.books-folder-motion { display: none; }
 @media (prefers-reduced-motion: no-preference) {
   .books-folder-section::before { animation: books-folder-aurora 14s ease-in-out infinite alternate; }
   .books-folder-section::after { animation: books-folder-ambient 19s ease-in-out infinite alternate; }
-  .books-folder-section:has(#booksFolderMotion:not(:checked))::before,
-  .books-folder-section:has(#booksFolderMotion:not(:checked))::after { animation-play-state: paused; }
-  .books-folder-motion {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    min-height: 32px;
-    padding: 4px 8px;
-    border: 1px solid var(--books-border);
-    border-radius: 7px;
-    background: var(--books-card);
-    color: var(--books-muted);
-    font-size: .8125rem;
-    cursor: pointer;
-  }
-  .books-folder-motion:hover { background: var(--books-hover); }
-  .books-folder-motion input {
-    appearance: auto;
-    width: .875rem;
-    height: .875rem;
-    margin: 0;
-    accent-color: #bb9ae9;
-    cursor: pointer;
-  }
 }
 @keyframes books-folder-aurora {
   from { transform: translate3d(-7%, -6%, 0) rotate(-7deg); }
