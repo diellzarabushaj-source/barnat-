@@ -18,7 +18,9 @@
     "drx-dashboard-stripe.css": "drx-dashboard-stripe-v8-workspace-polish-20261128"
   },
   "klasifikimi.html": {
-    "classification-v2.js": "20261128-session-profile",
+    "classification-v2.css": "20261128-atc-barnat",
+    "atc-drugs.js": "20261128-atc-barnat",
+    "classification-v2.js": "20261128-atc-barnat",
     "drx-runtime-telemetry.js": "20261009-rum-v1",
     "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v10-workspace-polish-20261128",
     "drx-dashboard-stripe.css": "drx-dashboard-stripe-v8-workspace-polish-20261128"
