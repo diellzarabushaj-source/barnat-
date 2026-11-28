@@ -53,7 +53,7 @@ Katalogu në `/librat-mjekesore.html` ruan emrat e librave dhe hierarkinë në `
 
 Faqja lexon vetëm metadatat e katalogut në nisje. Kopertinat WebP ngarkohen pranë zonës së dukshme. PDF-ja hapet drejtpërdrejt nga CDN-ja e Sanity në një skedë të re kur zgjidhet libri.
 
-Kërkimi përdor titullin dhe shtegun e dosjes. Shtyp `/` për ta fokusuar. Filtrat e koleksionit, lëndës dhe vitit në titull mund të kombinohen. Viti merret nga emri i skedarit kur shënohet aty. Adresa e faqes ruan kërkimin, filtrat, renditjen dhe pamjen me kopertina ose listë.
+Çdo dosje shfaq librat e vet dhe të nëndosjeve të saj. Zgjidh një nëndosje për ta ngushtuar listën ose përdor shtegun për t’u kthyer te dosja kryesore. Kërkimi dhe filtri i vitit vazhdojnë të zbatohen gjatë navigimit. Kërkimi përdor titullin dhe shtegun e dosjes. Shtyp `/` për ta fokusuar. Filtrat e koleksionit, lëndës dhe vitit në titull mund të kombinohen. Viti merret nga emri i skedarit kur shënohet aty. Adresa e faqes ruan kërkimin, filtrat, renditjen dhe pamjen me kopertina ose listë.
 
 Pamja përdor përshtatje HTML/CSS të komponentëve Card, Input dhe Button të shadcn/ui për runtime-in statik. Licenca e komponentëve gjendet te `vendor/shadcn/LICENSE`.
 
