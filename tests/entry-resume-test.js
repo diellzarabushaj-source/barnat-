@@ -71,7 +71,8 @@ async function checkResume({ response, dialogOpen = false, search = '?return=%2F
   assert.equal(unauthenticated.destinations.length, 0, 'No session must never be granted access.');
   assert.equal(unauthenticated.timers.length, 0, 'A confirmed signed-out browser should show the login screen.');
 
-  assert.match(worker, /AUTH_ENTRY_PAGES\.has\(expectedPath\) && networkProfile\.online/, 'Entry HTML must be network-first.');
+  const navigation = worker.slice(worker.indexOf('async function navigationResponse'), worker.indexOf('async function refreshStatic'));
+  assert.ok(navigation.indexOf('await refreshNavigation') < navigation.indexOf('cache.match'), 'Entry HTML must be network-first.');
   assert.match(landing, /entry-resume\.js\?v=remembered-session-20261106/, 'New entry code must bust cached scripts.');
   console.log('Safari entry recovery passed: open login dialog, network-only renewal, slow links, offline snapshots, outages and missing sessions.');
 })().catch(error => { console.error(error); process.exitCode = 1; });

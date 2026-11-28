@@ -91,7 +91,7 @@ const canonicalWorkspaceAssets = [
 const worker = read('sw.js');
 assert.match(worker, /workspace-cache-cutover-v7/);
 assert.match(worker, /VERSION = 'workspace-coherence-v9-app-cache'/);
-assert.match(worker, /CACHE_EPOCH = '20261106-persistent-session-v2'/);
+assert.match(worker, /CACHE_EPOCH = '20261128-fresh-navigation'/);
 for (const [htmlFile] of workspaces) {
   assert.ok(worker.includes(`'/${htmlFile}'`), `sw.js: ${htmlFile} is missing from the clinical shell`);
 }

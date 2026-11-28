@@ -24,7 +24,6 @@ const PRIVATE_PAGES = new Set([
   '/index.html', '/klasifikimi.html', '/icd.html', '/analizat.html',
   '/dozologjia.html', '/protokollet.html', '/recetat.html',
 ]);
-const AUTH_ENTRY_PAGES = new Set(['/landing.html', '/login.html', '/session-resume.html']);
 const PRIVATE_DATA_PATHS = new Set([
   '/api/registry', '/data/registry-data.js', '/api/dosage',
 ]);
@@ -187,7 +186,9 @@ self.addEventListener('activate', event => {
 async function refreshNavigation(request, key, expectedPath) {
   try {
     const response = await timeoutFetch(new Request(request, { cache:'no-store' }), 9000, 26000);
-    if (validHtmlResponse(response, expectedPath)) await putIfCacheable(PAGE_CACHE, key, response, { key });
+    if (validHtmlResponse(response, expectedPath)) {
+      await putIfCacheable(PAGE_CACHE, key, response, { key }).catch(() => null);
+    }
     return response;
   } catch { return null; }
 }
@@ -196,29 +197,12 @@ async function navigationResponse(event, url) {
   const request = event.request;
   const expectedPath = canonicalPagePath(url.pathname);
   const key = requestFor(expectedPath);
+  const fresh = await refreshNavigation(request, key, expectedPath);
+  if (fresh) return fresh;
+
   const cache = await caches.open(PAGE_CACHE);
-  const cached = await cache.match(key) || await caches.match(key, { ignoreSearch:true });
-
-  // Public entry pages are authentication-sensitive. A cached login document
-  // must never mask a valid remembered browser after a deployment or reopen.
-  if (AUTH_ENTRY_PAGES.has(expectedPath) && networkProfile.online) {
-    const fresh = await refreshNavigation(request, key, expectedPath);
-    if (fresh) return fresh;
-  }
-
-  // These documents select versioned assets. Prefer their fresh online HTML so
-  // a saved document cannot keep loading old registry code or MedLex artwork.
-  if (['/index.html', '/medlex.html'].includes(expectedPath) && networkProfile.online) {
-    const fresh = await refreshNavigation(request, key, expectedPath);
-    if (fresh && validHtmlResponse(fresh, expectedPath)) return cloneWithHeader(fresh, 'registry-shell-network');
-  }
-
-  if (cached) {
-    if (networkProfile.online && !networkProfile.saveData) event.waitUntil(refreshNavigation(request, key, expectedPath));
-    return cloneWithHeader(cached, networkProfile.slow ? 'page-low-bandwidth-hit' : 'page-fast-hit');
-  }
-  const response = await refreshNavigation(request, key, expectedPath);
-  if (response) return cloneWithHeader(response, 'page-network');
+  const cached = await cache.match(key) || await cache.match(key, { ignoreSearch:true });
+  if (cached) return cloneWithHeader(cached, 'page-offline-hit');
   return await caches.match('/login-v2.html')
     || await caches.match('/login.html')
     || await caches.match('/recovery.html')

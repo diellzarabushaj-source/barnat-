@@ -21,9 +21,10 @@ Registry **Rifresko** explicitly revalidates. Identical concurrent reads share o
 network operation. Dosage keys preserve the entire sorted query.
 
 Static resources use exact URLs, including versions. HTML and data caches have
-stable device namespaces across releases. A worker update keeps active pages and
-scroll position intact; it does not force a reload. A fresh HTML response replaces
-the saved page in the background. Modified shared CSS, sidebar and registry assets
+stable device namespaces across releases. Opening or normally reloading a page
+revalidates its HTML with the server and saves a fresh copy. If the connection
+fails, the worker can serve the last saved copy. A worker update keeps open pages
+and their scroll position intact. Modified shared CSS, sidebar and registry assets
 have new version parameters. Install requests persistent storage where supported.
 The browser or device can still evict storage or the user can clear it.
 

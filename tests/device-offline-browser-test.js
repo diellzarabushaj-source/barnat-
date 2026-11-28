@@ -24,7 +24,7 @@ async function offlineState(page) {
 }
 const mime={'.html':'text/html','.js':'application/javascript','.css':'text/css','.svg':'image/svg+xml','.woff2':'font/woff2','.webmanifest':'application/manifest+json','.json':'application/json'};
 const row={id:'11111111-1111-4111-8111-111111111111',registryNumber:'1',pdid:'1001',tradeName:'BAR TESTUES PËR RUAJTJEN LOKALE',activeSubstance:'Substancë testuese',atc:'N02BE01',strength:'500 mg',form:'Tabletë',drugClass:'Produkt testues',use:'Vetëm për verifikimin e ndërfaqes',productStatus:'Gjenerik',retailPrice:2.45};
-const reads=new Map();let authStatus=200,owner='account-a',delay=0,networkAvailable=true;
+const reads=new Map();let authStatus=200,owner='account-a',delay=0,networkAvailable=true,workspaceRelease='previous';
 const session=()=>({authenticated:true,hardened:true,sessionVersion:3,sessionHours:8,supabaseAuthenticated:true,authUser:{id:owner},user:{name:'Mjeku testues',email:`${owner}@example.test`}});
 const server=http.createServer(async(req,res)=>{
  if (!networkAvailable) {req.socket.destroy();return;}
@@ -43,7 +43,14 @@ const server=http.createServer(async(req,res)=>{
  if(url.pathname.startsWith('/api/'))return json(200,{ok:true,data:{meta:{},chapters:[],blocks:[],rows:[]}});
  let file=path.resolve(ROOT,'.'+(url.pathname==='/'?'/index.html':url.pathname));
  if(!file.startsWith(ROOT+path.sep))return json(404,{});
- try{const body=fs.readFileSync(file);res.writeHead(200,{'Content-Type':mime[path.extname(file)]||'application/octet-stream','Cache-Control':'no-cache'});res.end(body);}catch{return json(404,{});}
+ try{
+  const body=fs.readFileSync(file);
+  const html=url.pathname==='/index.html'
+   ? body.toString().replace('</head>', `<meta name="test-workspace-release" content="${workspaceRelease}"></head>`)
+   : body;
+  res.writeHead(200,{'Content-Type':mime[path.extname(file)]||'application/octet-stream','Cache-Control':'no-cache'});
+  res.end(html);
+ }catch{return json(404,{});}
 });
 (async()=>{
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
@@ -94,6 +101,18 @@ const server=http.createServer(async(req,res)=>{
   await expect.poll(()=>page.evaluate(async()=>{const c=await caches.open('medindex-private-device-v1');return(await c.keys()).some(key=>key.url.includes('view=registry-detail'));})).toBe(true);
   await page.locator('#drawerClose').click();
   await expect(page.locator('#drxDeviceStatus')).toContainText('Ruajtur');
+  const savedRelease=()=>page.evaluate(async()=>{
+   const cache=await caches.open('medindex-pages-device-v1');
+   return (await cache.match('/index.html'))?.text();
+  });
+  await expect.poll(savedRelease).toContain('name="test-workspace-release" content="previous"');
+  workspaceRelease='current';
+  phase='online-refresh';
+  const reloaded=await page.reload();
+  if(engine===chromium)assert.equal(reloaded.fromServiceWorker(),true,'Normal reload uses the installed service worker');
+  await expect(page.locator('meta[name="test-workspace-release"]')).toHaveAttribute('content','current');
+  await expect.poll(savedRelease).toContain('name="test-workspace-release" content="current"');
+  await expect(page.locator('#registryList')).toContainText(row.tradeName);
   const beforeOffline=await offlineState(page);phase='offline-reload';
   networkAvailable=false;if(engine===chromium)await context.setOffline(true);await page.reload();
   await expect(page.locator('#registryList')).toContainText(row.tradeName).catch(async error=>{
@@ -101,6 +120,7 @@ const server=http.createServer(async(req,res)=>{
     scripts:[...document.scripts].map(script=>script.src),body:document.body.innerText.slice(0,1600)
    }))},null,2));throw error;
   });
+  await expect(page.locator('meta[name="test-workspace-release"]')).toHaveAttribute('content','current');
   await expect(page.locator('#drxDeviceStatus')).toContainText('Pa internet');
   await expect(page.locator('#syncText')).toContainText('Kopje lokale');
   const detail=await page.evaluate(async id=>{const r=await fetch('/api/drug-search?view=registry-detail&id='+id);return{status:r.status,cache:r.headers.get('X-MedIndex-Cache'),row:(await r.json()).row};},row.id);
@@ -142,7 +162,7 @@ const server=http.createServer(async(req,res)=>{
     /(?:https?:\/\/|\/)?127\.0\.0\.1:\d+\/api\/auth(?:\?(?:scope=ui-preferences|offline_probe=1|session_probe=1))?\.?$/.test(error.message)
   )));
   assert.deepEqual(unexpected,[]);
-  console.log(`PASS ${process.env.OFFLINE_BROWSER||'chromium'}: first-download persistence, <500ms slow-link cache, no duplicate downloads, explicit refresh, offline reload/detail, same-Wi-Fi recovery, unknown-data state, revocation and logout.`);
+  console.log(`PASS ${process.env.OFFLINE_BROWSER||'chromium'}: first-download persistence, <500ms slow-link cache, no duplicate downloads, explicit data refresh, latest HTML on normal reload, offline reload/detail, same-Wi-Fi recovery, unknown-data state, revocation and logout.`);
   await context.close();
  }finally{await browser.close();await new Promise(resolve=>server.close(resolve));}
 })().catch(error=>{console.error(error);server.close();process.exitCode=1;});
