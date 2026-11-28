@@ -3,7 +3,7 @@
 'use strict';
 
 const VERSION = 'workspace-coherence-v9-app-cache';
-const CACHE_EPOCH = '20261106-persistent-session-v2';
+const CACHE_EPOCH = '20261128-fresh-navigation';
 const CACHE_NAMESPACE = `${VERSION}-${CACHE_EPOCH}`;
 const STATIC_CACHE = 'medindex-static-device-v1';
 const PAGE_CACHE = 'medindex-pages-device-v1';
@@ -27,6 +27,7 @@ const DOCUMENT_CACHE = 'medindex-documents-device-v1';
 const ALL_CACHES = [STATIC_CACHE, PAGE_CACHE, PRIVATE_CACHE, DOCUMENT_CACHE, AUTH_CACHE];
 const NETWORK_TIMEOUT_MS = 4500;
 const STATIC_NETWORK_TIMEOUT_MS = 3200;
+const AUTH_ENTRY_PAGES = new Set(['/landing.html', '/login.html', '/admin-login.html', '/session-resume.html']);
 const MAX_DOCUMENTS = 16;
 const MAX_QUERY_RESPONSES = 400;
 
@@ -292,9 +293,11 @@ async function cacheWorkspace(url, observed = []) {
 
 async function cacheWorkspaceFiles(url, observed = []) {
   if (!sameOrigin(url) || !/\.html$/.test(url.pathname) && url.pathname !== '/') return;
-  const response = await timeoutFetch(requestFor(url.href));
-  if (!response.ok || response.redirected || !await authSnapshot()) return;
+  const generation = dataGeneration;
+  const response = await timeoutFetch(new Request(requestFor(url.href), {cache:'no-cache'}));
+  if (!response.ok || response.redirected) return;
   const html = await response.clone().text();
+  if (!await authSnapshot() || generation !== dataGeneration) return;
   await putIfCacheable(PAGE_CACHE, navigationKey(url), response);
   const assets = [...html.matchAll(/<(?:script|link|img)\b[^>]*?\b(?:src|href)=["']([^"']+)["']/gi)]
     .map(match => new URL(match[1].replace(/&amp;/g,'&'), url))
@@ -355,40 +358,26 @@ self.addEventListener('message', event => {
   }
 });
 
-async function navigationResponse(event) {
-  const request = event.request;
-  const key = navigationKey(new URL(request.url));
+async function navigationResponse({ request }) {
+  const url = new URL(request.url);
+  const key = navigationKey(url);
+  const generation = dataGeneration;
+  const cacheMode = AUTH_ENTRY_PAGES.has(url.pathname) ? 'no-store' : 'no-cache';
+  const response = await timeoutFetch(new Request(request, {cache:cacheMode})).catch(() => null);
+  if (response) {
+    const finalPath = new URL(response.url || request.url).pathname;
+    if (response.ok && !response.redirected && finalPath === url.pathname) {
+      try {
+        if (await authSnapshot() && generation === dataGeneration) await putIfCacheable(PAGE_CACHE, key, response, {key});
+      } catch { /* Storage failure must not hide the live page. */ }
+    }
+    return response;
+  }
+
   const cache = await caches.open(PAGE_CACHE);
   const cached = await cache.match(key);
-  const refresh = async () => {
-    const response = await timeoutFetch(new Request(request, {cache:'no-cache'}), cached ? 1200 : NETWORK_TIMEOUT_MS);
-    const finalPath = new URL(response.url || request.url).pathname;
-    if (response.ok && !response.redirected && finalPath === new URL(request.url).pathname && await authSnapshot())
-      await putIfCacheable(PAGE_CACHE, key, response, {key});
-    return response;
-  };
-  if (['/landing.html', '/login.html', '/admin-login.html', '/session-resume.html'].includes(new URL(request.url).pathname) && deviceOnline) {
-    try {
-      // These pages decide whether to resume a remembered browser. Never paint
-      // a cached sign-in page while the server has a valid session cookie.
-      return await fetch(new Request(request, { cache:'no-store' }));
-    } catch { /* Keep the entry page usable during a real network outage. */ }
-  }
-  if (new URL(request.url).pathname === '/medlex.html' && deviceOnline) {
-    try {
-      const response = await timeoutFetch(new Request(request, {cache:'no-cache'}), NETWORK_TIMEOUT_MS);
-      if (response.ok && !response.redirected) {
-        if (await authSnapshot()) await putIfCacheable(PAGE_CACHE, key, response, {key});
-        return response;
-      }
-    } catch { /* Keep the saved chapter available offline. */ }
-  }
-  if (cached) {
-    event.waitUntil(refresh().catch(() => null));
-    return cloneWithHeader(cached, 'X-MedIndex-Cache', 'page-hit');
-  }
-  try { return await refresh(); }
-  catch { return new Response('<!doctype html><html lang="sq"><meta name="viewport" content="width=device-width"><title>DRx · Pa lidhje</title><body style="font:16px system-ui;padding:24px;color:#1c1e54"><h1>Kjo faqe ende nuk është ruajtur</h1><p>Hape një herë me internet për ta përdorur më vonë pa lidhje.</p><a href="/index.html">Kthehu te Barnat</a></body></html>', {status:503,headers:{'Content-Type':'text/html;charset=utf-8'}}); }
+  if (cached) return cloneWithHeader(cached, 'page-hit');
+  return new Response('<!doctype html><html lang="sq"><meta name="viewport" content="width=device-width"><title>DRx · Pa lidhje</title><body style="font:16px system-ui;padding:24px;color:#1c1e54"><h1>Kjo faqe ende nuk është ruajtur</h1><p>Hape një herë me internet për ta përdorur më vonë pa lidhje.</p><a href="/index.html">Kthehu te Barnat</a></body></html>', {status:503,headers:{'Content-Type':'text/html;charset=utf-8'}});
 }
 
 async function staticResponse(event) {
