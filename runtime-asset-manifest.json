@@ -16,13 +16,14 @@
     "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v9-worker-ready-20261012"
   },
   "klasifikimi.html": {
+    "classification-v2.js": "20261128-session-profile",
     "drx-runtime-telemetry.js": "20261009-rum-v1",
     "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v9-worker-ready-20261012"
   },
   "icd.html": {
     "drx-runtime-telemetry.js": "20261009-rum-v1",
     "sidebar-taxonomy-v3.js": "sidebar-taxonomy-v9-worker-ready-20261012",
-    "icd-v2.css": "icd-clarification-20261025",
+    "icd-v2.css": "20261128-sticky-topbar",
     "icd-v2.js": "icd-resilience-20261103",
     "icd-search-lexical.js": "icd-resilience-20261103"
   },

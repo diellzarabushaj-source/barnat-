@@ -46,7 +46,7 @@
   const $ = id => document.getElementById(id);
   const el = {
     appShell:$('appShell'), sidebar:$('sidebar'), sidebarBackdrop:$('sidebarBackdrop'), menuButton:$('menuButton'), sidebarClose:$('sidebarClose'),
-    logoutButton:$('logoutButton'), sourceStatus:$('sourceStatus'), syncText:$('syncText'), avatarInitials:$('avatarInitials'), searchShortcut:$('searchShortcut'),
+    logoutButton:$('logoutButton'), sourceStatus:$('sourceStatus'), syncText:$('syncText'), searchShortcut:$('searchShortcut'),
     metricGroups:$('metricGroups'), metricCategories:$('metricCategories'), metricClassified:$('metricClassified'), metricCoverage:$('metricCoverage'), metricUnclassified:$('metricUnclassified'),
     atcSearch:$('atcSearch'), clearSearchButton:$('clearSearchButton'), atcStatusText:$('atcStatusText'),
     categoryHero:$('categoryHero'), categoryPanelTitle:$('categoryPanelTitle'), categoryCount:$('categoryCount'), categoryList:$('categoryList'),
@@ -131,9 +131,11 @@
 
   async function ensureAuth() {
     const { payload } = await fetchJson('/api/auth', {}, 4200);
-    if (!payload.authenticated) return redirectToLogin();
-    const name = clean(payload.user?.name || payload.authUser?.name || payload.user?.email || 'DR');
-    el.avatarInitials.textContent = name.split(/[\s@.]+/).filter(Boolean).slice(0,2).map(part => part[0]?.toUpperCase()).join('') || 'DR';
+    if (!payload.authenticated) {
+      redirectToLogin();
+      throw new Error('Sesioni nuk është aktiv.');
+    }
+    return payload;
   }
 
   function categoryEntries(groupCode) {

@@ -1138,8 +1138,9 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
 
 
 /* Extreme responsive pass v22 --------------------------------------------- */
-/* Universal overflow safety */
-html,body{max-width:100%;overflow-x:hidden}
+/* The shared shell clips horizontal overflow on the body so the top bar
+   can remain sticky to the viewport. */
+html,body{max-width:100%}
 .icd-shell,.page-wrap,.icd-card,.icd-workspace,.chapter-panel,.node-panel,
 .clinical-quick-hub,.clinical-action-panel,.clinical-action-grid,.clinical-action-card{min-width:0}
 .clinical-action-card,.clinical-medication-block,.clinical-practical-steps li,
